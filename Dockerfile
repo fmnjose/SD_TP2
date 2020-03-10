@@ -11,4 +11,4 @@ COPY target/*jar-with-dependencies.jar sd1920.jar
 COPY messages.props messages.props
 
 # run Discovery when starting the docker image
-CMD ["java", "-cp", "/home/sd/sd1920.jar", "sd1920.aula2.server.MessageServer"]
+CMD ["java", "-cp", "/home/sd/sd1920.jar", "sd1920.trab1.server.rest.MessageServer"]

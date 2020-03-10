@@ -1,0 +1,13 @@
+sd1920/trab1/api/Discovery.class
+sd1920/trab1/api/Discovery$DomainInfo.class
+sd1920/trab1/server/rest/resources/UserResource.class
+sd1920/trab1/server/rest/resources/MessageResource.class
+sd1920/trab1/api/rest/MessageService.class
+sd1920/trab1/api/rest/UserService.class
+sd1920/trab1/api/soap/MessageServiceSoap.class
+sd1920/trab1/api/Discovery$1.class
+sd1920/trab1/api/soap/MessagesException.class
+sd1920/trab1/api/User.class
+sd1920/trab1/api/Message.class
+sd1920/trab1/server/rest/MessageServer.class
+sd1920/trab1/api/soap/UserServiceSoap.class

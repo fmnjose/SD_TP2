@@ -3,6 +3,7 @@ package sd1920.trab1.api.rest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -31,6 +32,15 @@ public interface UserService {
 	@Produces(MediaType.APPLICATION_JSON)
 	String postUser(User user);
 	
+	/**
+	 * checks if user exists
+	 * @param user name
+	 * @return 202 if the user exists
+	 * 404 otherwise
+	 */
+	@HEAD
+	@Path("/{name}")
+	void checkUser(@PathParam("name") String name);
 	/**
 	 * Obtains the information on the user identified by name
 	 * @param name the name of the user
@@ -69,5 +79,6 @@ public interface UserService {
 	@Path("/{name}")
 	@Produces(MediaType.APPLICATION_JSON)
 	User deleteUser(@PathParam("name") String name, @QueryParam("pwd") String pwd);
+	
 	
 }

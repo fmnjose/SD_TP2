@@ -53,7 +53,6 @@ public class UserResource implements UserService {
 
     @Override
     public User getUser(String name, String pwd) {
-
         User user;
 
         if(name == null || pwd == null){
@@ -131,6 +130,14 @@ public class UserResource implements UserService {
 
 
         return user;
+    }
+
+    @Override
+    public void checkUser(String name) {
+        synchronized(this.users){
+            if(!this.users.containsKey(name))
+            throw new WebApplicationException(Status.NOT_FOUND);
+        }
     }
 
 }

@@ -2,13 +2,11 @@ package sd1920.trab1.api;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.net.URI;
 import java.time.LocalTime;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -44,17 +42,47 @@ public class Discovery {
 	private InetSocketAddress addr;
 	private String serviceName;
 	private String serviceURI;
-	public HashMap<String, HashMap<String,String>> record;
+	public HashMap<String, DomainInfo> record;
 
 	/**
 	 * @param  serviceName the name of the service to announce
 	 * @param  serviceURI an uri string - representing the contact endpoint of the service being announced
 	 */
-	public Discovery( InetSocketAddress addr, String serviceName, String serviceURI) {
-		this.addr = addr;
+	public Discovery(String serviceName, String serviceURI) {
+		this.addr = DISCOVERY_ADDR;
 		this.serviceName = serviceName;
 		this.serviceURI  = serviceURI;
-		this.record = new HashMap<String, HashMap<String,String>>();
+		this.record = new HashMap<String, DomainInfo>();
+	}
+
+	public class DomainInfo{
+		String uri;
+		LocalTime time;
+		private DomainInfo(String uri, LocalTime time){
+			this.uri = uri;
+			this.time = time;
+		}
+
+		private LocalTime getTime(){
+			return this.time;
+		}
+
+		private void setTime(LocalTime time){
+			this.time = time;
+		}
+
+		public String getUri(){
+			return this.uri;
+		}
+
+		private void setUri(String uri){
+			this.uri = uri;
+		}
+
+		@Override
+		public String toString(){
+			return String.format("URI: %s Received at: %s", this.uri, this.time.toString());
+		}
 	}
 	
 	/**
@@ -88,7 +116,7 @@ public class Discovery {
 				LocalTime rcvTime;
 				String serviceName;
 				String uri;
-				HashMap<String,String> uriList;
+				DomainInfo info;
 
 				for (;;) {
 					try {
@@ -98,29 +126,20 @@ public class Discovery {
 						String msg = new String( pkt.getData(), 0, pkt.getLength());
 						String[] msgElems = msg.split(DELIMITER);
 						if( msgElems.length == 2) {	//periodic announcement
-							System.out.printf( "FROM %s (%s) : %s\n", pkt.getAddress().getCanonicalHostName(), 
-									pkt.getAddress().getHostAddress(), msg);
+							String domainName = pkt.getAddress().getHostName().split("\\.")[0];
+							Log.info(String.format("FROM %s (%s) : %s\n", domainName, 
+									pkt.getAddress().getHostAddress(), msg));
 							
 							serviceName = msgElems[0];
 							uri = msgElems[1];
-							uriList = (HashMap<String,String>)record.get(serviceName);
+							info = record.get(domainName);
 
-							if(uriList == null){
-								uriList = new HashMap<String,String>();
-								uriList.put(uri,rcvTime.toString());
-								
-								record.put(serviceName, uriList);
+							if(info == null){								
+								record.put(domainName, new DomainInfo(uri,rcvTime));
+								Log.info(String.format("Service Name: %s Service URI: %s TIME: %s\n", serviceName, uri, rcvTime));	
 							}
 							else{
-								uriList.put(uri,rcvTime.toString());
-							}
-
-							Log.info("SERVICE TABLE\n");
-
-							for (Map.Entry<String , HashMap<String,String>> r : record.entrySet()) {
-								for(Map.Entry<String,String> ul: r.getValue().entrySet()){
-									System.out.printf("Service Name: %s Service URI: %s TIME: %s\n", r.getKey(), ul.getKey(), ul.getValue());
-								}
+								info.setTime(rcvTime);
 							}
 
 							System.out.println();
@@ -144,11 +163,5 @@ public class Discovery {
 	 */
 	public URI[] knownUrisOf(String serviceName) {
 		throw new Error("Not Implemented...");
-	}	
-	
-	// Main just for testing purposes
-	public static void main( String[] args) throws Exception {
-		Discovery discovery = new Discovery( DISCOVERY_ADDR, "test", "http://" + InetAddress.getLocalHost().getHostAddress());
-		discovery.start();
 	}
 }

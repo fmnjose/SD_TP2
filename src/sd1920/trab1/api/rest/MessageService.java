@@ -63,7 +63,7 @@ public interface MessageService {
 	 */
 	@HEAD
 	@Path("/mbox/{mid}")
-	Message checkMessage(@PathParam("mid") long mid);
+	void checkMessage(@PathParam("mid") long mid);
 
 
 	/**
