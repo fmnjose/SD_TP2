@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -53,6 +54,17 @@ public interface MessageService {
 	@Produces(MediaType.APPLICATION_JSON)
 	Message getMessage(@PathParam("user") String user, @PathParam("mid") long mid,
 			@QueryParam("pwd") String pwd);
+
+	/**
+	 * Checks if the message exists
+	 * @param mid the identifier of the message
+	 *  200 if the message exist
+	 *  404 if the message does not exist
+	 */
+	@HEAD
+	@Path("/mbox/{mid}")
+	Message checkMessage(@PathParam("mid") long mid);
+
 
 	/**
 	 * Returns a list of all ids of messages stored in the server for a given user

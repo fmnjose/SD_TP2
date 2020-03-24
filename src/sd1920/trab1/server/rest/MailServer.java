@@ -1,13 +1,16 @@
 package sd1920.trab1.server.rest;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
+import sd1920.trab1.api.Discovery;
 import sd1920.trab1.server.rest.resources.MessageResource;
 import sd1920.trab1.server.rest.resources.UserResource;
 
@@ -21,7 +24,9 @@ public class MailServer {
 	}
 	
 	public static final int PORT = 8080;
-	public static final String SERVICE = "MessageService";
+	public static final String SERVICE = "MailService";
+
+	public static HashMap<String, HashMap<String,String>> servers;
 	
 	public static void main(String[] args) throws UnknownHostException {
 		String ip = InetAddress.getLocalHost().getHostAddress();
@@ -32,7 +37,14 @@ public class MailServer {
 		config.register(UserResource.class);
 
 		String serverURI = String.format("http://%s:%s/rest", ip, PORT);
+	
 		JdkHttpServerFactory.createHttpServer( URI.create(serverURI), config);
+
+		Discovery lurker = new Discovery(new InetSocketAddress(InetAddress.getLocalHost(), PORT), SERVICE, serverURI);
+
+		lurker.start();
+
+		servers = lurker.record;
 	
 		Log.info(String.format("%s Server ready @ %s\n",  SERVICE, serverURI));
 		

@@ -39,7 +39,7 @@ public class MessageResource implements MessageService {
 	
 	private static Logger Log = Logger.getLogger(MessageResource.class.getName());
 	
-	public MessageResource(String sss) {
+	public MessageResource() {
 		this.randomNumberGenerator = new Random(System.currentTimeMillis());
 		config = new ClientConfig();
 		client = ClientBuilder.newClient(config);
@@ -55,7 +55,9 @@ public class MessageResource implements MessageService {
 			Log.info("Message was rejected due to lack of recepients.");
 			throw new WebApplicationException( Status.CONFLICT );
 		}
-			
+		
+		
+
 		
 		//Generate a new id for the message, that is not in use yet
 		long newID = Math.abs(randomNumberGenerator.nextLong());
@@ -107,6 +109,12 @@ public class MessageResource implements MessageService {
 		}
 		Log.info("Returning message list to user with " + mids.size() + " messages.");
 		return new ArrayList<>(mids);
+	}
+
+	@Override
+	public Message checkMessage(long mid) {
+		
+		return null;
 	}
 
 	@Override
