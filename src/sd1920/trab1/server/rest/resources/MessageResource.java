@@ -14,11 +14,14 @@ import javax.inject.Singleton;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Response.Status;
+
+import org.glassfish.jersey.client.ClientConfig;
 
 import sd1920.trab1.api.rest.MessageService;
 import sd1920.trab1.api.Message;
-import sd1920.trab1.api.User;
 
 
 @Singleton
@@ -26,13 +29,20 @@ public class MessageResource implements MessageService {
 
 	private Random randomNumberGenerator;
 	
+	public MessageResource mr = this;
+
+	ClientConfig config;
+	Client client;
+
 	private final Map<Long,Message> allMessages = new HashMap<Long, Message>();
-	private final Map<User,Set<Long>> userInboxs = new HashMap<User, Set<Long>>();
+	private final Map<String,Set<Long>> userInboxs = new HashMap<String, Set<Long>>();
 	
 	private static Logger Log = Logger.getLogger(MessageResource.class.getName());
 	
-	public MessageResource() {
+	public MessageResource(String sss) {
 		this.randomNumberGenerator = new Random(System.currentTimeMillis());
+		config = new ClientConfig();
+		client = ClientBuilder.newClient(config);
 	}
 	
 	
@@ -87,37 +97,36 @@ public class MessageResource implements MessageService {
 	@Override
 	public List<Long> getMessages(@PathParam("user") String user, @QueryParam("pwd") String pwd) {
 		Log.info("Received request for messages with optional user parameter set to: '" + user + "'");
-		List<Message> messages = new ArrayList<Message>();
+		Set<Long> mids = new HashSet<Long>();
 		if(user == null) {
 			Log.info("Collecting all messages in server");
-			messages.addAll(allMessages.values());
+			mids.addAll(allMessages.keySet());
 		} else {
 			Log.info("Collecting all messages in server for user " + user);
-			Set<Long> mids = userInboxs.getOrDefault(user, Collections.emptySet());
-			for(Long l: mids) { 
-				Log.info("Adding messaeg with id: " + l + ".");
-				messages.add(allMessages.get(l));
-			}
+			mids = userInboxs.getOrDefault(user, Collections.emptySet());
 		}
-		Log.info("Returning message list to user with " + messages.size() + " messages.");
-		return messages;
+		Log.info("Returning message list to user with " + mids.size() + " messages.");
+		return new ArrayList<>(mids);
 	}
 
 	@Override
 	public void deleteMessage(@PathParam("user") String user, @PathParam("mid") long mid, 
-    @QueryParam("pwd") String pwd) {
+								@QueryParam("pwd") String pwd) 
+	{
+		
 		Log.info("Received request to delete a message with the id: " + String.valueOf(mid));
-		Message msg;
-		if((msg = this.allMessages.get(mid)) == null){
+		Message msg = this.allMessages.get(mid);
+
+		if(msg == null){
 			Log.info("Message not found");
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
 
 		Set<String> users = msg.getDestination();
 
-		for(String user : users){
-			Log.info("Removing message for user " + user);
-			this.userInboxs.get(user).remove(mid);
+		for(String u : users){
+			Log.info("Removing message for user " + u);
+			this.userInboxs.get(u).remove(mid);
 		}
 
 	}

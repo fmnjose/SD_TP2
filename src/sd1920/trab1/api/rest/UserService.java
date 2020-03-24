@@ -23,7 +23,7 @@ public interface UserService {
 	 * @param user User to be created
 	 * @return 200: the address of the user (name@domain).
 	 * 403 if the domain in the user does not match the domain of the server
-	 * 409 if either name, pwd, or domain and null
+	 * 409 if either name, pwd, or domain are null
 	 */
 	@POST
 	@Path("/")

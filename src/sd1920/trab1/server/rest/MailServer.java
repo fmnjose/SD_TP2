@@ -9,6 +9,7 @@ import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import sd1920.trab1.server.rest.resources.MessageResource;
+import sd1920.trab1.server.rest.resources.UserResource;
 
 public class MailServer {
 
@@ -26,8 +27,9 @@ public class MailServer {
 		String ip = InetAddress.getLocalHost().getHostAddress();
 			
 		ResourceConfig config = new ResourceConfig();
+
         config.register(MessageResource.class);
-        config.register(UserResource.class);
+		config.register(UserResource.class);
 
 		String serverURI = String.format("http://%s:%s/rest", ip, PORT);
 		JdkHttpServerFactory.createHttpServer( URI.create(serverURI), config);
