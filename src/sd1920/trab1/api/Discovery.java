@@ -75,10 +75,6 @@ public class Discovery {
 			return this.uri;
 		}
 
-		private void setUri(String uri){
-			this.uri = uri;
-		}
-
 		@Override
 		public String toString(){
 			return String.format("URI: %s Received at: %s", this.uri, this.time.toString());
@@ -89,6 +85,7 @@ public class Discovery {
 	 * Starts sending service announcements at regular intervals... 
 	 */
 	public void start() {
+		//TODO cleanup dos tempos
 		Log.info(String.format("Starting Discovery announcements on: %s for: %s -> %s\n", addr, serviceName, serviceURI));
 		
 		byte[] announceBytes = String.format("%s%s%s", serviceName, DELIMITER, serviceURI).getBytes();
