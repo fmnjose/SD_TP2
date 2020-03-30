@@ -86,7 +86,7 @@ public class Discovery {
 	 */
 	public void start() {
 		//TODO cleanup dos tempos
-		Log.info(String.format("Starting Discovery announcements on: %s for: %s -> %s\n", addr, serviceName, serviceURI));
+		//Log.info(String.format("Starting Discovery announcements on: %s for: %s -> %s\n", addr, serviceName, serviceURI));
 		
 		byte[] announceBytes = String.format("%s%s%s", serviceName, DELIMITER, serviceURI).getBytes();
 		DatagramPacket announcePkt = new DatagramPacket(announceBytes, announceBytes.length, addr);
@@ -124,8 +124,8 @@ public class Discovery {
 						String[] msgElems = msg.split(DELIMITER);
 						if( msgElems.length == 2) {	//periodic announcement
 							String domainName = pkt.getAddress().getHostName().split("\\.")[0];
-							Log.info(String.format("FROM %s (%s) : %s\n", domainName, 
-									pkt.getAddress().getHostAddress(), msg));
+							//Log.info(String.format("FROM %s (%s) : %s\n", domainName, 
+									//pkt.getAddress().getHostAddress(), msg));
 							
 							serviceName = msgElems[0];
 							uri = msgElems[1];
@@ -133,7 +133,7 @@ public class Discovery {
 
 							if(info == null){								
 								record.put(domainName, new DomainInfo(uri,rcvTime));
-								Log.info(String.format("Service Name: %s Service URI: %s TIME: %s\n", serviceName, uri, rcvTime));	
+								//Log.info(String.format("Service Name: %s Service URI: %s TIME: %s\n", serviceName, uri, rcvTime));	
 							}
 							else{
 								info.setTime(rcvTime);

@@ -298,13 +298,13 @@ public class MessageResource implements MessageService {
 		return new ArrayList<>(mids);
 	}
 
-	@Override
+	/*@Override
 	public void checkMessage(long mid) {
 		synchronized(this.allMessages){
 			if(!this.allMessages.containsKey(mid))
 				throw new WebApplicationException(Status.NOT_FOUND);
 		}
-	}
+	}*/
 
 	@Override
 	public void deleteMessage(@PathParam("user") String user, @PathParam("mid") long mid, 

@@ -6,12 +6,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.inject.Singleton;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
 import sd1920.trab1.api.User;
 import sd1920.trab1.api.rest.UserService;
 
+@Singleton
 public class UserResource implements UserService {
 
     private final Map<String, User> users = new HashMap<String, User>();
@@ -130,14 +132,6 @@ public class UserResource implements UserService {
 
 
         return user;
-    }
-
-    @Override
-    public void checkUser(String name) {
-        synchronized(this.users){
-            if(!this.users.containsKey(name))
-            throw new WebApplicationException(Status.NOT_FOUND);
-        }
     }
 
 }

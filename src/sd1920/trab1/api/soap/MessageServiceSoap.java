@@ -44,25 +44,15 @@ public interface MessageServiceSoap {
 	public Message getMessage(String user, String pwd, long mid) throws MessagesException;
 		
 	/**
-	 * Returns a list of all messages stored in the server for a given user
-	 * @param user the username of the user whose messages should be returned
-	 * @param pwd password of the user
-	 * @return a list of messages potentially empty;
-	 * @throws MessagesException in case of error.
-	 */
-	@WebMethod
-	public List<Message> getMessages(String user, String pwd) throws MessagesException;
-
-	/**
-	 * Returns a list of all message ids stored in the server for a given user
+	 * Returns a list of all ids of messages stored in the server for a given user
 	 * @param user the username of the user whose messages should be returned
 	 * @param pwd password of the user
 	 * @return a list of ids potentially empty;
 	 * @throws MessagesException in case of error.
 	 */
 	@WebMethod
-	public List<Message> getMessageIds(String user, String pwd) throws MessagesException;
-	
+	public List<Long> getMessages(String user, String pwd) throws MessagesException;
+
 	/**
 	 * Removes a message identified by mid from the inbox of user identified by user.
 	 * @param user the username of the inbox that is manipulated by this method

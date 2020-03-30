@@ -46,14 +46,14 @@ public class MessageServer {
 
 		servers = lurker.record;
 		
-		Log.info(String.format("%s Server ready @ %s\n",  SERVICE, serverURI));
+		//Log.info(String.format("%s Server ready @ %s\n",  SERVICE, serverURI));
 
 		new Thread(() -> {
 			try{
 				while(true){
 					Thread.sleep(1000);
 					for (DomainInfo df : servers.values()) {
-						Log.info(df.toString()+"\n");
+						//Log.info(df.toString()+"\n");
 					}
 				}
 			}
