@@ -172,6 +172,47 @@ public class MessageResource implements MessageService {
 		}
 	}
 
+	/**
+	 * When receiving a delete request for a mid, this function is used
+	 * to redirect the request to the domains containing the recipients
+	 * of the message
+	 * @param recipientDomains
+	 * @param mid
+	 */
+	private void deleteFromDomains(Set<String> recipientDomains, String user, String mid) {
+		for(String domain: recipientDomains){
+			boolean error = true;
+			DomainInfo info = MessageServer.servers.get(domain);
+
+			if(info != null){
+
+				Log.info("Sending delete request to domain: " + domain);
+				int tries = 0;
+
+				target = client.target(info.getUri()).path(MessageResource.PATH);
+
+				while(error && tries< N_TRIES){
+					error = false;
+
+					try{
+						target.path(user).path(mid).request().delete();
+					}
+					catch(ProcessingException e){
+						Log.info("deleteFromDomains: Failed to redirect request to " + domain + ". Retrying...");
+						error = true;
+					}
+				}
+
+				if(error)
+					Log.info("deleteFromDomains: Failed to redirect request to " + domain + ". Giving up...");
+				else
+					Log.info("deleteFromDomains: Successfully redirected request to " + domain + ". More successful than i'll ever be!");		
+			}
+			else
+				Log.info("deleteFromDomains: " + domain + " does not exist or is offline.");
+		}
+	}
+
 	@Override
 	public long postMessage(@QueryParam("pwd") String pwd, Message msg) {
 		String sender = msg.getSender();
@@ -271,20 +312,57 @@ public class MessageResource implements MessageService {
 	{
 		
 		Log.info("Received request to delete a message with the id: " + String.valueOf(mid));
-		Message msg = this.allMessages.get(mid);
+		
+		User sender = null;
+		String[] tokens = user.split(" <");
+		int nTokens = tokens.length;
+		try {
+			Message msg;
+			synchronized(this.allMessages){
+				msg = this.allMessages.get(mid);
+			}
+			
+			if(msg != null){
+				if(nTokens == 1){
+					sender = this.getSender(user, pwd);
+					
+					if(sender == null)
+						throw new WebApplicationException(Status.FORBIDDEN);
+					
+					synchronized(this.userInboxs){
+						this.userInboxs.get(user).remove(mid);
+					}
+				}
 
-		if(msg == null){
-			Log.info("Message not found");
-			throw new WebApplicationException(Status.NOT_FOUND);
+			
+				Set<String> recipientDomains = new HashSet<>();
+				
+				synchronized(this.allMessages){
+					allMessages.remove(mid);
+				}
+
+				Set<String> users = msg.getDestination();
+
+				for(String u : users){
+					tokens = u.split("@");
+					if(tokens[1].equals(this.domain)){
+						synchronized(this.userInboxs){
+							if(userInboxs.containsKey(tokens[0])) userInboxs.get(tokens[0]).remove(mid);
+							Log.info("Removing message for user " + u);
+						}
+					}
+					else
+						recipientDomains.add(tokens[1]);
+				}
+				
+				if(nTokens == 1)
+					deleteFromDomains(recipientDomains, 
+								String.format(SENDER_FORMAT, sender.getDisplayName(),sender.getName(),sender.getDomain())
+								,String.valueOf(mid));
+			}
+		} catch (UnknownHostException e) {
+			//DO something
 		}
-
-		Set<String> users = msg.getDestination();
-
-		for(String u : users){
-			Log.info("Removing message for user " + u);
-			this.userInboxs.get(u).remove(mid);
-		}
-
 	}
 
 	@Override
