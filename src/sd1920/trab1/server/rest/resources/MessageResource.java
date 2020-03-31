@@ -13,9 +13,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.inject.Singleton;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.ProcessingException;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -34,7 +32,6 @@ import sd1920.trab1.api.Message;
 import sd1920.trab1.api.User;
 import sd1920.trab1.api.Discovery.DomainInfo;
 
-
 @Singleton
 public class MessageResource implements MessageService {
 
@@ -42,61 +39,64 @@ public class MessageResource implements MessageService {
 	private Client client;
 	private ClientConfig config;
 	private WebTarget target;
-	private String domain;	
-	
-	private final Map<Long,Message> allMessages = new HashMap<Long, Message>();
-	private final Map<String,Set<Long>> userInboxs = new HashMap<String, Set<Long>>();
-	
+	private String domain;
+
+	private final Map<Long, Message> allMessages = new HashMap<Long, Message>();
+	private final Map<String, Set<Long>> userInboxs = new HashMap<String, Set<Long>>();
+
 	private static final int TIMEOUT = 10000;
+	private static final int SLEEP_TIME = 5000;
 	private static final int N_TRIES = 5;
 	private static final String ERROR_FORMAT = "FALHA NO ENVIO DE %s PARA %s";
 	private static final String SENDER_FORMAT = "%s <%@%>";
 	private static Logger Log = Logger.getLogger(MessageResource.class.getName());
-	
 
 	public MessageResource() throws UnknownHostException {
 		this.randomNumberGenerator = new Random(System.currentTimeMillis());
 		config = new ClientConfig();
 		config.property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT);
 		config.property(ClientProperties.READ_TIMEOUT, TIMEOUT);
-		
+
 		client = ClientBuilder.newClient(config);
 
 		domain = InetAddress.getLocalHost().getHostName();
-		
+
 	}
-	
+
 	/**
-	 * Saves a message in our domain. If the recipient does not exist, adds an error message
+	 * Saves a message in our domain. If the recipient does not exist, adds an error
+	 * message
+	 * 
 	 * @param name name of a recipient in this domain. Always in this domain.
-	 * @param mid id to be assigned
+	 * @param mid  id to be assigned
 	 */
-	private void saveMessage(String name, Message msg){
-		synchronized(this.userInboxs){
-			synchronized(this.allMessages){
-				//DUVIDA perguntar à estrutura local ou à Resource?
-				if(!userInboxs.containsKey(name)){
+	private void saveMessage(String name, Message msg) {
+		synchronized (this.userInboxs) {
+			synchronized (this.allMessages) {
+				// DUVIDA perguntar à estrutura local ou à Resource?
+				if (!userInboxs.containsKey(name)) {
 					Long errorMessageId = Math.abs(randomNumberGenerator.nextLong());
 					Message m = new Message(errorMessageId, msg.getSender(), msg.getDestination(),
-						String.format(ERROR_FORMAT, msg.getId()),
-						msg.getContents());
+							String.format(ERROR_FORMAT, msg.getId()), msg.getContents());
 					allMessages.put(errorMessageId, m);
 					userInboxs.get(name).add(errorMessageId);
-				}else
+				} else
 					userInboxs.get(name).add(msg.getId());
 			}
 		}
 	}
-	
+
 	/**
 	 * Fetches a sender of a message from the UserResource
+	 * 
 	 * @param name name of the sender. Without the @
-	 * @param pwd password
+	 * @param pwd  password
 	 * @return the User Object corresponding to the sender. Null if none is found
 	 * @throws UnknownHostException can't compile if this isn't declared...
 	 */
 	private User getUser(String name, String pwd) throws UnknownHostException {
-		Response r = null;;
+		Response r = null;
+		;
 		String[] tokens = name.split("@");
 		boolean error = true;
 
@@ -105,59 +105,69 @@ public class MessageResource implements MessageService {
 
 		int tries = 0;
 
-		while(error && tries < N_TRIES){
+		while (error && tries < N_TRIES) {
 			error = false;
 
-			try{
+			try {
 				r = target.path(tokens[0]).request().get();
-			}catch(ProcessingException e){
+			} catch (ProcessingException e) {
 				Log.info("Could not communicate with the UserResource. Retrying...");
+				try {
+					Thread.sleep(SLEEP_TIME);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
 				error = true;
 			}
 
-			tries ++;
+			tries++;
 		}
 
-		if(error){
+		if (error) {
 			Log.info("GetSender: Exceeded number of tries. Assuming user does not exist...");
 			return null;
 		}
 
-		if(r.getStatus() == Status.FORBIDDEN.getStatusCode()){
+		if (r.getStatus() == Status.FORBIDDEN.getStatusCode()) {
 			Log.info("GetSender: User either doesn't exist or the password is incorrect");
 			return null;
 		}
 
-		return (User)r.getEntity();
+		return (User) r.getEntity();
 	}
 
 	/**
 	 * Forwards a message to the needed domains
+	 * 
 	 * @param recipientDomains domains to be contacted
-	 * @param msg message to be forwarded
+	 * @param msg              message to be forwarded
 	 */
 	private void forwardMessage(Set<String> recipientDomains, Message msg) {
 
-		for(String domain : recipientDomains){
+		for (String domain : recipientDomains) {
 			boolean error = true;
 			DomainInfo info = MessageServer.servers.get(domain);
-			if(info != null){
+			if (info != null) {
 
-				Log.info("forwardMessage: Trying to forward message " + msg.getId()+ " to " + domain);
+				Log.info("forwardMessage: Trying to forward message " + msg.getId() + " to " + domain);
 				int tries = 0;
 
-				//DUVIDA e necessario enviar pwd?
-				target = client.target(info.getUri()).path( MessageService.PATH );
-		
-				while(error && tries < N_TRIES){
+				// DUVIDA e necessario enviar pwd?
+				target = client.target(info.getUri()).path(MessageService.PATH);
+
+				while (error && tries < N_TRIES) {
 					error = false;
 
-					try{
-						target.request()
-							.accept(MediaType.APPLICATION_JSON)
-							.post(Entity.entity(msg, MediaType.APPLICATION_JSON));
-					}catch(ProcessingException e){
+					try {
+						target.request().accept(MediaType.APPLICATION_JSON)
+								.post(Entity.entity(msg, MediaType.APPLICATION_JSON));
+					} catch (ProcessingException e) {
 						Log.info("forwardMessage: Failed to forward message to " + domain + ". Retrying...");
+						try {
+							Thread.sleep(SLEEP_TIME);
+						} catch (InterruptedException e1) {
+							e1.printStackTrace();
+						}
 						error = true;
 					}
 				}
@@ -214,7 +224,7 @@ public class MessageResource implements MessageService {
 	}
 
 	@Override
-	public long postMessage(@QueryParam("pwd") String pwd, Message msg) {
+	public long postMessage(String pwd, Message msg) {
 		System.out.println("ANTES BEANS");
 		String sender = msg.getSender();
 		System.out.println("DEPOIS BEANS");
@@ -275,8 +285,7 @@ public class MessageResource implements MessageService {
 	}
 
 	@Override
-	public Message getMessage(@PathParam("user") String user, @PathParam("mid") long mid,
-    @QueryParam("pwd") String pwd) {
+	public Message getMessage(String user, long mid, String pwd) {
 	
 		try{
 			User u = this.getUser(user, pwd);
@@ -303,7 +312,7 @@ public class MessageResource implements MessageService {
 	}
 
 	@Override
-	public List<Long> getMessages(@PathParam("user") String user, @QueryParam("pwd") String pwd) {
+	public List<Long> getMessages(String user, String pwd) {
 		Log.info("Received request for messages with optional user parameter set to: '" + user + "'");
 		Set<Long> mids = new HashSet<Long>();
 		if(user == null) {
@@ -326,8 +335,7 @@ public class MessageResource implements MessageService {
 	}*/
 
 	@Override
-	public void deleteMessage(@PathParam("user") String user, @PathParam("mid") long mid, 
-								@QueryParam("pwd") String pwd) 
+	public void deleteMessage(String user, long mid, String pwd) 
 	{
 		
 		Log.info("Received request to delete a message with the id: " + String.valueOf(mid));
@@ -385,8 +393,7 @@ public class MessageResource implements MessageService {
 	}
 
 	@Override
-	public void removeFromUserInbox(@PathParam("user") String user, @PathParam("mid") long mid, 
-    @QueryParam("pwd") String pwd) {
+	public void removeFromUserInbox(String user, long mid, String pwd) {
 		Log.info("Received request to delete message " + String.valueOf(mid) + " from the inbox of " + user);
 
 		Message msg;
