@@ -30,7 +30,9 @@ public class UserResource implements UserService {
             String serverDomain = InetAddress.getLocalHost().getHostName();
             String name = user.getName();
 
-            if(name == null || user.getPwd() == null|| user.getDomain() == null){
+            if(name == null || name.equals("") || 
+                user.getPwd() == null || user.getPwd().equals("") || 
+                    user.getDomain() == null || user.getDomain().equals("")){
                 Log.info("User creation was rejected due to lack of name, pwd or domain.");
                 throw new WebApplicationException(Status.CONFLICT);
             }
@@ -57,7 +59,7 @@ public class UserResource implements UserService {
     public User getUser(String name, String pwd) {
         User user;
 
-        if(name == null || pwd == null){
+        if(name == null || name.equals("")){
             Log.info("User fetch was rejected due to invalid parameters");
             throw new WebApplicationException(Status.CONFLICT);
         }
@@ -68,10 +70,10 @@ public class UserResource implements UserService {
 
         if(user == null){
             Log.info("User fetch was rejected due to missing user");
-            throw new WebApplicationException(Status.CONFLICT);
-        }else if(!user.getPwd().equals(pwd)){
+            throw new WebApplicationException(Status.FORBIDDEN);
+        }else if(pwd == null || !user.getPwd().equals(pwd)){
             Log.info("User fetch was rejected due to an invalid password");
-            throw new WebApplicationException(Status.CONFLICT);
+            throw new WebApplicationException(Status.FORBIDDEN);
         }else{
             return user;
         }
@@ -82,7 +84,7 @@ public class UserResource implements UserService {
 
         User existingUser;
         
-        if(name == null){
+        if(name == null || name.equals("")){
             Log.info("User update was rejected due to invalid parameters");
             throw new WebApplicationException(Status.CONFLICT);
         }
@@ -92,10 +94,10 @@ public class UserResource implements UserService {
 
             if(existingUser == null){
                 Log.info("User update was rejected due to a missing user");
-                throw new WebApplicationException(Status.CONFLICT);
+                throw new WebApplicationException(Status.FORBIDDEN);
             }else if(!existingUser.getPwd().equals(pwd)){
                 Log.info("User update was rejected due to an invalid password");
-                throw new WebApplicationException(Status.CONFLICT);
+                throw new WebApplicationException(Status.FORBIDDEN);
             }
 
             existingUser.setDisplayName(user.getDisplayName() == null ? existingUser.getDisplayName() : user.getDisplayName());
@@ -111,7 +113,7 @@ public class UserResource implements UserService {
         
         User user;
 
-        if(name == null || pwd == null){
+        if(name == null || name.equals("")){
             Log.info("User deletion was rejected due to invalid parameters");
             throw new WebApplicationException(Status.CONFLICT);
         }
@@ -121,10 +123,10 @@ public class UserResource implements UserService {
             
             if(user == null){
                 Log.info("User deletion was rejected due to a missing user");
-                throw new WebApplicationException(Status.CONFLICT);
-            }else if(!user.getPwd().equals(pwd)){
+                throw new WebApplicationException(Status.FORBIDDEN);
+            }else if(pwd == null || !user.getPwd().equals(pwd)){
                 Log.info("User update was rejected due to an invalid password");
-                throw new WebApplicationException(Status.CONFLICT);
+                throw new WebApplicationException(Status.FORBIDDEN);
             }
 
             this.users.remove(name);

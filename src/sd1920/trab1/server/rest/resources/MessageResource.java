@@ -95,7 +95,7 @@ public class MessageResource implements MessageService {
 	 * @return the User Object corresponding to the sender. Null if none is found
 	 * @throws UnknownHostException can't compile if this isn't declared...
 	 */
-	private User getSender(String name, String pwd) throws UnknownHostException {
+	private User getUser(String name, String pwd) throws UnknownHostException {
 		Response r = null;;
 		String[] tokens = name.split("@");
 		boolean error = true;
@@ -123,7 +123,7 @@ public class MessageResource implements MessageService {
 			return null;
 		}
 
-		if(r.getStatus() == Status.CONFLICT.getStatusCode()){
+		if(r.getStatus() == Status.FORBIDDEN.getStatusCode()){
 			Log.info("GetSender: User either doesn't exist or the password is incorrect");
 			return null;
 		}
@@ -215,7 +215,9 @@ public class MessageResource implements MessageService {
 
 	@Override
 	public long postMessage(@QueryParam("pwd") String pwd, Message msg) {
+		System.out.println("ANTES BEANS");
 		String sender = msg.getSender();
+		System.out.println("DEPOIS BEANS");
 
 		Set<String> recipientDomains = new HashSet<>();
 
@@ -231,7 +233,7 @@ public class MessageResource implements MessageService {
 		int nTokens = tokens.length;
 		try{
 			if(nTokens == 1){
-				User user = this.getSender(tokens[0], pwd);
+				User user = this.getUser(tokens[0], pwd);
 
 				if(user == null)
 					throw new WebApplicationException(Status.FORBIDDEN);
@@ -258,6 +260,8 @@ public class MessageResource implements MessageService {
 				}
 			}	
 
+			System.out.println("MESSAGE ID: " + msg.getId());
+
 			if(nTokens == 1)
 				this.forwardMessage(recipientDomains, msg);
 			//Return the id of the registered message to the client (in the body of a HTTP Response with 200)
@@ -273,14 +277,29 @@ public class MessageResource implements MessageService {
 	@Override
 	public Message getMessage(@PathParam("user") String user, @PathParam("mid") long mid,
     @QueryParam("pwd") String pwd) {
-		Log.info("Received request for message with id: " + mid +".");
-		if(!allMessages.containsKey(mid)) { //check if message exists
-			Log.info("Requested message does not exists.");
-			throw new WebApplicationException( Status.NOT_FOUND ); //if not send HTTP 404 back to client
+	
+		try{
+			User u = this.getUser(user, pwd);
+			
+			if(u == null){
+				throw new WebApplicationException(Status.FORBIDDEN);
+			}
+
+			Log.info("Received request for message with id: " + mid +".");
+			synchronized(this.allMessages){
+				if(!allMessages.containsKey(mid)) { //check if message exists
+					Log.info("Requested message does not exists.");
+					throw new WebApplicationException( Status.NOT_FOUND ); //if not send HTTP 404 back to client
+				}
+			}
+			
+			Log.info("Returning requested message to user.");
+			return allMessages.get(mid); //Return message to the client with code HTTP 200
 		}
-		
-		Log.info("Returning requested message to user.");
-		return allMessages.get(mid); //Return message to the client with code HTTP 200
+		catch(UnknownHostException e){
+			System.out.println("wtf");
+			return null;
+		}
 	}
 
 	@Override
@@ -324,7 +343,7 @@ public class MessageResource implements MessageService {
 			
 			if(msg != null){
 				if(nTokens == 1){
-					sender = this.getSender(user, pwd);
+					sender = this.getUser(user, pwd);
 					
 					if(sender == null)
 						throw new WebApplicationException(Status.FORBIDDEN);
