@@ -98,6 +98,7 @@ public class UserResource implements UserService {
             }
             
             if(this.createUserInbox(name))
+            
                 throw new WebApplicationException(Status.CONFLICT);
             
             Log.info("Created new user with name: " + name);

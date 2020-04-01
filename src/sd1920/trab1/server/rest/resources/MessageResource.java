@@ -96,7 +96,6 @@ public class MessageResource implements MessageService {
 	private User getUser(String name, String pwd){
 		Response r = null;
 		
-		String[] tokens = name.split("@");
 		boolean error = true;
 
 	
@@ -109,7 +108,7 @@ public class MessageResource implements MessageService {
 			error = false;
 
 			try {
-				r = target.path(tokens[0]).request().accept(MediaType.APPLICATION_JSON).get();
+				r = target.path(name).request().accept(MediaType.APPLICATION_JSON).get();
 			} catch (ProcessingException e) {
 				Log.info("Could not communicate with the UserResource. Retrying...");
 				try {
@@ -222,6 +221,18 @@ public class MessageResource implements MessageService {
 		}
 	}
 
+	private String getSenderCanonicalName(String senderName){
+		String[] tokens = senderName.split(" <");
+		int nTokens = tokens.length;
+
+		if(nTokens == 2){
+			tokens = tokens[1].split("@");
+		}else
+			tokens = tokens[0].split("@");
+		
+		return tokens[0];
+	}
+
 	@Override
 	public long postMessage(String pwd, Message msg) {
 		User user;
@@ -236,9 +247,8 @@ public class MessageResource implements MessageService {
 			throw new WebApplicationException( Status.CONFLICT );
 		}
 		
-		String[] tokens = sender.split(" <");
-		int nTokens = tokens.length;
-		String senderName = tokens[0];
+		int nTokens = sender.split(" <").length;
+		String senderName = this.getSenderCanonicalName(sender);
 
 		if(nTokens == 1){
 			user = this.getUser(senderName, pwd);
@@ -261,11 +271,8 @@ public class MessageResource implements MessageService {
 			Log.info("Created new message with id: " + newID);
 		}
 
-		if(nTokens == 2)
-			senderName = tokens[1].substring(0,tokens[1].length() - 2);
-
 		for(String recipient: msg.getDestination()){
-			tokens = recipient.split("@");
+			String[] tokens = recipient.split("@");
 			if(tokens[1].equals(this.domain)){
 				saveMessage(senderName,tokens[0], msg);
 			}
@@ -345,9 +352,7 @@ public class MessageResource implements MessageService {
 		
 		User sender = null;
 
-		String[] tokens = user.split(" <");
-
-		int nTokens = tokens.length;
+		int nTokens = user.split(" <").length;
 		
 		Message msg;
 
@@ -362,7 +367,7 @@ public class MessageResource implements MessageService {
 			msg = this.allMessages.get(mid);
 		}
 
-		if(msg == null)
+		if(msg == null || !getSenderCanonicalName(msg.getSender()).equals(user))
 			return;
 		
 		if(nTokens == 1){
@@ -380,7 +385,7 @@ public class MessageResource implements MessageService {
 
 
 		for(String u : msg.getDestination()){
-			tokens = u.split("@");
+			String[] tokens = u.split("@");
 			if(tokens[1].equals(this.domain)){
 				synchronized(this.userInboxs){
 					userInboxs.get(tokens[0]).remove(mid);
