@@ -296,9 +296,11 @@ public class MessageResource implements MessageService {
 
 		Log.info("Received request for message with id: " + mid +".");
 		synchronized(this.allMessages){
-			if(!allMessages.containsKey(mid)) { //check if message exists
-				Log.info("Requested message does not exists.");
-				throw new WebApplicationException( Status.NOT_FOUND ); //if not send HTTP 404 back to client
+			synchronized(this.userInboxs){
+				if(!this.allMessages.containsKey(mid) || !this.userInboxs.get(user).contains(mid)) { //check if message exists
+					Log.info("Requested message does not exists.");
+					throw new WebApplicationException( Status.NOT_FOUND ); //if not send HTTP 404 back to client
+				}
 			}
 		}
 		
@@ -342,52 +344,56 @@ public class MessageResource implements MessageService {
 		Log.info("Received request to delete a message with the id: " + String.valueOf(mid));
 		
 		User sender = null;
+
 		String[] tokens = user.split(" <");
+
 		int nTokens = tokens.length;
 		
 		Message msg;
+
+		sender  = this.getUser(user, pwd);
+
+		if(sender == null){
+			Log.info("Delete message: User not found or wrong password");
+			throw new WebApplicationException(Status.FORBIDDEN);
+		}
+
 		synchronized(this.allMessages){
 			msg = this.allMessages.get(mid);
 		}
+
+		if(msg == null)
+			return;
 		
-		if(msg != null){
-			if(nTokens == 1){
-				sender = this.getUser(user, pwd);
-				
-				if(sender == null)
-					throw new WebApplicationException(Status.FORBIDDEN);
-				
-				synchronized(this.userInboxs){
-					this.userInboxs.get(user).remove(mid);
-				}
+		if(nTokens == 1){
+			synchronized(this.userInboxs){
+				this.userInboxs.get(user).remove(mid);
 			}
-
-		
-			Set<String> recipientDomains = new HashSet<>();
-			
-			synchronized(this.allMessages){
-				allMessages.remove(mid);
-			}
-
-			Set<String> users = msg.getDestination();
-
-			for(String u : users){
-				tokens = u.split("@");
-				if(tokens[1].equals(this.domain)){
-					synchronized(this.userInboxs){
-						if(userInboxs.containsKey(tokens[0])) userInboxs.get(tokens[0]).remove(mid);
-						Log.info("Removing message for user " + u);
-					}
-				}
-				else
-					recipientDomains.add(tokens[1]);
-			}
-			
-			if(nTokens == 1)
-				deleteFromDomains(recipientDomains, 
-							String.format(SENDER_FORMAT, sender.getDisplayName(),sender.getName(),sender.getDomain())
-							,String.valueOf(mid));
 		}
+
+	
+		Set<String> recipientDomains = new HashSet<>();
+		
+		synchronized(this.allMessages){
+			allMessages.remove(mid);
+		}
+
+
+		for(String u : msg.getDestination()){
+			tokens = u.split("@");
+			if(tokens[1].equals(this.domain)){
+				synchronized(this.userInboxs){
+					userInboxs.get(tokens[0]).remove(mid);
+					Log.info("Removing message for user " + u);
+				}
+			}else
+				recipientDomains.add(tokens[1]);
+		}
+		
+		if(nTokens == 1)
+			deleteFromDomains(recipientDomains, 
+						String.format(SENDER_FORMAT, sender.getDisplayName(),sender.getName(),sender.getDomain())
+						,String.valueOf(mid));
 	
 	}
 
@@ -404,9 +410,11 @@ public class MessageResource implements MessageService {
 		
 		//DUVIDA: e possivel apagar uma mensagem que nao esteja na inbox do user fornecido?
 		synchronized(this.allMessages){
-			if(this.allMessages.containsKey(mid)){
-				Log.info("Message not found");
-				throw new WebApplicationException(Status.NOT_FOUND);
+			synchronized(this.userInboxs){
+				if(!this.allMessages.containsKey(mid) || !this.userInboxs.get(user).contains(mid)){
+					Log.info("Message not found");
+					throw new WebApplicationException(Status.NOT_FOUND);
+				}
 			}
 		}
 		Log.info("Deleting message from user inbox");
