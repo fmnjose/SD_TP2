@@ -26,6 +26,10 @@ public class MessageServer {
 	public static final int PORT = 8080;
 	public static final String SERVICE = "MailService";
 
+	public static final int TIMEOUT = 10000;
+	public static final int SLEEP_TIME = 5000;
+	public static final int N_TRIES = 5;
+
 	public static HashMap<String, DomainInfo> servers;
 	
 	public static void main(String[] args) throws UnknownHostException {
