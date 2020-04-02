@@ -19,7 +19,7 @@ import org.glassfish.jersey.client.ClientProperties;
 
 import sd1920.trab1.api.User;
 import sd1920.trab1.api.rest.UserService;
-import sd1920.trab1.server.rest.MessageServer;
+import sd1920.trab1.server.rest.RESTMailServer;
 
 @Singleton
 public class UserResource implements UserService {
@@ -36,12 +36,12 @@ public class UserResource implements UserService {
 
     public UserResource() throws UnknownHostException {
         this.config = new ClientConfig();
-		this.config.property(ClientProperties.CONNECT_TIMEOUT, MessageServer.TIMEOUT);
-		this.config.property(ClientProperties.READ_TIMEOUT, MessageServer.TIMEOUT);
+		this.config.property(ClientProperties.CONNECT_TIMEOUT, RESTMailServer.TIMEOUT);
+		this.config.property(ClientProperties.READ_TIMEOUT, RESTMailServer.TIMEOUT);
 
 		this.client = ClientBuilder.newClient(config);
 
-		this.serverRestUri = String.format("http://%s:%d/rest",InetAddress.getLocalHost().getHostAddress(),MessageServer.PORT);
+		this.serverRestUri = String.format("http://%s:%d/rest",InetAddress.getLocalHost().getHostAddress(),RESTMailServer.PORT);
     }
 
     boolean createUserInbox(String userName){
@@ -50,9 +50,9 @@ public class UserResource implements UserService {
         Log.info("Sending request to create a new inbox in MessageResource.");
         int tries = 0;
 
-        WebTarget target = client.target(serverRestUri).path(MessageResource.PATH).path("/mbox");
+        WebTarget target = client.target(serverRestUri).path(MessageResourceRest.PATH).path("/mbox");
 
-        while(error && tries< MessageServer.N_TRIES){
+        while(error && tries< RESTMailServer.N_TRIES){
             error = false;
 
             try{
