@@ -77,10 +77,12 @@ public class MessageResource implements MessageService {
 					Message m = new Message(errorMessageId, msg.getSender(), msg.getDestination(),
 							String.format(ERROR_FORMAT, msg.getId(), recipientName), msg.getContents());
 					
-					allMessages.put(errorMessageId, m);
-					userInboxs.get(senderName).add(errorMessageId);
-				} else
-					userInboxs.get(recipientName).add(msg.getId());
+					this.allMessages.put(errorMessageId, m);
+					this.userInboxs.get(senderName).add(errorMessageId);
+				} else{
+					this.allMessages.put(msg.getId(), msg);
+					this.userInboxs.get(recipientName).add(msg.getId());
+				}
 			}
 		}
 	}
@@ -193,11 +195,11 @@ public class MessageResource implements MessageService {
 			DomainInfo info = MessageServer.servers.get(domain);
 
 			if(info != null){
-
+				System.out.println("Sending delete request to domain: " + domain);
 				Log.info("Sending delete request to domain: " + domain);
 				int tries = 0;
 
-				target = client.target(info.getUri()).path(MessageResource.PATH);
+				target = client.target(info.getUri()).path(MessageResource.PATH).path("msg");
 
 				while(error && tries< MessageServer.N_TRIES){
 					error = false;
@@ -206,6 +208,7 @@ public class MessageResource implements MessageService {
 						target.path(user).path(mid).request().delete();
 					}
 					catch(ProcessingException e){
+						System.out.println("deleteFromDomains: Failed to redirect request to " + domain + ". Retrying...");
 						Log.info("deleteFromDomains: Failed to redirect request to " + domain + ". Retrying...");
 						error = true;
 					}
@@ -304,7 +307,10 @@ public class MessageResource implements MessageService {
 		Log.info("Received request for message with id: " + mid +".");
 		synchronized(this.allMessages){
 			synchronized(this.userInboxs){
+				System.out.println(this.allMessages.containsKey(mid));
+				System.out.println(this.userInboxs.get(user).contains(mid));
 				if(!this.allMessages.containsKey(mid) || !this.userInboxs.get(user).contains(mid)) { //check if message exists
+					System.out.println("BOM DIA, ENTREI NO IF");
 					Log.info("Requested message does not exists.");
 					throw new WebApplicationException( Status.NOT_FOUND ); //if not send HTTP 404 back to client
 				}
@@ -347,7 +353,7 @@ public class MessageResource implements MessageService {
 	@Override
 	public void deleteMessage(String user, long mid, String pwd) 
 	{
-		
+		System.out.println("Received request to delete a message with the id: " + String.valueOf(mid));
 		Log.info("Received request to delete a message with the id: " + String.valueOf(mid));
 		
 		User sender = null;
@@ -355,40 +361,37 @@ public class MessageResource implements MessageService {
 		int nTokens = user.split(" <").length;
 		
 		Message msg;
-
-		sender  = this.getUser(user, pwd);
-
-		if(sender == null){
-			Log.info("Delete message: User not found or wrong password");
-			throw new WebApplicationException(Status.FORBIDDEN);
-		}
-
+		
 		synchronized(this.allMessages){
 			msg = this.allMessages.get(mid);
 		}
 
-		if(msg == null || !getSenderCanonicalName(msg.getSender()).equals(user))
-			return;
-		
 		if(nTokens == 1){
+			sender  = this.getUser(user, pwd);
+			
+			if(sender == null){
+				Log.info("Delete message: User not found or wrong password");
+				throw new WebApplicationException(Status.FORBIDDEN);
+			}
+			
 			synchronized(this.userInboxs){
 				this.userInboxs.get(user).remove(mid);
 			}
+			String userName = getSenderCanonicalName(user);
+
+			if(msg == null || !getSenderCanonicalName(msg.getSender()).equals(userName))
+				return;
 		}
 
-	
 		Set<String> recipientDomains = new HashSet<>();
-		
-		synchronized(this.allMessages){
-			allMessages.remove(mid);
-		}
-
 
 		for(String u : msg.getDestination()){
 			String[] tokens = u.split("@");
 			if(tokens[1].equals(this.domain)){
 				synchronized(this.userInboxs){
 					userInboxs.get(tokens[0]).remove(mid);
+					System.out.println("Removing message for user " + u);
+					
 					Log.info("Removing message for user " + u);
 				}
 			}else
