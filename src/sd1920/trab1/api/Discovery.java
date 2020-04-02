@@ -56,8 +56,8 @@ public class Discovery {
 	}
 
 	public class DomainInfo{
-		String uri;
-		LocalTime time;
+		private String uri;
+		private LocalTime time;
 		private DomainInfo(String uri, LocalTime time){
 			this.uri = uri;
 			this.time = time;
@@ -158,7 +158,9 @@ public class Discovery {
 	 * @return an array of URI with the service instances discovered. 
 	 * 
 	 */
-	public URI[] knownUrisOf(String serviceName) {
-		throw new Error("Not Implemented...");
+	public String knownUrisOf(String serviceName) {
+		DomainInfo info = this.record.get(serviceName);
+
+		return info == null ? null : info.getUri();
 	}
 }

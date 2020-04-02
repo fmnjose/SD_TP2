@@ -146,14 +146,14 @@ public class MessageResource implements MessageService {
 
 		for (String domain : recipientDomains) {
 			boolean error = true;
-			DomainInfo info = MessageServer.servers.get(domain);
-			if (info != null) {
+			String uri = MessageServer.serverRecord.knownUrisOf(domain);
+			if (uri != null) {
 
 				Log.info("forwardMessage: Trying to forward message " + msg.getId() + " to " + domain);
 				int tries = 0;
 
 				// DUVIDA e necessario enviar pwd?
-				target = client.target(info.getUri()).path(MessageService.PATH);
+				target = client.target(uri).path(MessageService.PATH);
 
 				while (error && tries < MessageServer.N_TRIES) {
 					error = false;
@@ -192,14 +192,14 @@ public class MessageResource implements MessageService {
 	private void deleteFromDomains(Set<String> recipientDomains, String user, String mid) {
 		for(String domain: recipientDomains){
 			boolean error = true;
-			DomainInfo info = MessageServer.servers.get(domain);
+			String uri = MessageServer.serverRecord.knownUrisOf(domain);
 
-			if(info != null){
+			if(uri != null){
 				System.out.println("Sending delete request to domain: " + domain);
 				Log.info("Sending delete request to domain: " + domain);
 				int tries = 0;
 
-				target = client.target(info.getUri()).path(MessageResource.PATH).path("msg");
+				target = client.target(uri).path(MessageResource.PATH).path("msg");
 
 				while(error && tries< MessageServer.N_TRIES){
 					error = false;

@@ -30,7 +30,7 @@ public class MessageServer {
 	public static final int SLEEP_TIME = 5000;
 	public static final int N_TRIES = 5;
 
-	public static HashMap<String, DomainInfo> servers;
+	public static Discovery serverRecord;
 	
 	public static void main(String[] args) throws UnknownHostException {
 		String ip = InetAddress.getLocalHost().getHostAddress();
@@ -44,28 +44,9 @@ public class MessageServer {
 	
 		JdkHttpServerFactory.createHttpServer( URI.create(serverURI), config);
 
-		Discovery lurker = new Discovery(SERVICE, serverURI);
+		serverRecord = new Discovery(SERVICE, serverURI);
 
-		lurker.start();
-
-		servers = lurker.record;
-		
-		//Log.info(String.format("%s Server ready @ %s\n",  SERVICE, serverURI));
-
-		new Thread(() -> {
-			try{
-				while(true){
-					Thread.sleep(1000);
-					for (DomainInfo df : servers.values()) {
-						//Log.info(df.toString()+"\n");
-					}
-				}
-			}
-			catch(Exception e){
-				//saasf
-			}
-		}).start();
-		//More code can be executed here...
+		serverRecord.start();
 	}
 	
 }

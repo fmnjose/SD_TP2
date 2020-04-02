@@ -1,6 +1,5 @@
 package sd1920.trab1.server.rest.resources;
 
-import java.lang.annotation.Target;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
