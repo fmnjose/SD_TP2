@@ -4,41 +4,35 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.nio.charset.MalformedInputException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javax.jws.WebService;
 import javax.ws.rs.ProcessingException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
-import com.sun.xml.internal.ws.client.BindingProviderProperties;
+import com.sun.xml.ws.client.BindingProviderProperties;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceException;
 
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.client.ClientProperties;
-
 import sd1920.trab1.api.Message;
 import sd1920.trab1.api.User;
-import sd1920.trab1.api.rest.MessageService;
-import sd1920.trab1.api.rest.UserService;
 import sd1920.trab1.api.soap.MessageServiceSoap;
 import sd1920.trab1.api.soap.MessagesException;
 import sd1920.trab1.api.soap.UserServiceSoap;
 import sd1920.trab1.server.soap.SOAPMailServer;
 
+@WebService(serviceName=MessageServiceSoap.NAME, 
+	targetNamespace=MessageServiceSoap.NAMESPACE, 
+	endpointInterface=MessageServiceSoap.INTERFACE)
 public class MessageResourceSoap implements MessageServiceSoap {
 
 	private static final QName MESSAGE_QNAME = new QName(MessageServiceSoap.NAMESPACE, MessageServiceSoap.NAME);
@@ -66,28 +60,48 @@ public class MessageResourceSoap implements MessageServiceSoap {
 	}
 
 	/**
+	 * Inserts error message into the sender inbox
+	 * @param senderName
+	 * @param recipientName
+	 * @param msg
+	 */
+	private void saveErrorMessages(String senderName, String recipientName,Message msg){
+		Long errorMessageId = Math.abs(randomNumberGenerator.nextLong());
+		Message m = new Message(errorMessageId, msg.getSender(), msg.getDestination(),
+				String.format(ERROR_FORMAT, msg.getId(), recipientName), msg.getContents());
+		
+		this.allMessages.put(errorMessageId, m);
+		this.userInboxs.get(senderName).add(errorMessageId);
+	}
+
+	/**
 	 * Saves a message in our domain. If the recipient does not exist, adds an error
-	 * message
+	 * message.
 	 * 
 	 * @param recipientName name of a recipient in this domain. Always in this domain.
 	 * @param mid  id to be assigned
+	 * 
+	 * returns false if it is a forwarded message and the recipient does not exist in the current domain.
+	 * true otherwise;
 	 */
-	private void saveMessage(String senderName, String recipientName, Message msg) {
+	private boolean saveMessage(String senderName, String recipientName, boolean forwarded, Message msg) throws MessagesException{
 		synchronized (this.userInboxs) {
 			synchronized (this.allMessages) {
 				if (!userInboxs.containsKey(recipientName)) {
-					Long errorMessageId = Math.abs(randomNumberGenerator.nextLong());
-					Message m = new Message(errorMessageId, msg.getSender(), msg.getDestination(),
-							String.format(ERROR_FORMAT, msg.getId(), recipientName), msg.getContents());
-					
-					this.allMessages.put(errorMessageId, m);
-					this.userInboxs.get(senderName).add(errorMessageId);
+					if(forwarded){
+						Log.info("saveMessage: User "+ recipientName+" does not exist");
+						return false;
+					}else{
+						this.saveErrorMessages(senderName, recipientName, msg);
+					}
 				} else{
 					this.allMessages.put(msg.getId(), msg);
 					this.userInboxs.get(recipientName).add(msg.getId());
 				}
 			}
 		}
+
+		return true;
 	}
 
 	/**
@@ -98,28 +112,49 @@ public class MessageResourceSoap implements MessageServiceSoap {
 	 * @return the User Object corresponding to the sender. Null if none is found
 	 * @throws UnknownHostException can't compile if this isn't declared...
 	 */
-	private User getUser(String name, String pwd){
-		Response r = null;
-		
-		boolean error = true;
+	private User getUser(String name, String pwd){		
+		User user = null;
 
-	
-		target = client.target(serverRestUri).path(UserService.PATH);
-		target = target.queryParam("pwd", pwd);
+		boolean error = true;
 		
 		int tries = 0;
+
+		UserServiceSoap userService = null;
+				
+		try {
+			Service	service = Service.create(new URL(this.serverSoapUri + USERS_WSDL), USER_QNAME);
+			userService = service.getPort(UserServiceSoap.class);							
+		}
+		catch(MalformedURLException e){
+			Log.info("getUser: Bad Url");
+			return null;
+		} 
+		catch(WebServiceException e){
+			Log.info("getUser: Failed to forward message to " + domain + ". Retrying...");
+			return null;
+		}
+
+		((BindingProvider) userService).getRequestContext().put(BindingProviderProperties.CONNECT_TIMEOUT, SOAPMailServer.TIMEOUT);
+		((BindingProvider) userService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT, SOAPMailServer.TIMEOUT);
+		
 
 		while (error && tries < SOAPMailServer.N_TRIES) {
 			error = false;
 
 			try {
-				r = target.path(name).request().accept(MediaType.APPLICATION_JSON).get();
-			} catch (ProcessingException e) {
-				Log.info("Could not communicate with the UserResource. Retrying...");
-				try {
+				user = userService.getUser(name, pwd);
+			}
+			catch( MessagesException me){
+				Log.info("getUser: Error, could not send the message. Retrying...");
+			}
+			catch(WebServiceException wse){
+				Log.info("getUser: Communication error. Retrying...");
+				wse.printStackTrace();
+				try{
 					Thread.sleep(SOAPMailServer.SLEEP_TIME);
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
+				}
+				catch(InterruptedException e){
+					Log.info("getUser: Log a dizer 'what?'");
 				}
 				error = true;
 			}
@@ -131,12 +166,7 @@ public class MessageResourceSoap implements MessageServiceSoap {
 			return null;
 		}
 
-		if (r.getStatus() == Status.FORBIDDEN.getStatusCode()) {
-			Log.info("GetSender: User either doesn't exist or the password is incorrect");
-			return null;
-		}
-
-		return r.readEntity(User.class);
+		return user;
 	}
 
 	/**
@@ -150,58 +180,72 @@ public class MessageResourceSoap implements MessageServiceSoap {
 		for (String domain : recipientDomains) {
 			boolean error = true;
 			String uri = SOAPMailServer.serverRecord.knownUrisOf(domain);
-			if (uri != null) {
-
-				Log.info("forwardMessage: Trying to forward message " + msg.getId() + " to " + domain);
-				int tries = 0;
-
-				MessageServiceSoap msgService = null;
-				
-				try {
-					Service	service = Service.create(new URL(this.serverSoapUri + MESSAGES_WSDL), MESSAGE_QNAME);
-					msgService = service.getPort(MessageServiceSoap.class);							
-				}
-				catch(MalformedURLException e){
-					error = true;
-					Log.info("forwardMessage: Bad Url");
-				} 
-				catch(WebServiceException e){
-					error = true;
-					Log.info("forwardMessage: Failed to forward message to " + domain + ". Retrying...");
-				}
-
-				((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.CONNECT_TIMEOUT, SOAPMailServer.TIMEOUT);
-				((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT, SOAPMailServer.TIMEOUT);
-				
-				
-				while (error && tries < SOAPMailServer.N_TRIES) {
-					error = false;
-					try{
-						Long mid = msgService.postMessage(" ",msg);
-					}
-					catch( MessagesException me){
-						Log.info("forwardMessage: Error, could not send the message. Retrying...");
-					}
-					catch(WebServiceException wse){
-						Log.info("forwardMessage: Communication error. Retrying...");
-						wse.printStackTrace();
-						tries++;
-						try{
-							Thread.sleep(SOAPMailServer.SLEEP_TIME);
-						}
-						catch(InterruptedException e){
-							Log.info("Log a dizer 'what?'");
-						}
-					}
-
-				}
-
-				if(error)
-					Log.info("forwardMessage: Failed to forward message to " + domain + ". Giving up...");
-				else
-					Log.info("forwardMessage: Successfully sent message to " + domain + ". Nice!");
-			}else{
+			if (uri == null){
 				Log.info("forwardMessage: " + domain + " does not exist or is offline.");
+				continue;
+			}
+
+			Log.info("forwardMessage: Trying to forward message " + msg.getId() + " to " + domain);
+			int tries = 0;
+
+			MessageServiceSoap msgService = null;
+			
+			try {
+				Service	service = Service.create(new URL(uri + MESSAGES_WSDL), MESSAGE_QNAME);
+				msgService = service.getPort(MessageServiceSoap.class);							
+			}
+			catch(MalformedURLException e){
+				Log.info("forwardMessage: Bad Url");
+				return;
+			} 
+			catch(WebServiceException e){
+				Log.info("forwardMessage: Failed to forward message to " + domain + ".");
+				return;
+			}
+
+			((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.CONNECT_TIMEOUT, SOAPMailServer.TIMEOUT);
+			((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT, SOAPMailServer.TIMEOUT);
+			
+			List<String> failedDeliveries = null;
+			
+			while (error && tries < SOAPMailServer.N_TRIES) {
+				error = false;
+				try{
+					failedDeliveries = msgService.postForwardedMessage(msg);
+				}
+				catch(MessagesException me){
+					Log.info("forwardMessage: Error, could not send the message.");
+				}
+				catch(WebServiceException wse){
+					Log.info("forwardMessage: Communication error. Retrying...");
+					wse.printStackTrace();
+					try{
+						Thread.sleep(SOAPMailServer.SLEEP_TIME);
+					}
+					catch(InterruptedException e){
+						Log.info("Log a dizer 'what?'");
+					}
+					error = true;
+				}
+				
+				tries++;
+			}
+
+			if(error){
+				Log.info("forwardMessage: Failed to forward message to " + domain + ". Giving up...");
+				failedDeliveries = new LinkedList<>();
+				for(String recipient: msg.getDestination()){
+					if(recipient.split("@")[1].equals(domain))
+						failedDeliveries.add(recipient);
+				}
+			}
+			else
+				Log.info("forwardMessage: Successfully sent message to " + domain + ". Nice!");
+			
+
+			String senderName = this.getSenderCanonicalName(msg.getSender());
+			for(String recipient: failedDeliveries){
+				this.saveErrorMessages(senderName, recipient, msg);
 			}
 		}
 	}
@@ -213,38 +257,63 @@ public class MessageResourceSoap implements MessageServiceSoap {
 	 * @param recipientDomains
 	 * @param mid
 	 */
-	private void deleteFromDomains(Set<String> recipientDomains, String user, String mid) {
+	private void deleteFromDomains(Set<String> recipientDomains, String user, long mid){
 		for(String domain: recipientDomains){
 			boolean error = true;
 			String uri = SOAPMailServer.serverRecord.knownUrisOf(domain);
-
-			if(uri != null){
-				System.out.println("Sending delete request to domain: " + domain);
-				Log.info("Sending delete request to domain: " + domain);
-				int tries = 0;
-
-				target = client.target(uri).path(MessageResourceSoap.PATH).path("msg");
-
-				while(error && tries< SOAPMailServer.N_TRIES){
-					error = false;
-
-					try{
-						target.path(user).path(mid).request().delete();
-					}
-					catch(ProcessingException e){
-						System.out.println("deleteFromDomains: Failed to redirect request to " + domain + ". Retrying...");
-						Log.info("deleteFromDomains: Failed to redirect request to " + domain + ". Retrying...");
-						error = true;
-					}
-				}
-
-				if(error)
-					Log.info("deleteFromDomains: Failed to redirect request to " + domain + ". Giving up...");
-				else
-					Log.info("deleteFromDomains: Successfully redirected request to " + domain + ". More successful than i'll ever be!");		
-			}
-			else
+			
+			if(uri == null){
 				Log.info("deleteFromDomains: " + domain + " does not exist or is offline.");
+				continue;
+			}
+			System.out.println("Sending delete request to domain: " + domain);
+			Log.info("Sending delete request to domain: " + domain);
+			int tries = 0;
+
+			MessageServiceSoap msgService = null;
+			
+			try {
+				Service	service = Service.create(new URL(uri + MESSAGES_WSDL), MESSAGE_QNAME);
+				msgService = service.getPort(MessageServiceSoap.class);							
+			}
+			catch(MalformedURLException e){
+				Log.info("forwardMessage: Bad Url");
+				return;
+			} 
+			catch(WebServiceException e){
+				Log.info("forwardMessage: Failed to forward message to " + domain + ".");
+				return;
+			}
+
+			((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.CONNECT_TIMEOUT, SOAPMailServer.TIMEOUT);
+			((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT, SOAPMailServer.TIMEOUT);
+			
+			while(error && tries< SOAPMailServer.N_TRIES){
+				error = false;
+				try{
+					msgService.deleteForwardedMessage(mid);
+				}
+				catch(MessagesException me){
+					Log.info("forwardMessage: Error, could not send the message.");
+				}
+				catch(WebServiceException wse){
+					Log.info("forwardMessage: Communication error. Retrying...");
+					wse.printStackTrace();
+					try{
+						Thread.sleep(SOAPMailServer.SLEEP_TIME);
+					}
+					catch(InterruptedException e){
+						Log.info("Log a dizer 'what?'");
+					}
+					error = true;
+				}
+				tries++;	
+			}
+
+			if(error)
+				Log.info("deleteFromDomains: Failed to redirect request to " + domain + ". Giving up...");
+			else
+				Log.info("deleteFromDomains: Successfully redirected request to " + domain + ". More successful than i'll ever be!");		
 		}
 	}
 
@@ -259,7 +328,7 @@ public class MessageResourceSoap implements MessageServiceSoap {
 		
 		return tokens[0];
 	}
-
+	
 	@Override
 	public long postMessage(String pwd, Message msg) throws MessagesException{
 		User user;
@@ -273,42 +342,43 @@ public class MessageResourceSoap implements MessageServiceSoap {
 			throw new MessagesException("postMessage: Message was rejected due to lack of recepients");
 		}
 		
-		int nTokens = sender.split(" <").length;
 		String senderName = this.getSenderCanonicalName(sender);
 
-		if(nTokens == 1){
-			user = this.getUser(senderName, pwd);
+		
+		user = this.getUser(senderName, pwd);
 
-			if(user == null)
-				throw new MessagesException("postMessage: Message was rejected due to unexisting user.");
+		if(user == null)
+			throw new MessagesException("postMessage: Message was rejected due to unexisting user.");
 
-			long newID = Math.abs(randomNumberGenerator.nextLong());
+		long newID = Math.abs(randomNumberGenerator.nextLong());
 
-			synchronized(this.allMessages){
-				while(allMessages.containsKey(newID))
-					newID = Math.abs(randomNumberGenerator.nextLong());
-				
-				msg.setSender(String.format(SENDER_FORMAT, user.getDisplayName(), user.getName(), user.getDomain()));
-				msg.setId(newID);
-				allMessages.put(newID, msg);
-								
-			}
-			System.out.println("Created new message with id: " + newID);
-			Log.info("Created new message with id: " + newID);
+		synchronized(this.allMessages){
+			while(allMessages.containsKey(newID))
+				newID = Math.abs(randomNumberGenerator.nextLong());
+			
+			msg.setSender(String.format(SENDER_FORMAT, user.getDisplayName(), user.getName(), user.getDomain()));
+			msg.setId(newID);
+			allMessages.put(newID, msg);
+							
 		}
+		System.out.println("Created new message with id: " + newID);
+		Log.info("Created new message with id: " + newID);
+	
 
 		for(String recipient: msg.getDestination()){
 			String[] tokens = recipient.split("@");
 			if(tokens[1].equals(this.domain)){
-				saveMessage(senderName,tokens[0], msg);
+				saveMessage(senderName, tokens[0], false, msg);
 			}
 			else{
+				Log.info("TOKEN: " + tokens[1] + ".");
 				recipientDomains.add(tokens[1]);
 			}
-		}	
+		}
+		
+		this.forwardMessage(recipientDomains,msg);
+		
 
-		if(nTokens == 1)
-			this.forwardMessage(recipientDomains, msg);
 		//Return the id of the registered message to the client (in the body of a HTTP Response with 200)
 		Log.info("Recorded message with identifier: " + msg.getId());
 		return msg.getId();
@@ -322,7 +392,7 @@ public class MessageResourceSoap implements MessageServiceSoap {
 		User u = this.getUser(user, pwd);
 		
 		if(u == null){
-			throw new WebApplicationException(Status.FORBIDDEN);
+			throw new MessagesException("getMessage: User does not exist or password is incorrect");
 		}
 
 		Log.info("Received request for message with id: " + mid +".");
@@ -331,9 +401,8 @@ public class MessageResourceSoap implements MessageServiceSoap {
 				System.out.println(this.allMessages.containsKey(mid));
 				System.out.println(this.userInboxs.get(user).contains(mid));
 				if(!this.allMessages.containsKey(mid) || !this.userInboxs.get(user).contains(mid)) { //check if message exists
-					System.out.println("BOM DIA, ENTREI NO IF");
 					Log.info("Requested message does not exists.");
-					throw new WebApplicationException( Status.NOT_FOUND ); //if not send HTTP 404 back to client
+					throw new MessagesException("getMessage: Requested message does not exists."); //if not send HTTP 404 back to client
 				}
 			}
 		}
@@ -344,13 +413,13 @@ public class MessageResourceSoap implements MessageServiceSoap {
 	}
 
 	@Override
-	public List<Long> getMessages(String user, String pwd) {
+	public List<Long> getMessages(String user, String pwd) throws MessagesException{
 		Log.info("Received request for messages with optional user parameter set to: '" + user + "'");
 		User u = this.getUser(user, pwd);
 
 		if(u == null){
 			Log.info("User with name " + user + " does not exist in the domain.");
-			throw new WebApplicationException(Status.FORBIDDEN);
+			throw new MessagesException("getMessageS: User with name " + user + " does not exist in the domain.");
 		}
 
 		Set<Long> mids = new HashSet<Long>();
@@ -363,23 +432,12 @@ public class MessageResourceSoap implements MessageServiceSoap {
 		return new ArrayList<>(mids);
 	}
 
-	/*@Override
-	public void checkMessage(long mid) {
-		synchronized(this.allMessages){
-			if(!this.allMessages.containsKey(mid))
-				throw new WebApplicationException(Status.NOT_FOUND);
-		}
-	}*/
-
 	@Override
-	public void deleteMessage(String user, String pwd, long mid) 
-	{
+	public void deleteMessage(String user, String pwd, long mid) throws MessagesException{
 		System.out.println("Received request to delete a message with the id: " + String.valueOf(mid));
 		Log.info("Received request to delete a message with the id: " + String.valueOf(mid));
 		
 		User sender = null;
-
-		int nTokens = user.split(" <").length;
 		
 		Message msg;
 		
@@ -387,22 +445,21 @@ public class MessageResourceSoap implements MessageServiceSoap {
 			msg = this.allMessages.get(mid);
 		}
 
-		if(nTokens == 1){
-			sender  = this.getUser(user, pwd);
-			
-			if(sender == null){
-				Log.info("Delete message: User not found or wrong password");
-				throw new WebApplicationException(Status.FORBIDDEN);
-			}
-			
-			synchronized(this.userInboxs){
-				this.userInboxs.get(user).remove(mid);
-			}
-			String userName = getSenderCanonicalName(user);
-
-			if(msg == null || !getSenderCanonicalName(msg.getSender()).equals(userName))
-				return;
+		sender  = this.getUser(user, pwd);
+		
+		if(sender == null){
+			Log.info("Delete message: User not found or wrong password");
+			throw new MessagesException("Delete message: User not found or wrong password");
 		}
+		
+		synchronized(this.userInboxs){
+			this.userInboxs.get(user).remove(mid);
+		}
+		String userName = getSenderCanonicalName(user);
+
+		if(msg == null || !getSenderCanonicalName(msg.getSender()).equals(userName))
+			return;
+		
 
 		Set<String> recipientDomains = new HashSet<>();
 
@@ -410,39 +467,34 @@ public class MessageResourceSoap implements MessageServiceSoap {
 			String[] tokens = u.split("@");
 			if(tokens[1].equals(this.domain)){
 				synchronized(this.userInboxs){
-					userInboxs.get(tokens[0]).remove(mid);
-					System.out.println("Removing message for user " + u);
-					
+					userInboxs.get(tokens[0]).remove(mid);					
 					Log.info("Removing message for user " + u);
 				}
 			}else
 				recipientDomains.add(tokens[1]);
 		}
-		
-		if(nTokens == 1)
-			deleteFromDomains(recipientDomains, 
-						String.format(SENDER_FORMAT, sender.getDisplayName(),sender.getName(),sender.getDomain())
-						,String.valueOf(mid));
+		deleteFromDomains(recipientDomains, sender.getName(), mid);
 	
 	}
 
 	@Override
-	public void removeFromUserInbox(String user, long mid, String pwd) {
-		Log.info("Received request to delete message " + String.valueOf(mid) + " from the inbox of " + user);
+	public void removeFromUserInbox(String user, String pwd, long mid) throws MessagesException{
+		Log.info("Received request to delete message " + mid + " from the inbox of " + user);
+		System.out.println(mid);
 		
+
 		User u = this.getUser(user, pwd);
 
 		if(u == null){
 			Log.info("User with name " + user + " does not exist in the domain.");
-			throw new WebApplicationException(Status.FORBIDDEN);
+			throw new MessagesException("User with name " + user + " does not exist in the domain.");
 		}
 		
-		//DUVIDA: e possivel apagar uma mensagem que nao esteja na inbox do user fornecido?
 		synchronized(this.allMessages){
 			synchronized(this.userInboxs){
 				if(!this.allMessages.containsKey(mid) || !this.userInboxs.get(user).contains(mid)){
 					Log.info("Message not found");
-					throw new WebApplicationException(Status.NOT_FOUND);
+					throw new MessagesException("Message not found");
 				}
 			}
 		}
@@ -453,9 +505,47 @@ public class MessageResourceSoap implements MessageServiceSoap {
 	}
 
 	@Override
-	public void createInbox(String user) {
+	public void createInbox(String user) throws MessagesException{
 		synchronized(this.userInboxs){
 			this.userInboxs.put(user, new HashSet<>());
+		}
+	}
+
+	@Override
+	public List<String> postForwardedMessage(Message msg) throws MessagesException {
+		List<String> failedDeliveries = new LinkedList<>();
+
+		Log.info("postForwardedMessage: Received forwarded message from " + msg.getSender() + ". ID: " + msg.getId());
+
+		for(String recipient: msg.getDestination()){
+			String[] tokens = recipient.split("@");
+			if(tokens[1].equals(this.domain) && !this.saveMessage(msg.getSender(), tokens[0], true, msg))
+				failedDeliveries.add(recipient);
+		}
+		return failedDeliveries;
+	}
+
+	@Override
+	public void deleteForwardedMessage(long mid) throws MessagesException{
+		Set<String> recipients = null;
+		synchronized(this.allMessages){
+			if(!this.allMessages.containsKey(mid))
+				return;
+
+			recipients = this.allMessages.get(mid).getDestination();
+			this.allMessages.remove(mid);
+		}
+
+		for(String s : recipients){
+			String[] tokens = s.split("@");
+			if(tokens[1].equals(this.domain)){
+				synchronized(this.userInboxs){
+					userInboxs.get(tokens[0]).remove(mid);
+					System.out.println("Removing message for user " + s);
+					
+					Log.info("Removing message for user " + s);
+				}
+			}
 		}
 	}
 }

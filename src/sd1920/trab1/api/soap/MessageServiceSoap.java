@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
-import javax.xml.namespace.QName;
 
 import sd1920.trab1.api.Message;
 
@@ -57,12 +56,12 @@ public interface MessageServiceSoap {
 	/**
 	 * Removes a message identified by mid from the inbox of user identified by user.
 	 * @param user the username of the inbox that is manipulated by this method
-	 * @param mid the identifier of the message to be deleted
 	 * @param pwd password of the user
+	 * @param mid the identifier of the message to be deleted
 	 * @throws MessagesException in case of error.
 	 */
 	@WebMethod
-	void removeFromUserInbox(String user, long mid, String pwd) throws MessagesException;
+	void removeFromUserInbox(String user, String pwd, long mid) throws MessagesException;
 
 	/**
 	 * Removes the message identified by mid from the inboxes of any server that holds the message.
@@ -82,5 +81,20 @@ public interface MessageServiceSoap {
 	 * @param user name of user
 	 */
 	@WebMethod
-	void createInbox(String user);
+	void createInbox(String user) throws MessagesException;
+
+	/**
+	 * Forwards a message to the needed domains
+	 * 
+	 * @param msg              message to be forwarded
+	 */
+	@WebMethod
+	List<String> postForwardedMessage(Message msg) throws MessagesException;
+
+	/**
+	 * Deletes a message in this server that was sent from another server
+	 * @param mid
+	 */
+	@WebMethod
+	void deleteForwardedMessage(long mid) throws MessagesException;
 }

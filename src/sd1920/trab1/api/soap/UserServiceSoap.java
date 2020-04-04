@@ -57,5 +57,4 @@ public interface UserServiceSoap {
 	 */
 	@WebMethod
 	public User deleteUser(String name, String pwd) throws MessagesException;
-	
 }

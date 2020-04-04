@@ -18,11 +18,11 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 
 import sd1920.trab1.api.User;
-import sd1920.trab1.api.rest.UserService;
+import sd1920.trab1.api.rest.UserServiceRest;
 import sd1920.trab1.server.rest.RESTMailServer;
 
 @Singleton
-public class UserResource implements UserService {
+public class UserResourceRest implements UserServiceRest {
 
     private final Map<String, User> users = new HashMap<String, User>();
 
@@ -32,9 +32,9 @@ public class UserResource implements UserService {
 
     private String serverRestUri;
 
-    private static Logger Log = Logger.getLogger(UserResource.class.getName());
+    private static Logger Log = Logger.getLogger(UserResourceRest.class.getName());
 
-    public UserResource() throws UnknownHostException {
+    public UserResourceRest() throws UnknownHostException {
         this.config = new ClientConfig();
 		this.config.property(ClientProperties.CONNECT_TIMEOUT, RESTMailServer.TIMEOUT);
 		this.config.property(ClientProperties.READ_TIMEOUT, RESTMailServer.TIMEOUT);

@@ -9,7 +9,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 import sd1920.trab1.api.Discovery;
 import sd1920.trab1.server.rest.resources.MessageResourceRest;
-import sd1920.trab1.server.rest.resources.UserResource;
+import sd1920.trab1.server.rest.resources.UserResourceRest;
 
 public class RESTMailServer {
 
@@ -33,7 +33,7 @@ public class RESTMailServer {
 		ResourceConfig config = new ResourceConfig();
 
         config.register(MessageResourceRest.class);
-		config.register(UserResource.class);
+		config.register(UserResourceRest.class);
 
 		String serverURI = String.format("http://%s:%s/rest", ip, PORT);
 	

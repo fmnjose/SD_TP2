@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -19,6 +20,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -26,14 +28,14 @@ import javax.ws.rs.core.Response.Status;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 
-import sd1920.trab1.api.rest.MessageService;
-import sd1920.trab1.api.rest.UserService;
+import sd1920.trab1.api.rest.MessageServiceRest;
+import sd1920.trab1.api.rest.UserServiceRest;
 import sd1920.trab1.server.rest.RESTMailServer;
 import sd1920.trab1.api.Message;
 import sd1920.trab1.api.User;
 
 @Singleton
-public class MessageResourceRest implements MessageService {
+public class MessageResourceRest implements MessageServiceRest {
 
 	private Random randomNumberGenerator;
 	private Client client;
@@ -61,28 +63,45 @@ public class MessageResourceRest implements MessageService {
 	}
 
 	/**
+	 * Inserts error message into the sender inbox
+	 * @param senderName
+	 * @param recipientName
+	 * @param msg
+	 */
+	private void saveErrorMessages(String senderName, String recipientName,Message msg){
+		Long errorMessageId = Math.abs(randomNumberGenerator.nextLong());
+		Message m = new Message(errorMessageId, msg.getSender(), msg.getDestination(),
+				String.format(ERROR_FORMAT, msg.getId(), recipientName), msg.getContents());
+		
+		this.allMessages.put(errorMessageId, m);
+		this.userInboxs.get(senderName).add(errorMessageId);
+	}
+
+	/**
 	 * Saves a message in our domain. If the recipient does not exist, adds an error
 	 * message
 	 * 
+	 * @param senderName
 	 * @param recipientName name of a recipient in this domain. Always in this domain.
+	 * @param forwarded
 	 * @param mid  id to be assigned
 	 */
-	private void saveMessage(String senderName, String recipientName, Message msg) {
+	private boolean saveMessage(String senderName, String recipientName, boolean forwarded,Message msg) {
 		synchronized (this.userInboxs) {
 			synchronized (this.allMessages) {
 				if (!userInboxs.containsKey(recipientName)) {
-					Long errorMessageId = Math.abs(randomNumberGenerator.nextLong());
-					Message m = new Message(errorMessageId, msg.getSender(), msg.getDestination(),
-							String.format(ERROR_FORMAT, msg.getId(), recipientName), msg.getContents());
-					
-					this.allMessages.put(errorMessageId, m);
-					this.userInboxs.get(senderName).add(errorMessageId);
+					if(forwarded)
+						return false;
+					else{
+						this.saveErrorMessages(senderName, recipientName, msg);
+					}
 				} else{
 					this.allMessages.put(msg.getId(), msg);
 					this.userInboxs.get(recipientName).add(msg.getId());
 				}
 			}
 		}
+		return true;
 	}
 
 	/**
@@ -98,8 +117,8 @@ public class MessageResourceRest implements MessageService {
 		
 		boolean error = true;
 
-	
-		WebTarget target = client.target(serverRestUri).path(UserService.PATH);
+		
+		WebTarget target = client.target(serverRestUri).path(UserServiceRest.PATH);
 		target = target.queryParam("pwd", pwd);
 
 		int tries = 0;
@@ -134,47 +153,59 @@ public class MessageResourceRest implements MessageService {
 		return r.readEntity(User.class);
 	}
 
-	/**
-	 * Forwards a message to the needed domains
-	 * 
-	 * @param recipientDomains domains to be contacted
-	 * @param msg              message to be forwarded
-	 */
+	
 	private void forwardMessage(Set<String> recipientDomains, Message msg) {
+
+		Response r = null; 
 
 		for (String domain : recipientDomains) {
 			boolean error = true;
 			String uri = RESTMailServer.serverRecord.knownUrisOf(domain);
-			if (uri != null) {
-
-				Log.info("forwardMessage: Trying to forward message " + msg.getId() + " to " + domain);
-				int tries = 0;
-
-				WebTarget target = client.target(uri).path(MessageService.PATH);
-
-				while (error && tries < RESTMailServer.N_TRIES) {
-					error = false;
-
-					try {
-						target.request().accept(MediaType.APPLICATION_JSON)
-								.post(Entity.entity(msg, MediaType.APPLICATION_JSON));
-					} catch (ProcessingException e) {
-						Log.info("forwardMessage: Failed to forward message to " + domain + ". Retrying...");
-						try {
-							Thread.sleep(RESTMailServer.SLEEP_TIME);
-						} catch (InterruptedException e1) {
-							e1.printStackTrace();
-						}
-						error = true;
-					}
-				}
-
-				if(error)
-					Log.info("forwardMessage: Failed to forward message to " + domain + ". Giving up...");
-				else
-					Log.info("forwardMessage: Successfully sent message to " + domain + ". Nice!");
-			}else{
+			if (uri == null){
 				Log.info("forwardMessage: " + domain + " does not exist or is offline.");
+				continue;
+			}
+
+			Log.info("forwardMessage: Trying to forward message " + msg.getId() + " to " + domain);
+			int tries = 0;
+
+			WebTarget target = client.target(uri).path(MessageServiceRest.PATH).path("mbox");
+
+			while (error && tries < RESTMailServer.N_TRIES) {
+				error = false;
+
+				try {
+					r = target.request().accept(MediaType.APPLICATION_JSON)
+							.post(Entity.entity(msg, MediaType.APPLICATION_JSON));
+				} catch (ProcessingException e) {
+					Log.info("forwardMessage: Failed to forward message to " + domain + ". Retrying...");
+					try {
+						Thread.sleep(RESTMailServer.SLEEP_TIME);
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
+					error = true;
+				}
+				
+			}
+			
+			 List<String> failedDeliveries = error ? new LinkedList<>() 
+			 				: r.readEntity(new GenericType<List<String>>(){});
+			
+			if(error){
+				Log.info("forwardMessage: Failed to forward message to " + domain + ". Giving up...");
+				for(String recipient: msg.getDestination()){
+					if(recipient.split("@")[1].equals(domain))
+						failedDeliveries.add(recipient);
+				}
+			}
+			else
+				Log.info("forwardMessage: Successfully sent message to " + domain + ". Nice!");
+			
+			
+			String senderName = this.getSenderCanonicalName(msg.getSender());
+			for(String recipient: failedDeliveries){
+				this.saveErrorMessages(senderName, recipient, msg);
 			}
 		}
 	}
@@ -190,35 +221,36 @@ public class MessageResourceRest implements MessageService {
 		for(String domain: recipientDomains){
 			boolean error = true;
 			String uri = RESTMailServer.serverRecord.knownUrisOf(domain);
-
-			if(uri != null){
-				System.out.println("Sending delete request to domain: " + domain);
-				Log.info("Sending delete request to domain: " + domain);
-				int tries = 0;
-
-				WebTarget target = client.target(uri).path(MessageResourceRest.PATH).path("msg");
-
-				while(error && tries< RESTMailServer.N_TRIES){
-					error = false;
-
-					try{
-						target.path(user).path(mid).request().delete();
-					}
-					catch(ProcessingException e){
-						System.out.println("deleteFromDomains: Failed to redirect request to " + domain + ". Retrying...");
-						Log.info("deleteFromDomains: Failed to redirect request to " + domain + ". Retrying...");
-						error = true;
-					}
-				}
-
-				if(error)
-					Log.info("deleteFromDomains: Failed to redirect request to " + domain + ". Giving up...");
-				else
-					Log.info("deleteFromDomains: Successfully redirected request to " + domain + ". More successful than i'll ever be!");		
-			}
-			else
+			
+			if(uri == null){
 				Log.info("deleteFromDomains: " + domain + " does not exist or is offline.");
-		}
+				continue;
+			}
+
+			System.out.println("Sending delete request to domain: " + domain);
+			Log.info("Sending delete request to domain: " + domain);
+			int tries = 0;
+
+			WebTarget target = client.target(uri).path(MessageResourceRest.PATH).path("msg");
+
+			while(error && tries< RESTMailServer.N_TRIES){
+				error = false;
+
+				try{
+					target.path(mid).request().delete();
+				}
+				catch(ProcessingException e){
+					System.out.println("deleteFromDomains: Failed to redirect request to " + domain + ". Retrying...");
+					Log.info("deleteFromDomains: Failed to redirect request to " + domain + ". Retrying...");
+					error = true;
+				}
+			}
+
+			if(error)
+				Log.info("deleteFromDomains: Failed to redirect request to " + domain + ". Giving up...");
+			else
+				Log.info("deleteFromDomains: Successfully redirected request to " + domain + ". More successful than i'll ever be!");		
+		}	
 	}
 
 	private String getSenderCanonicalName(String senderName){
@@ -244,51 +276,41 @@ public class MessageResourceRest implements MessageService {
 		//Check if message is valid, if not return HTTP CONFLICT (409)
 		if(sender == null || msg.getDestination() == null || msg.getDestination().size() == 0) {
 			Log.info("Message was rejected due to lack of recepients.");
-			throw new WebApplicationException( Status.CONFLICT );
+			throw new WebApplicationException(Status.CONFLICT );
 		}
-		
-		int nTokens = sender.split(" <").length;
 		String senderName = this.getSenderCanonicalName(sender);
 
-		if(nTokens == 1){
-			user = this.getUser(senderName, pwd);
+		user = this.getUser(senderName, pwd);
 
-			if(user == null)
-				throw new WebApplicationException(Status.FORBIDDEN);
+		if(user == null)
+			throw new WebApplicationException(Status.FORBIDDEN);
 
-			long newID = Math.abs(randomNumberGenerator.nextLong());
+		long newID = Math.abs(randomNumberGenerator.nextLong());
 
-			synchronized(this.allMessages){
-				while(allMessages.containsKey(newID))
-					newID = Math.abs(randomNumberGenerator.nextLong());
-				
-				msg.setSender(String.format(SENDER_FORMAT, user.getDisplayName(), user.getName(), user.getDomain()));
-				msg.setId(newID);
-				allMessages.put(newID, msg);
-								
-			}
-			System.out.println("Created new message with id: " + newID);
-			Log.info("Created new message with id: " + newID);
+		synchronized(this.allMessages){
+			while(allMessages.containsKey(newID))
+				newID = Math.abs(randomNumberGenerator.nextLong());
+			
+			msg.setSender(String.format(SENDER_FORMAT, user.getDisplayName(), user.getName(), user.getDomain()));
+			msg.setId(newID);
+			allMessages.put(newID, msg);
+							
 		}
+		System.out.println("Created new message with id: " + newID);
+		Log.info("Created new message with id: " + newID);
 
 		for(String recipient: msg.getDestination()){
 			String[] tokens = recipient.split("@");
-			if(tokens[1].equals(this.domain)){
-				saveMessage(senderName,tokens[0], msg);
-			}
-			else{
+			if(tokens[1].equals(this.domain))
+				saveMessage(senderName,tokens[0], false, msg);
+			else
 				recipientDomains.add(tokens[1]);
-			}
 		}	
 
-		System.out.println("MESSAGE ID: " + msg.getId());
+		this.forwardMessage(recipientDomains, msg);
 
-		if(nTokens == 1)
-			this.forwardMessage(recipientDomains, msg);
-		//Return the id of the registered message to the client (in the body of a HTTP Response with 200)
 		Log.info("Recorded message with identifier: " + msg.getId());
 		return msg.getId();
-	
 	}
 
 	@Override
@@ -339,14 +361,6 @@ public class MessageResourceRest implements MessageService {
 		return new ArrayList<>(mids);
 	}
 
-	/*@Override
-	public void checkMessage(long mid) {
-		synchronized(this.allMessages){
-			if(!this.allMessages.containsKey(mid))
-				throw new WebApplicationException(Status.NOT_FOUND);
-		}
-	}*/
-
 	@Override
 	public void deleteMessage(String user, long mid, String pwd) 
 	{
@@ -354,8 +368,6 @@ public class MessageResourceRest implements MessageService {
 		Log.info("Received request to delete a message with the id: " + String.valueOf(mid));
 		
 		User sender = null;
-
-		int nTokens = user.split(" <").length;
 		
 		Message msg;
 		
@@ -363,22 +375,22 @@ public class MessageResourceRest implements MessageService {
 			msg = this.allMessages.get(mid);
 		}
 
-		if(nTokens == 1){
-			sender  = this.getUser(user, pwd);
-			
-			if(sender == null){
-				Log.info("Delete message: User not found or wrong password");
-				throw new WebApplicationException(Status.FORBIDDEN);
-			}
-			
-			synchronized(this.userInboxs){
-				this.userInboxs.get(user).remove(mid);
-			}
-			String userName = getSenderCanonicalName(user);
-
-			if(msg == null || !getSenderCanonicalName(msg.getSender()).equals(userName))
-				return;
+		
+		sender  = this.getUser(user, pwd);
+		
+		if(sender == null){
+			Log.info("Delete message: User not found or wrong password");
+			throw new WebApplicationException(Status.FORBIDDEN);
 		}
+		
+		synchronized(this.userInboxs){
+			this.userInboxs.get(user).remove(mid);
+		}
+
+		String userName = getSenderCanonicalName(user);
+
+		if(msg == null || !getSenderCanonicalName(msg.getSender()).equals(userName))
+			return;
 
 		Set<String> recipientDomains = new HashSet<>();
 
@@ -395,10 +407,7 @@ public class MessageResourceRest implements MessageService {
 				recipientDomains.add(tokens[1]);
 		}
 		
-		if(nTokens == 1)
-			deleteFromDomains(recipientDomains, 
-						String.format(SENDER_FORMAT, sender.getDisplayName(),sender.getName(),sender.getDomain())
-						,String.valueOf(mid));
+		deleteFromDomains(recipientDomains, sender.getName(),String.valueOf(mid));
 	
 	}
 
@@ -432,6 +441,42 @@ public class MessageResourceRest implements MessageService {
 	public void createInbox(String user) {
 		synchronized(this.userInboxs){
 			this.userInboxs.put(user, new HashSet<>());
+		}
+	}
+
+	@Override
+	public List<String> postForwardedMessage(Message msg) {
+		List<String> failedDeliveries = new LinkedList<>();
+
+		for(String recipient: msg.getDestination()){
+			String[] tokens = recipient.split("@");
+			if(tokens[1].equals(this.domain) && !this.saveMessage(msg.getSender(), tokens[0], true, msg))
+				failedDeliveries.add(recipient);
+		}
+		return failedDeliveries;
+	}
+
+	@Override
+	public void deleteForwardedMessage(long mid) {
+		Set<String> recipients = null;
+		synchronized(this.allMessages){
+			if(!this.allMessages.containsKey(mid))
+				return;
+
+			recipients = this.allMessages.get(mid).getDestination();
+			this.allMessages.remove(mid);
+		}
+
+		for(String s : recipients){
+			String[] tokens = s.split("@");
+			if(tokens[1].equals(this.domain)){
+				synchronized(this.userInboxs){
+					userInboxs.get(tokens[0]).remove(mid);
+					System.out.println("Removing message for user " + s);
+					
+					Log.info("Removing message for user " + s);
+				}
+			}
 		}
 	}
 }

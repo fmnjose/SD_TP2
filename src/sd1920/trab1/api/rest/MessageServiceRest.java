@@ -16,10 +16,9 @@ import javax.ws.rs.core.MediaType;
 
 import sd1920.trab1.api.Message;
 
-@Path(MessageService.PATH)
-public interface MessageService {
+@Path(MessageServiceRest.PATH)
+public interface MessageServiceRest {
 	String PATH = "/messages";
-	
 	/**
 	 * Posts a new message to the server, associating it to the inbox of every individual destination.
 	 * An outgoing message should be modified before delivering it, by assigning an ID, and by changing the
@@ -107,4 +106,25 @@ public interface MessageService {
 	@HEAD
 	@Path("/mbox/{user}")
 	void createInbox(@PathParam("user") String user);
+
+
+	/**
+	 * Forwards a message to the needed domains
+	 * 
+	 * @param msg              message to be forwarded
+	 */
+	@POST
+	@Path("/mbox")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	List<String> postForwardedMessage(Message msg);
+
+
+	/**
+	 * Deletes a message in this server that was sent from another server
+	 * @param mid
+	 */
+	@DELETE
+	@Path("/msg/{mid}")
+	void deleteForwardedMessage(@PathParam("mid") long mid);
 }

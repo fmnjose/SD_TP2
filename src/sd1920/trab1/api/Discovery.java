@@ -158,8 +158,8 @@ public class Discovery {
 	 * @return an array of URI with the service instances discovered. 
 	 * 
 	 */
-	public String knownUrisOf(String serviceName) {
-		DomainInfo info = this.record.get(serviceName);
+	public String knownUrisOf(String domainName) {
+		DomainInfo info = this.record.get(domainName);
 
 		return info == null ? null : info.getUri();
 	}

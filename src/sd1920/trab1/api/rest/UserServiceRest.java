@@ -13,8 +13,8 @@ import javax.ws.rs.core.MediaType;
 
 import sd1920.trab1.api.User;
 
-@Path(UserService.PATH)
-public interface UserService {
+@Path(UserServiceRest.PATH)
+public interface UserServiceRest {
 
 	String PATH = "/users";
 	
