@@ -84,21 +84,46 @@ Docker ID: IHDA:GYRV:F3AZ:3P6E:SCFI:TZ2E:2LID:RKI6:3MWU:Y4H6:26BF:HCJM
 8b )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-9a )	 Testing PostMessage across multiple domains : 2 REST servers ; 1 SOAP servers
+9a )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+9b )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+10a )	 Testing Discovery Service [ listening for announcements... ] : 2 REST servers ; 1 SOAP servers
 ---------------------------------------------------------------
 Starting 2 REST services instances <sd1920.trab1.server.rest.RESTMailServer>
 INFO: Starting 2 REST services instances <sd1920.trab1.server.rest.RESTMailServer>
 CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-1 -h msgserver-1 sd1920-trab1-52890-53277 java -cp /home/sd/sd1920.jar sd1920.trab1.server.rest.RESTMailServer
 Started: msgserver-1 : java -cp /home/sd/sd1920.jar sd1920.trab1.server.rest.RESTMailServer 
-9821068c28ee8ed88329f4428d080c01325bc0ed1459fb2561960b74f3759bb6
+5b22faabaeb4d1dd954c83eedbcaff3f96d7b7b5c76150fd6ad1399aa845f101
 CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-2 -h msgserver-2 sd1920-trab1-52890-53277 java -cp /home/sd/sd1920.jar sd1920.trab1.server.rest.RESTMailServer
 Started: msgserver-2 : java -cp /home/sd/sd1920.jar sd1920.trab1.server.rest.RESTMailServer 
-2d7fcc29501322870c2d86f7e01a648899bb0629eb7678d1903b34bd4530df36
+8b01b12f73f7554640f2916686e2e2fafd2a9eeb96d70d10c19357664fb154cc
 Starting 1 SOAP services instances <sd1920.trab1.server.soap.SOAPMailServer>
 INFO: Starting 1 SOAP services instances <sd1920.trab1.server.soap.SOAPMailServer>
 CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-3 -h msgserver-3 sd1920-trab1-52890-53277 java -cp /home/sd/sd1920.jar sd1920.trab1.server.soap.SOAPMailServer
 Started: msgserver-3 : java -cp /home/sd/sd1920.jar sd1920.trab1.server.soap.SOAPMailServer 
-9b8926bfa520bcc0488a6b577a0c3950d2a79c0ebe6d608ef99097da3b1cd1aa
+03441a6cc1f9e8daef3495725bee6f31c8a139b6aadb11e7c3286189131ec7d2
+sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                Discovery started
+OK                                                                                                                   
+killByImage(sd1920-trab1-52890-53277): Removing container: [/msgserver-3]
+killByImage(sd1920-trab1-52890-53277): Removing container: [/msgserver-2]
+killByImage(sd1920-trab1-52890-53277): Removing container: [/msgserver-1]
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+11a )	 Testing PostMessage with faults across multiple domains : 3 REST servers ; 0 SOAP servers; ; fault period (ms) :20000
+---------------------------------------------------------------
+Starting 3 REST services instances <sd1920.trab1.server.rest.RESTMailServer>
+INFO: Starting 3 REST services instances <sd1920.trab1.server.rest.RESTMailServer>
+CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-1 -h msgserver-1 sd1920-trab1-52890-53277 java -cp /home/sd/sd1920.jar sd1920.trab1.server.rest.RESTMailServer
+Started: msgserver-1 : java -cp /home/sd/sd1920.jar sd1920.trab1.server.rest.RESTMailServer 
+6505021a63b1885418766e1d831e0d0fb7514f74eab3c5893418a1a73f3ef088
+CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-2 -h msgserver-2 sd1920-trab1-52890-53277 java -cp /home/sd/sd1920.jar sd1920.trab1.server.rest.RESTMailServer
+Started: msgserver-2 : java -cp /home/sd/sd1920.jar sd1920.trab1.server.rest.RESTMailServer 
+4bfd0906f3471585eda41736942cf48072b97d42fa67c79d688cfe16778294f1
+CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-3 -h msgserver-3 sd1920-trab1-52890-53277 java -cp /home/sd/sd1920.jar sd1920.trab1.server.rest.RESTMailServer
+Started: msgserver-3 : java -cp /home/sd/sd1920.jar sd1920.trab1.server.rest.RESTMailServer 
+18a7a6e03dee28f1830e91229f5833df40cf54d4f20d59d07364a61e5e588248
 sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Creating 5 users in each domain
 1/5                                                                                [PostUser] User{chantel.rath, cfr3k96epfu5, msgserver-1, Miss Lavina Waelchi} -> 200:chantel.rath@msgserver-1
 2/5                                                                                [PostUser] User{aubrey.blick, 33floc73, msgserver-1, Dr. Temple Green} -> 200:aubrey.blick@msgserver-1
@@ -110,304 +135,785 @@ sleeping: 1 s                                                                   
 3/5                                                                                [PostUser] User{adelia.connelly, 38brfogec6p, msgserver-2, Thu Walsh} -> 200:adelia.connelly@msgserver-2
 4/5                                                                                [PostUser] User{tanja.will, f84e0jhb1, msgserver-2, Thaddeus Moen} -> 200:tanja.will@msgserver-2
 5/5                                                                                [PostUser] User{marhta.baumbach, zuuby5zxz0ikgw, msgserver-2, Emanuel Cartwright PhD} -> 200:marhta.baumbach@msgserver-2
-1/5                                                                                [PostUser SOAP] User{lauri.lakin, 8scsyjod, msgserver-3, Janette Weissnat PhD} -> OK:lauri.lakin@msgserver-3
-2/5                                                                                [PostUser SOAP] User{klara.cartwright, a8p8o6wy, msgserver-3, Odell Zemlak} -> OK:klara.cartwright@msgserver-3
-3/5                                                                                [PostUser SOAP] User{jean.pagac, cfopd23olkm06, msgserver-3, Lou Ritchie} -> OK:jean.pagac@msgserver-3
-4/5                                                                                [PostUser SOAP] User{jill.feil, e71zhm4s56lch, msgserver-3, Georgine Legros} -> OK:jill.feil@msgserver-3
-5/5                                                                                [PostUser SOAP] User{myrle.haley, wjel2ogp9g, msgserver-3, Nanette Bernier} -> OK:myrle.haley@msgserver-3
----------- Getting users
-[GetUser SOAP] lauri.lakin, 8scsyjod -> OK:User{lauri.lakin, 8scsyjod, msgserver-3, Janette Weissnat PhD}
-[GetUser SOAP] klara.cartwright, a8p8o6wy -> OK:User{klara.cartwright, a8p8o6wy, msgserver-3, Odell Zemlak}
-[GetUser SOAP] jean.pagac, cfopd23olkm06 -> OK:User{jean.pagac, cfopd23olkm06, msgserver-3, Lou Ritchie}
-[GetUser SOAP] jill.feil, e71zhm4s56lch -> OK:User{jill.feil, e71zhm4s56lch, msgserver-3, Georgine Legros}
-[GetUser SOAP] myrle.haley, wjel2ogp9g -> OK:User{myrle.haley, wjel2ogp9g, msgserver-3, Nanette Bernier}
-[GetUser] chantel.rath, cfr3k96epfu5 -> 200:User{chantel.rath, cfr3k96epfu5, msgserver-1, Miss Lavina Waelchi}
-[GetUser] aubrey.blick, 33floc73 -> 200:User{aubrey.blick, 33floc73, msgserver-1, Dr. Temple Green}
-[GetUser] perry.hessel, kq2g5v64pqqrdh9 -> 200:User{perry.hessel, kq2g5v64pqqrdh9, msgserver-1, Herb Hansen}
-[GetUser] corrie.bailey, scerl0yfs52 -> 200:User{corrie.bailey, scerl0yfs52, msgserver-1, Dannie Armstrong}
-[GetUser] catherin.gutmann, zdqm4u574 -> 200:User{catherin.gutmann, zdqm4u574, msgserver-1, Alton Koelpin DDS}
-[GetUser] duane.bradtke, p7a5w3kzbzgb4p -> 200:User{duane.bradtke, p7a5w3kzbzgb4p, msgserver-2, Gerry Frami}
-[GetUser] bradley.huel, e4afjfbwrow1z -> 200:User{bradley.huel, e4afjfbwrow1z, msgserver-2, Kristi Harris}
-[GetUser] adelia.connelly, 38brfogec6p -> 200:User{adelia.connelly, 38brfogec6p, msgserver-2, Thu Walsh}
-[GetUser] tanja.will, f84e0jhb1 -> 200:User{tanja.will, f84e0jhb1, msgserver-2, Thaddeus Moen}
-[GetUser] marhta.baumbach, zuuby5zxz0ikgw -> 200:User{marhta.baumbach, zuuby5zxz0ikgw, msgserver-2, Emanuel Cartwright PhD}
----------- Getting users in random domain
-[GetUser] lauri.lakin, 8scsyjod -> 403:null
-[GetUser] klara.cartwright, a8p8o6wy -> 403:null
-[GetUser] jean.pagac, cfopd23olkm06 -> 403:null
-[GetUser] jill.feil, e71zhm4s56lch -> 403:null
-[GetUser SOAP] myrle.haley, wjel2ogp9g -> OK:User{myrle.haley, wjel2ogp9g, msgserver-3, Nanette Bernier}
-[GetUser] chantel.rath, cfr3k96epfu5 -> 403:null
-[GetUser SOAP] aubrey.blick, 33floc73 -> -1 getUser: User fetch was rejected due to missing user URI:http://172.18.0.5:8080/soap/users/?wsdl
-sd1920.trab1.api.soap.MessagesException: getUser: User fetch was rejected due to missing user
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createUserDefinedException(SOAPFaultBuilder.java:302)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createException(SOAPFaultBuilder.java:111)
-	at com.sun.xml.ws.client.sei.StubHandler.readResponse(StubHandler.java:223)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:176)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:263)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:89)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:62)
-	at com.sun.xml.ws.client.sei.SEIStub.invoke(SEIStub.java:131)
-	at com.sun.proxy.$Proxy72.getUser(Unknown Source)
-	at sd1920.trab1.clt.soap.SOAPUserServiceClt.getUser(SOAPUserServiceClt.java:106)
-	at sd1920.trab1.ServerState.lambda$execGetUser$0(ServerState.java:89)
-	at sd1920.trab1.ServerState.runOp(ServerState.java:213)
-	at sd1920.trab1.ServerState.execGetUser(ServerState.java:89)
-	at tests.MessagesTest.execGetUser(MessagesTest.java:134)
-	at tests.workloads.MultiDomainSendMessage.lambda$execute$3(MultiDomainSendMessage.java:34)
-	at java.util.ArrayList.forEach(ArrayList.java:1249)
-	at tests.workloads.MultiDomainSendMessage.lambda$execute$4(MultiDomainSendMessage.java:34)
-	at java.util.HashMap.forEach(HashMap.java:1288)
-	at tests.workloads.MultiDomainSendMessage.execute(MultiDomainSendMessage.java:34)
-	at tests.BaseTest.test(BaseTest.java:150)
-	at tests.Tester.main(Tester.java:119)
-
-[GetUser] perry.hessel, kq2g5v64pqqrdh9 -> 403:null
-[GetUser] corrie.bailey, scerl0yfs52 -> 403:null
-[GetUser] catherin.gutmann, zdqm4u574 -> 403:null
-[GetUser] duane.bradtke, p7a5w3kzbzgb4p -> 200:User{duane.bradtke, p7a5w3kzbzgb4p, msgserver-2, Gerry Frami}
-[GetUser] bradley.huel, e4afjfbwrow1z -> 200:User{bradley.huel, e4afjfbwrow1z, msgserver-2, Kristi Harris}
-[GetUser] adelia.connelly, 38brfogec6p -> 200:User{adelia.connelly, 38brfogec6p, msgserver-2, Thu Walsh}
-[GetUser] tanja.will, f84e0jhb1 -> 403:null
-[GetUser] marhta.baumbach, zuuby5zxz0ikgw -> 403:null
----------- Creating 15 messages
-[PostMessage] cfr3k96epfu5, Msg{-1,chantel.rath@msgserver-1,Velit.,[duane.bradtke@msgserver-2,lauri.lakin@msgserver-3],1586201500938} -> 200:329022267148275593
-[PostMessage] 33floc73, Msg{-1,aubrey.blick@msgserver-1,Incidunt voluptas quia.,[duane.bradtke@msgserver-2,klara.cartwright@msgserver-3,lauri.lakin@msgserver-3,bradley.huel@msgserver-2],1586201501608} -> 200:3337769325661943652
-[PostMessage] kq2g5v64pqqrdh9, Msg{-1,perry.hessel@msgserver-1,Accusamus autem.,[jean.pagac@msgserver-3,adelia.connelly@msgserver-2,duane.bradtke@msgserver-2,klara.cartwright@msgserver-3,lauri.lakin@msgserver-3,bradley.huel@msgserver-2],1586201501682} -> 200:8943902855656587070
-[PostMessage] scerl0yfs52, Msg{-1,corrie.bailey@msgserver-1,Libero omnis neque similique.,[jean.pagac@msgserver-3,jill.feil@msgserver-3,adelia.connelly@msgserver-2,duane.bradtke@msgserver-2,klara.cartwright@msgserver-3,lauri.lakin@msgserver-3,bradley.huel@msgserver-2,tanja.will@msgserver-2],1586201501738} -> 200:9153124418895736199
-[PostMessage] zdqm4u574, Msg{-1,catherin.gutmann@msgserver-1,Et consequatur.,[jean.pagac@msgserver-3,jill.feil@msgserver-3,adelia.connelly@msgserver-2,myrle.haley@msgserver-3,duane.bradtke@msgserver-2,klara.cartwright@msgserver-3,lauri.lakin@msgserver-3,bradley.huel@msgserver-2,tanja.will@msgserver-2,marhta.baumbach@msgserver-2],1586201501882} -> 200:7583763631000124816
-[PostMessage] p7a5w3kzbzgb4p, Msg{-1,duane.bradtke@msgserver-2,Et debitis.,[lauri.lakin@msgserver-3,chantel.rath@msgserver-1],1586201501927} -> 200:637680839813701615
-[PostMessage] e4afjfbwrow1z, Msg{-1,bradley.huel@msgserver-2,Sint et dolorum quia et possimus.,[klara.cartwright@msgserver-3,lauri.lakin@msgserver-3,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1586201502492} -> 200:46688425577165879
-[PostMessage] 38brfogec6p, Msg{-1,adelia.connelly@msgserver-2,Omnis quo iste.,[jean.pagac@msgserver-3,klara.cartwright@msgserver-3,perry.hessel@msgserver-1,lauri.lakin@msgserver-3,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1586201502561} -> 200:2007771497459214317
-[PostMessage] f84e0jhb1, Msg{-1,tanja.will@msgserver-2,Exercitationem commodi.,[jean.pagac@msgserver-3,jill.feil@msgserver-3,klara.cartwright@msgserver-3,perry.hessel@msgserver-1,lauri.lakin@msgserver-3,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1586201502659} -> 200:2398342452353712270
-[PostMessage] zuuby5zxz0ikgw, Msg{-1,marhta.baumbach@msgserver-2,Reprehenderit provident repudiandae architecto.,[jean.pagac@msgserver-3,jill.feil@msgserver-3,myrle.haley@msgserver-3,klara.cartwright@msgserver-3,perry.hessel@msgserver-1,catherin.gutmann@msgserver-1,lauri.lakin@msgserver-3,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1586201502708} -> 200:289037125158463010
-[PostMessage SOAP] 8scsyjod, Msg{-1,lauri.lakin@msgserver-3,Optio quaerat fugiat maiores.,[duane.bradtke@msgserver-2,chantel.rath@msgserver-1],1586201502805} -> -1 Client received SOAP Fault from server: java.lang.NullPointerException Please see the server log to find more detail regarding exact cause of the failure. URI:http://172.18.0.5:8080/soap/messages/?wsdl
-com.sun.xml.ws.fault.ServerSOAPFaultException: Client received SOAP Fault from server: java.lang.NullPointerException Please see the server log to find more detail regarding exact cause of the failure.
-	at com.sun.xml.ws.fault.SOAP11Fault.getProtocolException(SOAP11Fault.java:163)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createException(SOAPFaultBuilder.java:98)
-	at com.sun.xml.ws.client.sei.StubHandler.readResponse(StubHandler.java:223)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:176)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:263)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:89)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:62)
-	at com.sun.xml.ws.client.sei.SEIStub.invoke(SEIStub.java:131)
-	at com.sun.proxy.$Proxy79.postMessage(Unknown Source)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.postMessage(SOAPMessagesServiceClt.java:65)
+1/5                                                                                [PostUser] User{lauri.lakin, 8scsyjod, msgserver-3, Janette Weissnat PhD} -> 200:lauri.lakin@msgserver-3
+2/5                                                                                [PostUser] User{klara.cartwright, a8p8o6wy, msgserver-3, Odell Zemlak} -> 200:klara.cartwright@msgserver-3
+3/5                                                                                [PostUser] User{jean.pagac, cfopd23olkm06, msgserver-3, Lou Ritchie} -> 200:jean.pagac@msgserver-3
+4/5                                                                                [PostUser] User{jill.feil, e71zhm4s56lch, msgserver-3, Georgine Legros} -> 200:jill.feil@msgserver-3
+5/5                                                                                [PostUser] User{myrle.haley, wjel2ogp9g, msgserver-3, Nanette Bernier} -> 200:myrle.haley@msgserver-3
+sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Creating message to faulty domain: 1 dst
+Starting failures for 20000 ms
+exec [/sbin/iptables -A INPUT -p tcp --destination-port 8080 -j DROP] in msgserver-2
+Executing op and waiting for failure to expire
+[PostMessage] scerl0yfs52, Msg{-1,corrie.bailey@msgserver-1,Velit.,[adelia.connelly@msgserver-2],1586205000889} -> 200:7019986406233117569
+exec [/sbin/iptables --flush] in msgserver-2
+sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Checking if message was sent
+[GetMessage] adelia.connelly, mid=7019986406233117569, pwd=38brfogec6p -> 200:Msg{7019986406233117569,Dannie Armstrong <corrie.bailey@msgserver-1>,Velit.,[adelia.connelly@msgserver-2],1586205000889}
+---------- Creating message to faulty domain: 1 dst in two domains
+Starting failures for 20000 ms
+exec [/sbin/iptables -A INPUT -p tcp --destination-port 8080 -j DROP] in msgserver-2
+exec [/sbin/iptables -A INPUT -p tcp --destination-port 8080 -j DROP] in msgserver-3
+Executing op and waiting for failure to expire
+exec [/sbin/iptables --flush] in msgserver-2
+exec [/sbin/iptables --flush] in msgserver-3
+[PostMessage] zdqm4u574, Msg{-1,catherin.gutmann@msgserver-1,Incidunt voluptas quia.,[myrle.haley@msgserver-3,marhta.baumbach@msgserver-2],1586205023120} -> 200:372411677819399304
+sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Checking if message was sent
+[GetMessage] marhta.baumbach, mid=372411677819399304, pwd=zuuby5zxz0ikgw -> 200:Msg{372411677819399304,Alton Koelpin DDS <catherin.gutmann@msgserver-1>,Incidunt voluptas quia.,[myrle.haley@msgserver-3,marhta.baumbach@msgserver-2],1586205023120}
+[GetMessage] myrle.haley, mid=372411677819399304, pwd=wjel2ogp9g -> 200:Msg{372411677819399304,Alton Koelpin DDS <catherin.gutmann@msgserver-1>,Incidunt voluptas quia.,[myrle.haley@msgserver-3,marhta.baumbach@msgserver-2],1586205023120}
+---------- Creating message to faulty domain: 2 dsts
+Starting failures for 20000 ms
+exec [/sbin/iptables -A INPUT -p tcp --destination-port 8080 -j DROP] in msgserver-3
+Executing op and waiting for failure to expire
+[PostMessage] f84e0jhb1, Msg{-1,tanja.will@msgserver-2,Accusamus autem.,[jill.feil@msgserver-3,marhta.baumbach@msgserver-2],1586205047755} -> 200:7869363153270914134
+exec [/sbin/iptables --flush] in msgserver-3
+sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Checking if message was sent
+[GetMessage] marhta.baumbach, mid=7869363153270914134, pwd=zuuby5zxz0ikgw -> 200:Msg{7869363153270914134,Thaddeus Moen <tanja.will@msgserver-2>,Accusamus autem.,[jill.feil@msgserver-3,marhta.baumbach@msgserver-2],1586205047755}
+[GetMessage] jill.feil, mid=7869363153270914134, pwd=e71zhm4s56lch -> 200:Msg{7869363153270914134,Thaddeus Moen <tanja.will@msgserver-2>,Accusamus autem.,[jill.feil@msgserver-3,marhta.baumbach@msgserver-2],1586205047755}
+OK                                                                                                                   
+killByImage(sd1920-trab1-52890-53277): Removing container: [/msgserver-3]
+killByImage(sd1920-trab1-52890-53277): Removing container: [/msgserver-2]
+killByImage(sd1920-trab1-52890-53277): Removing container: [/msgserver-1]
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+11b )	 Testing Async fault tolerance across multiple domains : 3 REST servers; 0 SOAP servers; fault period (ms): 40000
+          Failing this test probably means that your fault tolerance is not asynchronous
+---------------------------------------------------------------
+Starting 3 REST services instances <sd1920.trab1.server.rest.RESTMailServer>
+INFO: Starting 3 REST services instances <sd1920.trab1.server.rest.RESTMailServer>
+CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-1 -h msgserver-1 sd1920-trab1-52890-53277 java -cp /home/sd/sd1920.jar sd1920.trab1.server.rest.RESTMailServer
+Started: msgserver-1 : java -cp /home/sd/sd1920.jar sd1920.trab1.server.rest.RESTMailServer 
+4e836a945103e2381316c8b714bf69762eb77e135a4c61d0962ad487472fb342
+CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-2 -h msgserver-2 sd1920-trab1-52890-53277 java -cp /home/sd/sd1920.jar sd1920.trab1.server.rest.RESTMailServer
+Started: msgserver-2 : java -cp /home/sd/sd1920.jar sd1920.trab1.server.rest.RESTMailServer 
+42da9741099aa419f83318884915a7faab7d4d29a105685ac07390a57332fd7c
+CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-3 -h msgserver-3 sd1920-trab1-52890-53277 java -cp /home/sd/sd1920.jar sd1920.trab1.server.rest.RESTMailServer
+Started: msgserver-3 : java -cp /home/sd/sd1920.jar sd1920.trab1.server.rest.RESTMailServer 
+1cd30451eebca2e0a42ffc31eb801abb232773c3c98c906ce40207fda7916472
+sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Creating 5 users in each domain
+1/5                                                                                [PostUser] User{chantel.rath, cfr3k96epfu5, msgserver-1, Miss Lavina Waelchi} -> 200:chantel.rath@msgserver-1
+2/5                                                                                [PostUser] User{aubrey.blick, 33floc73, msgserver-1, Dr. Temple Green} -> 200:aubrey.blick@msgserver-1
+3/5                                                                                [PostUser] User{perry.hessel, kq2g5v64pqqrdh9, msgserver-1, Herb Hansen} -> 200:perry.hessel@msgserver-1
+4/5                                                                                [PostUser] User{corrie.bailey, scerl0yfs52, msgserver-1, Dannie Armstrong} -> 200:corrie.bailey@msgserver-1
+5/5                                                                                [PostUser] User{catherin.gutmann, zdqm4u574, msgserver-1, Alton Koelpin DDS} -> 200:catherin.gutmann@msgserver-1
+1/5                                                                                [PostUser] User{duane.bradtke, p7a5w3kzbzgb4p, msgserver-2, Gerry Frami} -> 200:duane.bradtke@msgserver-2
+2/5                                                                                [PostUser] User{bradley.huel, e4afjfbwrow1z, msgserver-2, Kristi Harris} -> 200:bradley.huel@msgserver-2
+3/5                                                                                [PostUser] User{adelia.connelly, 38brfogec6p, msgserver-2, Thu Walsh} -> 200:adelia.connelly@msgserver-2
+4/5                                                                                [PostUser] User{tanja.will, f84e0jhb1, msgserver-2, Thaddeus Moen} -> 200:tanja.will@msgserver-2
+5/5                                                                                [PostUser] User{marhta.baumbach, zuuby5zxz0ikgw, msgserver-2, Emanuel Cartwright PhD} -> 200:marhta.baumbach@msgserver-2
+1/5                                                                                [PostUser] User{lauri.lakin, 8scsyjod, msgserver-3, Janette Weissnat PhD} -> 200:lauri.lakin@msgserver-3
+2/5                                                                                [PostUser] User{klara.cartwright, a8p8o6wy, msgserver-3, Odell Zemlak} -> 200:klara.cartwright@msgserver-3
+3/5                                                                                [PostUser] User{jean.pagac, cfopd23olkm06, msgserver-3, Lou Ritchie} -> 200:jean.pagac@msgserver-3
+4/5                                                                                [PostUser] User{jill.feil, e71zhm4s56lch, msgserver-3, Georgine Legros} -> 200:jill.feil@msgserver-3
+5/5                                                                                [PostUser] User{myrle.haley, wjel2ogp9g, msgserver-3, Nanette Bernier} -> 200:myrle.haley@msgserver-3
+sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Creating message to faulty domain: 1 dst
+Starting failures for 40000 ms
+exec [/sbin/iptables -A INPUT -p tcp --destination-port 8080 -j DROP] in msgserver-3
+Executing op and waiting for failure to expire
+[PostMessage] 38brfogec6p, Msg{-1,adelia.connelly@msgserver-2,Velit.,[jill.feil@msgserver-3],1586205076918} -> -1 java.net.SocketTimeoutException: Read timed out URI:http://172.18.0.4:8080/rest
+javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: Read timed out
+	at org.glassfish.jersey.client.internal.HttpUrlConnector.apply(HttpUrlConnector.java:261)
+	at org.glassfish.jersey.client.ClientRuntime.invoke(ClientRuntime.java:296)
+	at org.glassfish.jersey.client.JerseyInvocation.lambda$invoke$0(JerseyInvocation.java:609)
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:292)
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:274)
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:205)
+	at org.glassfish.jersey.process.internal.RequestScope.runInScope(RequestScope.java:390)
+	at org.glassfish.jersey.client.JerseyInvocation.invoke(JerseyInvocation.java:608)
+	at org.glassfish.jersey.client.JerseyInvocation$Builder.method(JerseyInvocation.java:421)
+	at org.glassfish.jersey.client.JerseyInvocation$Builder.post(JerseyInvocation.java:327)
+	at sd1920.trab1.clt.rest.RESTMessagesServiceClt.postMessage(RESTMessagesServiceClt.java:44)
 	at sd1920.trab1.ServerState.lambda$execPostMessage$4(ServerState.java:146)
 	at sd1920.trab1.ServerState.runOp(ServerState.java:213)
 	at sd1920.trab1.ServerState.execPostMessage(ServerState.java:146)
 	at tests.MessagesTest.execPostMessage(MessagesTest.java:171)
 	at tests.MessagesTest.execPostMessage(MessagesTest.java:165)
-	at tests.workloads.MultiDomainSendMessage.execute(MultiDomainSendMessage.java:54)
+	at tests.workloads.FaultsAsyncMessagesWorkload.execute(FaultsAsyncMessagesWorkload.java:58)
 	at tests.BaseTest.test(BaseTest.java:150)
-	at tests.Tester.main(Tester.java:119)
+	at tests.Tester.main(Tester.java:131)
+Caused by: java.net.SocketTimeoutException: Read timed out
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.socketRead(SocketInputStream.java:116)
+	at java.net.SocketInputStream.read(SocketInputStream.java:171)
+	at java.net.SocketInputStream.read(SocketInputStream.java:141)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:246)
+	at java.io.BufferedInputStream.read1(BufferedInputStream.java:286)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:345)
+	at sun.net.www.http.HttpClient.parseHTTPHeader(HttpClient.java:704)
+	at sun.net.www.http.HttpClient.parseHTTP(HttpClient.java:647)
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1569)
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1474)
+	at java.net.HttpURLConnection.getResponseCode(HttpURLConnection.java:480)
+	at org.glassfish.jersey.client.internal.HttpUrlConnector._apply(HttpUrlConnector.java:367)
+	at org.glassfish.jersey.client.internal.HttpUrlConnector.apply(HttpUrlConnector.java:259)
+	... 18 more
 
-TestFailedException: PostMsg = Msg{-1,Janette Weissnat PhD <lauri.lakin@msgserver-3>,Optio quaerat fugiat maiores.,[duane.bradtke@msgserver-2,chantel.rath@msgserver-1],1586201502805} ; pwd = 8scsyjod
+TestFailedException: PostMsg = Msg{-1,Thu Walsh <adelia.connelly@msgserver-2>,Velit.,[jill.feil@msgserver-3],1586205076918} ; pwd = 38brfogec6p
 Expected : 200; received : -1
 	at sd1920.trab1.ServerState.execPostMessage(ServerState.java:155)
 	at tests.MessagesTest.execPostMessage(MessagesTest.java:171)
 	at tests.MessagesTest.execPostMessage(MessagesTest.java:165)
-	at tests.workloads.MultiDomainSendMessage.execute(MultiDomainSendMessage.java:54)
+	at tests.workloads.FaultsAsyncMessagesWorkload.execute(FaultsAsyncMessagesWorkload.java:58)
 	at tests.BaseTest.test(BaseTest.java:150)
-	at tests.Tester.main(Tester.java:119)
-FAILED: PostMsg = Msg{-1,Janette Weissnat PhD <lauri.lakin@msgserver-3>,Optio quaerat fugiat maiores.,[duane.bradtke@msgserver-2,chantel.rath@msgserver-1],1586201502805} ; pwd = 8scsyjod
+	at tests.Tester.main(Tester.java:131)
+FAILED: PostMsg = Msg{-1,Thu Walsh <adelia.connelly@msgserver-2>,Velit.,[jill.feil@msgserver-3],1586205076918} ; pwd = 38brfogec6p
 Expected : 200; received : -1
 
 
 Removing: msgserver-1
 Removing: msgserver-2
-Removing: msgserver-3
 -----------------------------------------------------------------------------------
 msgserver-1
 -----------------------------------------------------------------------------------
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
 
 
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
 
 
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: Sending request to create a new inbox in MessageResource.INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!INFO: Created new user with name: chantel.rathINFO: Sending request to create a new inbox in MessageResource.INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!INFO: Created new user with name: aubrey.blickINFO: Sending request to create a new inbox in MessageResource.INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!INFO: Created new user with name: perry.hesselINFO: Sending request to create a new inbox in MessageResource.INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!INFO: Created new user with name: corrie.baileyINFO: Sending request to create a new inbox in MessageResource.INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!INFO: Created new user with name: catherin.gutmannINFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
 
 
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
 
 
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
 
 
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
 
 
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
 
 
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
 
-Created new message with id: 329022267148275593
-ENTREI NO FORWARD
-forwardMessage: Trying to forward message 329022267148275593 to msgserver-3
-NAO BEANS
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
 
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
 
-forwardMessage: Trying to forward message 329022267148275593 to msgserver-2
-ENTREI BEM E COM SAUDE
-ENTREI NO WHILE
-Created new message with id: 3337769325661943652
-ENTREI NO FORWARD
-forwardMessage: Trying to forward message 3337769325661943652 to msgserver-3
-NAO BEANS
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
 
-forwardMessage: Trying to forward message 3337769325661943652 to msgserver-2
-ENTREI BEM E COM SAUDE
-ENTREI NO WHILE
-Created new message with id: 8943902855656587070
-ENTREI NO FORWARD
-forwardMessage: Trying to forward message 8943902855656587070 to msgserver-3
-NAO BEANS
-forwardMessage: Trying to forward message 8943902855656587070 to msgserver-2
-ENTREI BEM E COM SAUDE
-ENTREI NO WHILE
-Created new message with id: 9153124418895736199
-ENTREI NO FORWARD
-forwardMessage: Trying to forward message 9153124418895736199 to msgserver-3
-NAO BEANS
-forwardMessage: Trying to forward message 9153124418895736199 to msgserver-2
-ENTREI BEM E COM SAUDE
-ENTREI NO WHILE
-Created new message with id: 7583763631000124816
-ENTREI NO FORWARD
-forwardMessage: Trying to forward message 7583763631000124816 to msgserver-3
-NAO BEANS
-forwardMessage: Trying to forward message 7583763631000124816 to msgserver-2
-ENTREI BEM E COM SAUDE
-ENTREI NO WHILE
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
 
 
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rRemoving: msgserver-3
+est
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
 
 
 -----------------------------------------------------------------------------------
 msgserver-2
 -----------------------------------------------------------------------------------
 
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: Sending request to create a new inbox in MessageResource.INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!INFO: Created new user with name: duane.bradtkeINFO: Sending request to create a new inbox in MessageResource.INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!INFO: Created new user with name: bradley.huelINFO: Sending request to create a new inbox in MessageResource.INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!INFO: Created new user with name: adelia.connellyINFO: Sending request to create a new inbox in MessageResource.INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!INFO: Created new user with name: tanja.willINFO: Sending request to create a new inbox in MessageResource.INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!INFO: Created new user with name: marhta.baumbachINFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
 
 
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
 
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
 
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
 
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
 
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
 
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
 
-
-
-
-
-
-
-
-
-Created new message with id: 637680839813701615
+Created new message with id: 4926257301833290780
 ENTREI NO FORWARD
-forwardMessage: Trying to forward message 637680839813701615 to msgserver-3
-NAO BEANS
-
-forwardMessage: Trying to forward message 637680839813701615 to msgserver-1
+forwardMessage: Trying to forward message 4926257301833290780 to msgserver-3
 ENTREI BEM E COM SAUDE
 ENTREI NO WHILE
-Created new message with id: 46688425577165879
-ENTREI NO FORWARD
-forwardMessage: Trying to forward message 46688425577165879 to msgserver-3
-NAO BEANS
+INFO: Received request to register a new message (Sender: adelia.connelly@msgserver-2; Subject: Velit.)INFO: Created new message with id: 4926257301833290780INFO: forwardMessage: Trying to forward message 4926257301833290780 to msgserver-3INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
 
-forwardMessage: Trying to forward message 46688425577165879 to msgserver-1
-ENTREI BEM E COM SAUDE
-ENTREI NO WHILE
-Created new message with id: 2007771497459214317
-ENTREI NO FORWARD
-forwardMessage: Trying to forward message 2007771497459214317 to msgserver-3
-NAO BEANS
-forwardMessage: Trying to forward message 2007771497459214317 to msgserver-1
-ENTREI BEM E COM SAUDE
-ENTREI NO WHILE
-Created new message with id: 2398342452353712270
-ENTREI NO FORWARD
-forwardMessage: Trying to forward message 2398342452353712270 to msgserver-3
-NAO BEANS
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
 
-forwardMessage: Trying to forward message 2398342452353712270 to msgserver-1
-ENTREI BEM E COM SAUDE
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: forwardMessage: Failed to forward message to msgserver-3. Retrying...INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
 ENTREI NO WHILE
-Created new message with id: 289037125158463010
-ENTREI NO FORWARD
-forwardMessage: Trying to forward message 289037125158463010 to msgserver-3
-NAO BEANS
-forwardMessage: Trying to forward message 289037125158463010 to msgserver-1
-ENTREI BEM E COM SAUDE
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: forwardMessage: Failed to forward message to msgserver-3. Retrying...INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
 ENTREI NO WHILE
 
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
 
 -----------------------------------------------------------------------------------
 msgserver-3
 -----------------------------------------------------------------------------------
-BEANS
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
 
-MessageService Server ready @ http://172.18.0.5:8080/soap
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
 
-INFO: Metro monitoring rootname successfully set to: com.sun.metro:pp=/,type=WSEndpoint,name=messages-MessageResourceSoapPort
-INFO: Metro monitoring rootname successfully set to: com.sun.metro:pp=/,type=WSEndpoint,name=users-UserResourceSoapPort
-INFO: 
-MessageService Server ready @ http://172.18.0.5:8080/soap
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
 
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
 
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
 
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
 
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
 
+INFO: Sending request to create a new inbox in MessageResource.INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
 
+INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!INFO: Created new user with name: lauri.lakinINFO: Sending request to create a new inbox in MessageResource.INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!INFO: Created new user with name: klara.cartwrightINFO: Sending request to create a new inbox in MessageResource.INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!INFO: Created new user with name: jean.pagacINFO: Sending request to create a new inbox in MessageResource.INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!INFO: Created new user with name: jill.feilINFO: Sending request to create a new inbox in MessageResource.INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!INFO: Created new user with name: myrle.haleyINFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
 
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
 
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
 
-INFO: Sending request to create a new inbox in MessageResource.
-INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-INFO: Created new user with name: lauri.lakin
-INFO: Sending request to create a new inbox in MessageResource.
-INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-INFO: Created new user with name: klara.cartwright
-INFO: Sending request to create a new inbox in MessageResource.
-INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-INFO: Created new user with name: jean.pagac
-INFO: Sending request to create a new inbox in MessageResource.
-
-INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-INFO: Created new user with name: jill.feil
-INFO: Sending request to create a new inbox in MessageResource.
-INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-INFO: Created new user with name: myrle.haley
-
-INFO: getUser: User fetch was rejected due to missing user: aubrey.blick.
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
 
 
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
 
-INFO: postForwardedMessage: Received forwarded message from Miss Lavina Waelchi <chantel.rath@msgserver-1>. ID: 329022267148275593
-INFO: postForwardedMessage: Received forwarded message from Dr. Temple Green <aubrey.blick@msgserver-1>. ID: 3337769325661943652
 
-INFO: postForwardedMessage: Received forwarded message from Herb Hansen <perry.hessel@msgserver-1>. ID: 8943902855656587070
-INFO: postForwardedMessage: Received forwarded message from Dannie Armstrong <corrie.bailey@msgserver-1>. ID: 9153124418895736199
-INFO: postForwardedMessage: Received forwarded message from Alton Koelpin DDS <catherin.gutmann@msgserver-1>. ID: 7583763631000124816
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
 
-INFO: postForwardedMessage: Received forwarded message from Gerry Frami <duane.bradtke@msgserver-2>. ID: 637680839813701615
 
-INFO: postForwardedMessage: Received forwarded message from Kristi Harris <bradley.huel@msgserver-2>. ID: 46688425577165879
-INFO: postForwardedMessage: Received forwarded message from Thu Walsh <adelia.connelly@msgserver-2>. ID: 2007771497459214317
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
 
-INFO: postForwardedMessage: Received forwarded message from Thaddeus Moen <tanja.will@msgserver-2>. ID: 2398342452353712270
-INFO: postForwardedMessage: Received forwarded message from Emanuel Cartwright PhD <marhta.baumbach@msgserver-2>. ID: 289037125158463010
-INFO: Received request to register a new message (Sender: lauri.lakin@msgserver-3; Subject: Optio quaerat fugiat maiores.)
-JORNADA DE BOMBONS
-Created new message with id: 2285207332697250295
-INFO: Created new message with id: 2285207332697250295
-INFO: TOKEN: msgserver-2.
-INFO: TOKEN: msgserver-1.
-ENTREI NO FORWARD
-forwardMessage: Trying to forward message 2285207332697250295 to msgserver-1
-INFO: forwardMessage: Trying to forward message 2285207332697250295 to msgserver-1
-ENTREI BEM E COM SAUDE
-SEVERE: null
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
 
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
+
+INFO: FROM msgserver-1 (172.18.0.3) : msgserver-1	http://172.18.0.3:8080/rest
+
+INFO: FROM msgserver-2 (172.18.0.4) : msgserver-2	http://172.18.0.4:8080/rest
+
+
+INFO: FROM msgserver-3 (172.18.0.5) : msgserver-3	http://172.18.0.5:8080/rest
 
 
 

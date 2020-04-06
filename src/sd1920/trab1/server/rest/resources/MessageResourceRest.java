@@ -13,11 +13,7 @@ import java.util.logging.Logger;
 
 import javax.inject.Singleton;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Response.Status;
-
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.client.ClientProperties;
 
 import sd1920.trab1.api.rest.MessageServiceRest;
 import sd1920.trab1.server.ServerMessageUtils;
@@ -29,14 +25,11 @@ import sd1920.trab1.api.User;
 public class MessageResourceRest extends ServerMessageUtils implements MessageServiceRest {
 
 	public MessageResourceRest() throws UnknownHostException {
+		super();
+
 		this.randomNumberGenerator = new Random(System.currentTimeMillis());
-		this.config = new ClientConfig();
-		this.config.property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT);
-		this.config.property(ClientProperties.READ_TIMEOUT, TIMEOUT);
-
+		
 		this.Log = Logger.getLogger(MessageResourceRest.class.getName());
-
-		this.client = ClientBuilder.newClient(config);
 
 		this.domain = InetAddress.getLocalHost().getHostName();
 

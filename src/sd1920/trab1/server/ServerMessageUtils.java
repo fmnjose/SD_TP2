@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
@@ -22,6 +23,7 @@ import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceException;
 
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
 
 import sd1920.trab1.api.Message;
 import sd1920.trab1.api.User;
@@ -42,7 +44,7 @@ import sd1920.trab1.api.soap.MessagesException;
 import sd1920.trab1.server.soap.SOAPMailServer;
 
 public abstract class ServerMessageUtils {
-
+    
     protected Random randomNumberGenerator;
     protected Client client;
     protected ClientConfig config;
@@ -58,11 +60,19 @@ public abstract class ServerMessageUtils {
 	public static final QName USER_QNAME = new QName(UserServiceSoap.NAMESPACE, UserServiceSoap.NAME);
 	public static final String MESSAGES_WSDL = String.format("/%s/?wsdl", MessageServiceSoap.NAME);
 	public static final String USERS_WSDL = String.format("/%s/?wsdl", UserServiceSoap.NAME);
-
-
+    
     public static final int TIMEOUT = 10000;
 	public static final int SLEEP_TIME = 5000;
 	public static final int N_TRIES = 5;
+    
+    public ServerMessageUtils(){
+        this.config = new ClientConfig();
+		this.config.property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT);
+        this.config.property(ClientProperties.READ_TIMEOUT, TIMEOUT);
+        
+        this.client = ClientBuilder.newClient(config);
+    }
+    
     /**
      * Inserts error message into the sender inbox
      * 
@@ -241,6 +251,8 @@ public abstract class ServerMessageUtils {
         Response r = null;
         List<String> failedDeliveries = null;
 
+        
+        
         System.out.println("ENTREI NO FORWARD");
         for (String domain : recipientDomains) {
             boolean error = true;
@@ -258,6 +270,9 @@ public abstract class ServerMessageUtils {
 			int tries = 0;
 
             if(uri.isRest()){
+
+
+
                 WebTarget target = client.target(uri.getUri()).path(MessageServiceRest.PATH).path("mbox");
                 System.out.println("ENTREI BEM E COM SAUDE");
                 

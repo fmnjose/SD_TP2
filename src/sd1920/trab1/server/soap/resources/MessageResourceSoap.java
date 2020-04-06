@@ -26,6 +26,8 @@ import sd1920.trab1.server.soap.SOAPMailServer;
 public class MessageResourceSoap extends ServerMessageUtils implements MessageServiceSoap {
 	
 	public MessageResourceSoap() throws UnknownHostException {
+		super();
+
 		this.randomNumberGenerator = new Random(System.currentTimeMillis());
 		
 		this.Log = Logger.getLogger(MessageResourceSoap.class.getName());
