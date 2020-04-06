@@ -17,6 +17,7 @@ import sd1920.trab1.api.User;
 import sd1920.trab1.api.soap.MessageServiceSoap;
 import sd1920.trab1.api.soap.MessagesException;
 import sd1920.trab1.api.soap.UserServiceSoap;
+import sd1920.trab1.server.ServerMessageUtils;
 import sd1920.trab1.server.rest.resources.UserResourceRest;
 import sd1920.trab1.server.soap.SOAPMailServer;
 import javax.xml.ws.BindingProvider;
@@ -27,9 +28,7 @@ import com.sun.xml.ws.client.BindingProviderProperties;
 	endpointInterface=UserServiceSoap.INTERFACE)
 public class UserResourceSoap implements UserServiceSoap{
     private static final QName MESSAGE_QNAME = new QName(MessageServiceSoap.NAMESPACE, MessageServiceSoap.NAME);
-	private static final QName USER_QNAME = new QName(UserServiceSoap.NAMESPACE, UserServiceSoap.NAME);
     private static final String MESSAGES_WSDL = String.format("/%s/?wsdl", MessageServiceSoap.NAME);
-	private static final String USERS_WSDL = String.format("/%s/?wsdl", UserServiceSoap.NAME);
 
 
     private final Map<String, User> users = new HashMap<String, User>();
@@ -63,11 +62,11 @@ public class UserResourceSoap implements UserServiceSoap{
             return false;
         }
 
-        ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.CONNECT_TIMEOUT, SOAPMailServer.TIMEOUT);
-        ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT, SOAPMailServer.TIMEOUT);
+        ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.CONNECT_TIMEOUT, ServerMessageUtils.TIMEOUT);
+        ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT, ServerMessageUtils.TIMEOUT);
         
 
-        while(error && tries< SOAPMailServer.N_TRIES){
+        while(error && tries< ServerMessageUtils.N_TRIES){
             error = false;
 
             try{
@@ -81,7 +80,7 @@ public class UserResourceSoap implements UserServiceSoap{
                 Log.info("createUserInbox: Communication error. Retrying...");
                 wse.printStackTrace();
                 try{
-                    Thread.sleep(SOAPMailServer.SLEEP_TIME);
+                    Thread.sleep(ServerMessageUtils.SLEEP_TIME);
                 }
                 catch(InterruptedException e){
                     Log.info("Log a dizer 'what?'");

@@ -58,7 +58,9 @@ public class Discovery {
 	public class DomainInfo{
 		private String uri;
 		private LocalTime time;
+		private boolean isRest;
 		private DomainInfo(String uri, LocalTime time){
+			this.isRest = uri.substring(uri.length()-4).equalsIgnoreCase("rest");
 			this.uri = uri;
 			this.time = time;
 		}
@@ -73,6 +75,10 @@ public class Discovery {
 
 		public String getUri(){
 			return this.uri;
+		}
+
+		public boolean isRest(){
+			return this.isRest;
 		}
 
 		@Override
@@ -125,7 +131,7 @@ public class Discovery {
 						if( msgElems.length == 2) {	//periodic announcement
 							String domainName = pkt.getAddress().getHostName().split("\\.")[0];
 							//Log.info(String.format("FROM %s (%s) : %s\n", domainName, 
-									//pkt.getAddress().getHostAddress(), msg));
+							//		pkt.getAddress().getHostAddress(), msg));
 							
 							serviceName = msgElems[0];
 							uri = msgElems[1];
@@ -158,9 +164,7 @@ public class Discovery {
 	 * @return an array of URI with the service instances discovered. 
 	 * 
 	 */
-	public String knownUrisOf(String domainName) {
-		DomainInfo info = this.record.get(domainName);
-
-		return info == null ? null : info.getUri();
+	public DomainInfo knownUrisOf(String domainName) {
+		return this.record.get(domainName);
 	}
 }

@@ -29,10 +29,6 @@ public class SOAPMailServer {
 	public static final String SOAP_MESSAGES_PATH = "/soap/messages";
 	public static final String SOAP_USERS_PATH = "/soap/users";
 
-	public static final int TIMEOUT = 10000;
-	public static final int SLEEP_TIME = 5000;
-	public static final int N_TRIES = 5;
-
 	public static void main(String[] args) throws Exception {
 		System.out.println("BEANS");
 
