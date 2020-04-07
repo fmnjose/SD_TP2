@@ -88,7 +88,6 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 
 	@Override
 	public Message getMessage(String user, long mid, String pwd) {
-	
 		
 		User u = this.getUserRest(user, pwd);
 		

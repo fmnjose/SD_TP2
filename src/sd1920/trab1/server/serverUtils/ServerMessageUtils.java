@@ -3,6 +3,7 @@ package sd1920.trab1.server.serverUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -256,18 +257,31 @@ public abstract class ServerMessageUtils {
 			System.out.println("forwardMessage: Trying to forward message " + msg.getId() + " to " + domain);
 			Log.info("forwardMessage: Trying to forward message " + msg.getId() + " to " + domain);            
             
+            PostRequest pr = new PostRequest(uri, msg, domain);
+            RequestHandler rh = null;
+
             synchronized(this.requests){
-                RequestHandler rh = this.requests.get(domain);
+                rh = this.requests.get(domain);
                 if(rh == null){
                     rh = new RequestHandler(config, this);
                     this.requests.put(domain, rh);
 
                     new Thread(rh).start();
                 }
-                rh.addRequest(new PostRequest(uri, msg, domain));
+            }  
+
+            try {
+                List<String> failedDeliveries = RequestHandler.processPostRequest(pr);
+
+                String senderName = ServerMessageUtils.getSenderCanonicalName(pr.getMessage().getSender());
+                for (String recipient : failedDeliveries) {
+                    saveErrorMessages(senderName, recipient, pr.getMessage());
+                }
+            } catch (ProcessingException | MalformedURLException | WebServiceException e) {
+                rh.addRequest(pr);
             }
 
-            System.out.println("BEANS");
+
         }
 	}
 
@@ -292,16 +306,24 @@ public abstract class ServerMessageUtils {
 			System.out.println("Sending delete request to domain: " + domain);
 			Log.info("Sending delete request to domain: " + domain);
 
+            DeleteRequest dr = new DeleteRequest(uri, mid, domain);
+            RequestHandler rh = null;
+
             synchronized(this.requests){
-                RequestHandler rh = this.requests.get(domain);
+                rh = this.requests.get(domain);
                 if(rh == null){
                     rh = new RequestHandler(config, this);
                     this.requests.put(domain, rh);
 
                     new Thread(rh).start();
                 }
-                rh.addRequest(new DeleteRequest(uri, mid, domain));
             }
+
+            try {
+                RequestHandler.processDeleteRequest(dr);
+            } catch (ProcessingException | WebServiceException | MalformedURLException | MessagesException e) {
+                rh.addRequest(dr);
+            }            
 		}	
 	}
 

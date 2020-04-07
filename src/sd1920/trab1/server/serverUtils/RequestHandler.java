@@ -4,7 +4,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Logger;
 
@@ -52,110 +51,119 @@ public class RequestHandler implements Runnable {
         this.requests.add(request);
     }
 
-    public boolean execPostRequest(PostRequest request) {
+    public static List<String> processPostRequest(PostRequest request) throws ProcessingException, MalformedURLException, WebServiceException{
         Response r = null;
         List<String> failedDeliveries = null;
         DomainInfo uri = request.getUri();
-        String domain = request.getDomain();
         Message msg = request.getMessage();
 
         if (uri.isRest()) {
-
+            System.out.println("MIAU");
+            
             WebTarget target = client.target(uri.getUri()).path(MessageServiceRest.PATH).path("mbox");
-
-            try {
-                r = target.request().accept(MediaType.APPLICATION_JSON)
-                        .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
-            } catch (ProcessingException e) {
-                Log.info("forwardMessage: Failed to forward message to " + domain + ". Retrying...");
-                return false;
-            }
+            
+            r = target.request().accept(MediaType.APPLICATION_JSON)
+                .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
 
             failedDeliveries = r.readEntity(new GenericType<List<String>>() {
             });
         } else {
             MessageServiceSoap msgService = null;
 
-            try {
-                Service service = Service.create(new URL(uri.getUri() + ServerMessageUtils.MESSAGES_WSDL),
-                        ServerMessageUtils.MESSAGE_QNAME);
-                msgService = service.getPort(MessageServiceSoap.class);
-            } catch (MalformedURLException e) {
-                Log.info("forwardMessage: Bad Url");
-                return false;
-            } catch (WebServiceException e) {
-                Log.info("forwardMessage: Failed to forward message to " + domain + ".");
-                return false;
-            }
+            
+            Service service = Service.create(new URL(uri.getUri() + ServerMessageUtils.MESSAGES_WSDL),
+                    ServerMessageUtils.MESSAGE_QNAME);
+            msgService = service.getPort(MessageServiceSoap.class);
+            
 
             ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.CONNECT_TIMEOUT,
                     ServerMessageUtils.TIMEOUT);
             ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT,
                     ServerMessageUtils.TIMEOUT);
 
-            try {
-                failedDeliveries = msgService.postForwardedMessage(msg);
-            } catch (WebServiceException wse) {
-                Log.info("forwardMessage: Communication error. Retrying...");
-
-                return false;
-            }
+            
+            failedDeliveries = msgService.postForwardedMessage(msg);
+            
         }
 
-        String senderName = ServerMessageUtils.getSenderCanonicalName(msg.getSender());
+        return failedDeliveries;
+    }
+
+    public boolean execPostRequest(PostRequest request) {
+       
+        List<String> failedDeliveries = null;
+        try{
+            failedDeliveries = processPostRequest(request);
+        }
+        catch (ProcessingException e) {
+            Log.info("forwardMessage: Failed to forward message to " + request.getDomain() + ". Retrying...");
+            return false;
+        }
+        catch (MalformedURLException e) {
+            Log.info("forwardMessage: Bad Url");
+            return false;
+        } 
+        catch (WebServiceException e) {
+            Log.info("forwardMessage: Failed to forward message to " + request.getDomain() + ".");
+            return true;
+        }
+
+        String senderName = ServerMessageUtils.getSenderCanonicalName(request.getMessage().getSender());
         for (String recipient : failedDeliveries) {
-            utils.saveErrorMessages(senderName, recipient, msg);
+            utils.saveErrorMessages(senderName, recipient, request.getMessage());
         }
 
         return true;
     }
 
-    public boolean execDeleteRequest(DeleteRequest request) {
+    public static void processDeleteRequest(DeleteRequest request) throws ProcessingException, 
+                        MessagesException, WebServiceException, MalformedURLException {
+        
         DomainInfo uri = request.getUri();
-        String domain = request.getDomain();
         String mid = request.getMid();
+
+        System.out.println("POE O PEEPEE NO MEU POOPOO");
 
         if (uri.isRest()) {
 
             WebTarget target = client.target(uri.getUri()).path(MessageResourceRest.PATH).path("msg");
 
-            try {
-                target.path(mid).request().delete();
-            } catch (ProcessingException e) {
-                System.out.println("deleteFromDomains: Failed to redirect request to " + domain + ". Retrying...");
-                Log.info("deleteFromDomains: Failed to redirect request to " + domain + ". Retrying...");
-                return false;
-            }
+            target.path(mid).request().delete();
 
         } else {
             MessageServiceSoap msgService = null;
-
-            try {
-                Service service = Service.create(new URL(uri.getUri() + ServerMessageUtils.MESSAGES_WSDL),
-                        ServerMessageUtils.MESSAGE_QNAME);
-                msgService = service.getPort(MessageServiceSoap.class);
-            } catch (MalformedURLException e) {
-                Log.info("forwardMessage: Bad Url");
-                return false;
-            } catch (WebServiceException e) {
-                Log.info("forwardMessage: Failed to forward message to " + domain + ".");
-                return false;
-            }
+            
+            Service service = Service.create(new URL(uri.getUri() + ServerMessageUtils.MESSAGES_WSDL),
+                    ServerMessageUtils.MESSAGE_QNAME);
+            msgService = service.getPort(MessageServiceSoap.class);
+            
 
             ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.CONNECT_TIMEOUT,
                     ServerMessageUtils.TIMEOUT);
             ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT,
                     ServerMessageUtils.TIMEOUT);
 
-            try {
-                msgService.deleteForwardedMessage(Long.valueOf(mid));
-            } catch (MessagesException me) {
-                Log.info("forwardMessage: Error, could not send the message.");
-            } catch (WebServiceException wse) {
-                Log.info("forwardMessage: Communication error. Retrying...");
-                return false;
-            }
+            
+            msgService.deleteForwardedMessage(Long.valueOf(mid));
+        }
+    }
 
+    public boolean execDeleteRequest(DeleteRequest request) {
+        try {
+            processDeleteRequest(request);
+        } catch (ProcessingException e) {
+            System.out.println("deleteFromDomains: Failed to redirect request to " + request.getDomain() + ". Retrying...");
+            Log.info("deleteFromDomains: Failed to redirect request to " + request.getDomain() + ". Retrying...");
+            return false;
+        } catch (MalformedURLException e) {
+            Log.info("deleteFromDomains: Bad Url");
+            return false;
+        } catch (WebServiceException e) {
+            Log.info("deleteFromDomains: Failed to forward message to " + request.getDomain() + ".");
+            return true;
+        } catch (MessagesException me) {
+            Log.info("deleteFromDomains: Error, could not send the message.");
+            return true;
         }
 
         return true;
