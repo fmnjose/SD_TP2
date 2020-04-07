@@ -19,7 +19,7 @@ import org.glassfish.jersey.client.ClientProperties;
 
 import sd1920.trab1.api.User;
 import sd1920.trab1.api.rest.UserServiceRest;
-import sd1920.trab1.server.ServerMessageUtils;
+import sd1920.trab1.server.serverUtils.ServerMessageUtils;
 import sd1920.trab1.server.rest.RESTMailServer;
 
 @Singleton

@@ -1,10 +1,8 @@
-package sd1920.trab1.server;
+package sd1920.trab1.server.serverUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -13,9 +11,7 @@ import java.util.logging.Logger;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -28,11 +24,9 @@ import org.glassfish.jersey.client.ClientProperties;
 import sd1920.trab1.api.Message;
 import sd1920.trab1.api.User;
 import sd1920.trab1.api.Discovery.DomainInfo;
-import sd1920.trab1.api.rest.MessageServiceRest;
 import sd1920.trab1.api.rest.UserServiceRest;
 import sd1920.trab1.api.soap.UserServiceSoap;
 import sd1920.trab1.server.rest.RESTMailServer;
-import sd1920.trab1.server.rest.resources.MessageResourceRest;
 
 import java.net.UnknownHostException;
 import javax.xml.namespace.QName;
@@ -50,9 +44,10 @@ public abstract class ServerMessageUtils {
     protected ClientConfig config;
     protected String domain;
     protected String serverUri;
-    protected Logger Log;
+    protected static Logger Log;
     protected final Map<Long, Message> allMessages = new HashMap<Long, Message>();
     protected final Map<String, Set<Long>> userInboxs = new HashMap<String, Set<Long>>();
+    protected final Map<String, RequestHandler> requests = new HashMap<>();
 
     public static final String ERROR_FORMAT = "FALHA NO ENVIO DE %s PARA %s";
     public static final String SENDER_FORMAT = "%s <%s@%s>";
@@ -60,11 +55,11 @@ public abstract class ServerMessageUtils {
 	public static final QName USER_QNAME = new QName(UserServiceSoap.NAMESPACE, UserServiceSoap.NAME);
 	public static final String MESSAGES_WSDL = String.format("/%s/?wsdl", MessageServiceSoap.NAME);
 	public static final String USERS_WSDL = String.format("/%s/?wsdl", UserServiceSoap.NAME);
-    
+
     public static final int TIMEOUT = 10000;
-	public static final int SLEEP_TIME = 5000;
-	public static final int N_TRIES = 5;
-    
+	public static final int SLEEP_TIME = 500;
+    public static final int N_TRIES = 5;
+
     public ServerMessageUtils(){
         this.config = new ClientConfig();
 		this.config.property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT);
@@ -248,14 +243,7 @@ public abstract class ServerMessageUtils {
     }
     
     protected void forwardMessage(Set<String> recipientDomains, Message msg, boolean isRest) {
-        Response r = null;
-        List<String> failedDeliveries = null;
-
-        
-        
-        System.out.println("ENTREI NO FORWARD");
         for (String domain : recipientDomains) {
-            boolean error = true;
             DomainInfo uri = isRest ? RESTMailServer.serverRecord.knownUrisOf(domain)
                                     : SOAPMailServer.serverRecord.knownUrisOf(domain);
 
@@ -266,101 +254,21 @@ public abstract class ServerMessageUtils {
 			}
 
 			System.out.println("forwardMessage: Trying to forward message " + msg.getId() + " to " + domain);
-			Log.info("forwardMessage: Trying to forward message " + msg.getId() + " to " + domain);
-			int tries = 0;
+			Log.info("forwardMessage: Trying to forward message " + msg.getId() + " to " + domain);            
+            
+            synchronized(this.requests){
+                RequestHandler rh = this.requests.get(domain);
+                if(rh == null){
+                    rh = new RequestHandler(config, this);
+                    this.requests.put(domain, rh);
 
-            if(uri.isRest()){
-
-
-
-                WebTarget target = client.target(uri.getUri()).path(MessageServiceRest.PATH).path("mbox");
-                System.out.println("ENTREI BEM E COM SAUDE");
-                
-                while (error && tries < N_TRIES) {
-                    
-                    error = false;
-
-                    try {
-                        System.out.println("ENTREI NO WHILE");
-                        r = target.request().accept(MediaType.APPLICATION_JSON)
-                                .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
-                    } catch (ProcessingException e) {
-                        Log.info("forwardMessage: Failed to forward message to " + domain + ". Retrying...");
-                        try {
-                            Thread.sleep(SLEEP_TIME);
-                        } catch (InterruptedException e1) {
-                            e1.printStackTrace();
-                        }
-                        error = true;
-                    }
-                    
+                    new Thread(rh).start();
                 }
-                
-                failedDeliveries = error ? new LinkedList<>() 
-                                    : r.readEntity(new GenericType<List<String>>(){});
-                
-            }
-            else{
-                System.out.println("NAO BEANS");
-                MessageServiceSoap msgService = null;
-			
-                try {
-                    Service	service = Service.create(new URL(uri.getUri() + MESSAGES_WSDL), MESSAGE_QNAME);
-                    msgService = service.getPort(MessageServiceSoap.class);							
-                }
-                catch(MalformedURLException e){
-                    Log.info("forwardMessage: Bad Url");
-                    return;
-                } 
-                catch(WebServiceException e){
-                    Log.info("forwardMessage: Failed to forward message to " + domain + ".");
-                    return;
-                }
-
-                ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.CONNECT_TIMEOUT, TIMEOUT);
-                ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT, TIMEOUT);
-                
-                while (error && tries < N_TRIES) {
-                    error = false;
-                    try{
-                        failedDeliveries = msgService.postForwardedMessage(msg);
-                    }
-                    catch(MessagesException me){
-                        Log.info("forwardMessage: Error, could not send the message.");
-                    }
-                    catch(WebServiceException wse){
-                        Log.info("forwardMessage: Communication error. Retrying...");
-                        wse.printStackTrace();
-                        try{
-                            Thread.sleep(SLEEP_TIME);
-                        }
-                        catch(InterruptedException e){
-                            Log.info("Log a dizer 'what?'");
-                        }
-                        error = true;
-                    }
-                    
-                    tries++;
-                }
+                rh.addRequest(new PostRequest(uri, msg, domain));
             }
 
-			if(error){
-				Log.info("forwardMessage: Failed to forward message to " + domain + ". Giving up...");
-				for(String recipient: msg.getDestination()){
-					if(recipient.split("@")[1].equals(domain))
-						failedDeliveries.add(recipient);
-				}
-			}
-			else
-				Log.info("forwardMessage: Successfully sent message to " + domain + ". Nice!");
-			
-			
-			String senderName = getSenderCanonicalName(msg.getSender());
-			for(String recipient: failedDeliveries){
-				this.saveErrorMessages(senderName, recipient, msg);
-            }
-                
-		}
+            System.out.println("BEANS");
+        }
 	}
 
 	/**
@@ -372,7 +280,6 @@ public abstract class ServerMessageUtils {
 	 */
 	protected void deleteFromDomains(Set<String> recipientDomains, String user, String mid, boolean isRest) {
 		for(String domain: recipientDomains){
-			boolean error = true;
 			DomainInfo uri = isRest ? RESTMailServer.serverRecord.knownUrisOf(domain)
                                     : SOAPMailServer.serverRecord.knownUrisOf(domain);
 			
@@ -384,71 +291,20 @@ public abstract class ServerMessageUtils {
 
 			System.out.println("Sending delete request to domain: " + domain);
 			Log.info("Sending delete request to domain: " + domain);
-			int tries = 0;
 
-            if(uri.isRest()){
+            synchronized(this.requests){
+                RequestHandler rh = this.requests.get(domain);
+                if(rh == null){
+                    rh = new RequestHandler(config, this);
+                    this.requests.put(domain, rh);
 
-                WebTarget target = client.target(uri.getUri()).path(MessageResourceRest.PATH).path("msg");
-
-                while(error && tries< N_TRIES){
-                    error = false;
-
-                    try{
-                        target.path(mid).request().delete();
-                    }
-                    catch(ProcessingException e){
-                        System.out.println("deleteFromDomains: Failed to redirect request to " + domain + ". Retrying...");
-                        Log.info("deleteFromDomains: Failed to redirect request to " + domain + ". Retrying...");
-                        error = true;
-                    }
+                    new Thread(rh).start();
                 }
+                rh.addRequest(new DeleteRequest(uri, mid, domain));
             }
-            else{
-                MessageServiceSoap msgService = null;
-                
-                try {
-                    Service	service = Service.create(new URL(uri.getUri() + MESSAGES_WSDL), MESSAGE_QNAME);
-                    msgService = service.getPort(MessageServiceSoap.class);							
-                }
-                catch(MalformedURLException e){
-                    Log.info("forwardMessage: Bad Url");
-                    return;
-                } 
-                catch(WebServiceException e){
-                    Log.info("forwardMessage: Failed to forward message to " + domain + ".");
-                    return;
-                }
-
-                ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.CONNECT_TIMEOUT, TIMEOUT);
-                ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT, TIMEOUT);
-                
-                while(error && tries< N_TRIES){
-                    error = false;
-                    try{
-                        msgService.deleteForwardedMessage(Long.valueOf(mid));
-                    }
-                    catch(MessagesException me){
-                        Log.info("forwardMessage: Error, could not send the message.");
-                    }
-                    catch(WebServiceException wse){
-                        Log.info("forwardMessage: Communication error. Retrying...");
-                        wse.printStackTrace();
-                        try{
-                            Thread.sleep(SLEEP_TIME);
-                        }
-                        catch(InterruptedException e){
-                            Log.info("Log a dizer 'what?'");
-                        }
-                        error = true;
-                    }
-                    tries++;	
-                }
-            }
-
-			if(error)
-				Log.info("deleteFromDomains: Failed to redirect request to " + domain + ". Giving up...");
-			else
-				Log.info("deleteFromDomains: Successfully redirected request to " + domain + ". More successful than i'll ever be!");		
 		}	
 	}
+
+
+
 }

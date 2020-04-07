@@ -17,7 +17,7 @@ import sd1920.trab1.api.Message;
 import sd1920.trab1.api.User;
 import sd1920.trab1.api.soap.MessageServiceSoap;
 import sd1920.trab1.api.soap.MessagesException;
-import sd1920.trab1.server.ServerMessageUtils;
+import sd1920.trab1.server.serverUtils.ServerMessageUtils;
 import sd1920.trab1.server.soap.SOAPMailServer;
 
 @WebService(serviceName=MessageServiceSoap.NAME, 
@@ -30,7 +30,7 @@ public class MessageResourceSoap extends ServerMessageUtils implements MessageSe
 
 		this.randomNumberGenerator = new Random(System.currentTimeMillis());
 		
-		this.Log = Logger.getLogger(MessageResourceSoap.class.getName());
+		Log = Logger.getLogger(MessageResourceSoap.class.getName());
 		
 		this.domain = InetAddress.getLocalHost().getHostName();
 
@@ -222,7 +222,7 @@ public class MessageResourceSoap extends ServerMessageUtils implements MessageSe
 	}
 
 	@Override
-	public List<String> postForwardedMessage(Message msg) throws MessagesException {
+	public List<String> postForwardedMessage(Message msg){
 		List<String> failedDeliveries = new LinkedList<>();
 
 		Log.info("postForwardedMessage: Received forwarded message from " + msg.getSender() + ". ID: " + msg.getId());

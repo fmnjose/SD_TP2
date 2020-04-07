@@ -17,7 +17,7 @@ import sd1920.trab1.api.User;
 import sd1920.trab1.api.soap.MessageServiceSoap;
 import sd1920.trab1.api.soap.MessagesException;
 import sd1920.trab1.api.soap.UserServiceSoap;
-import sd1920.trab1.server.ServerMessageUtils;
+import sd1920.trab1.server.serverUtils.ServerMessageUtils;
 import sd1920.trab1.server.rest.resources.UserResourceRest;
 import sd1920.trab1.server.soap.SOAPMailServer;
 import javax.xml.ws.BindingProvider;

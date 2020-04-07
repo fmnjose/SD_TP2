@@ -141,8 +141,8 @@ public class Discovery {
 						String[] msgElems = msg.split(DELIMITER);
 						if( msgElems.length == 2) {	//periodic announcement
 							String domainName = pkt.getAddress().getHostName().split("\\.")[0];
-							Log.info(String.format("FROM %s (%s) : %s\n", domainName, 
-									pkt.getAddress().getHostAddress(), msg));
+							//Log.info(String.format("FROM %s (%s) : %s\n", domainName, 
+									//pkt.getAddress().getHostAddress(), msg));
 							
 							serviceName = msgElems[0];
 							uri = msgElems[1];

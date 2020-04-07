@@ -16,7 +16,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
 import sd1920.trab1.api.rest.MessageServiceRest;
-import sd1920.trab1.server.ServerMessageUtils;
+import sd1920.trab1.server.serverUtils.ServerMessageUtils;
 import sd1920.trab1.server.rest.RESTMailServer;
 import sd1920.trab1.api.Message;
 import sd1920.trab1.api.User;
@@ -29,7 +29,7 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 
 		this.randomNumberGenerator = new Random(System.currentTimeMillis());
 		
-		this.Log = Logger.getLogger(MessageResourceRest.class.getName());
+		Log = Logger.getLogger(MessageResourceRest.class.getName());
 
 		this.domain = InetAddress.getLocalHost().getHostName();
 
@@ -102,7 +102,6 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 				System.out.println(this.allMessages.containsKey(mid));
 				System.out.println(this.userInboxs.get(user).contains(mid));
 				if(!this.allMessages.containsKey(mid) || !this.userInboxs.get(user).contains(mid)) { //check if message exists
-					System.out.println("BOM DIA, ENTREI NO IF");
 					Log.info("Requested message does not exists.");
 					throw new WebApplicationException( Status.NOT_FOUND ); //if not send HTTP 404 back to client
 				}

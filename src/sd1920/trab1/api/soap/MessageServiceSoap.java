@@ -89,7 +89,7 @@ public interface MessageServiceSoap {
 	 * @param msg              message to be forwarded
 	 */
 	@WebMethod
-	List<String> postForwardedMessage(Message msg) throws MessagesException;
+	List<String> postForwardedMessage(Message msg);
 
 	/**
 	 * Deletes a message in this server that was sent from another server
