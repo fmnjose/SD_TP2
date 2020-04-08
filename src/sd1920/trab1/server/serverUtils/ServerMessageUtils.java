@@ -324,7 +324,9 @@ public abstract class ServerMessageUtils {
             } catch (ProcessingException | WebServiceException | MalformedURLException | MessagesException e) {
                 rh.addRequest(dr);
             }            
-		}	
+        }	
+        
+        System.out.println("DONE DELETE " + System.currentTimeMillis());
 	}
 
 

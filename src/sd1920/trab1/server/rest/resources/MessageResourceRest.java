@@ -114,6 +114,7 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 
 	@Override
 	public List<Long> getMessages(String user, String pwd) {
+		System.out.println("RECEBI PEDIDO " + System.currentTimeMillis());
 		Log.info("Received request for messages with optional user parameter set to: '" + user + "'");
 		User u = this.getUserRest(user, pwd);
 
@@ -144,6 +145,7 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 		
 		synchronized(this.allMessages){
 			msg = this.allMessages.get(mid);
+			this.allMessages.remove(mid);
 		}
 
 		
@@ -229,6 +231,7 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 
 	@Override
 	public void deleteForwardedMessage(long mid) {
+		System.out.println("DELETE FORWARDED MESSAGE");
 		Set<String> recipients = null;
 		synchronized(this.allMessages){
 			if(!this.allMessages.containsKey(mid))

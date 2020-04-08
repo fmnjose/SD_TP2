@@ -44,6 +44,7 @@ public class Discovery {
 	static final InetSocketAddress DISCOVERY_ADDR = new InetSocketAddress("226.226.226.226", 2266);
 	static final int DISCOVERY_PERIOD = 1000;
 	static final int DISCOVERY_TIMEOUT = 5000;
+	static final int DEAD_PERIOD = 10000;
 
 	// Used separate the two fields that make up a service announcement.
 	private static final String DELIMITER = "\t";
@@ -61,55 +62,57 @@ public class Discovery {
 	 */
 	public Discovery(String serviceName, String serviceURI) throws UnknownHostException {
 		this.addr = DISCOVERY_ADDR;
-		this.serviceURI  = serviceURI;
+		this.serviceURI = serviceURI;
 		this.record = new HashMap<String, DomainInfo>();
 		this.domainName = InetAddress.getLocalHost().getCanonicalHostName();
 	}
-	
-	public class DomainInfo{
+
+	public class DomainInfo {
 		private String uri;
-		private LocalTime time;
+		private long time;
 		private boolean isRest;
-		private DomainInfo(String uri, LocalTime time){
-			this.isRest = uri.substring(uri.length()-4).equalsIgnoreCase("rest");
+
+		private DomainInfo(String uri) {
+			this.isRest = uri.substring(uri.length() - 4).equalsIgnoreCase("rest");
 			this.uri = uri;
-			this.time = time;
+			this.time = System.currentTimeMillis();
 		}
 
-		private LocalTime getTime(){
+		private long getTime() {
 			return this.time;
 		}
 
-		private void setTime(LocalTime time){
-			this.time = time;
+		private void setTime() {
+			this.time = System.currentTimeMillis();
 		}
 
-		public String getUri(){
+		public String getUri() {
 			return this.uri;
 		}
 
-		public boolean isRest(){
+		public boolean isRest() {
 			return this.isRest;
 		}
 
 		@Override
-		public String toString(){
-			return String.format("URI: %s Received at: %s", this.uri, this.time.toString());
+		public String toString() {
+			return String.format("URI: %s Received at: %s", this.uri, this.time);
 		}
 	}
-	
+
 	/**
-	 * Starts sending service announcements at regular intervals... 
+	 * Starts sending service announcements at regular intervals...
 	 */
 	public void start() {
-		//TODO cleanup dos tempos
-		//Log.info(String.format("Starting Discovery announcements on: %s for: %s -> %s\n", addr, serviceName, serviceURI));
+		// TODO cleanup dos tempos
+		// Log.info(String.format("Starting Discovery announcements on: %s for: %s ->
+		// %s\n", addr, serviceName, serviceURI));
 
 		byte[] announceBytes = String.format("%s%s%s", this.domainName, DELIMITER, serviceURI).getBytes();
 		DatagramPacket announcePkt = new DatagramPacket(announceBytes, announceBytes.length, addr);
 
 		try {
-			MulticastSocket ms = new MulticastSocket( addr.getPort());
+			MulticastSocket ms = new MulticastSocket(addr.getPort());
 			ms.joinGroup(addr.getAddress());
 			// start thread to send periodic announcements
 			new Thread(() -> {
@@ -123,7 +126,7 @@ public class Discovery {
 					}
 				}
 			}).start();
-			
+
 			// start thread to collect announcements
 			new Thread(() -> {
 				DatagramPacket pkt = new DatagramPacket(new byte[1024], 1024);
@@ -136,24 +139,23 @@ public class Discovery {
 					try {
 						pkt.setLength(1024);
 						ms.receive(pkt);
-						rcvTime = LocalTime.now();
-						String msg = new String( pkt.getData(), 0, pkt.getLength());
+						String msg = new String(pkt.getData(), 0, pkt.getLength());
 						String[] msgElems = msg.split(DELIMITER);
-						if( msgElems.length == 2) {	//periodic announcement
+						if (msgElems.length == 2) { // periodic announcement
 							String domainName = pkt.getAddress().getHostName().split("\\.")[0];
-							//Log.info(String.format("FROM %s (%s) : %s\n", domainName, 
-									//pkt.getAddress().getHostAddress(), msg));
-							
+							// Log.info(String.format("FROM %s (%s) : %s\n", domainName,
+							// pkt.getAddress().getHostAddress(), msg));
+
 							serviceName = msgElems[0];
 							uri = msgElems[1];
 							info = record.get(domainName);
 
-							if(info == null){								
-								record.put(domainName, new DomainInfo(uri,rcvTime));
-								//Log.info(String.format("Service Name: %s Service URI: %s TIME: %s\n", serviceName, uri, rcvTime));	
-							}
-							else{
-								info.setTime(rcvTime);
+							if (info == null) {
+								record.put(domainName, new DomainInfo(uri));
+								// Log.info(String.format("Service Name: %s Service URI: %s TIME: %s\n",
+								// serviceName, uri, rcvTime));
+							} else {
+								info.setTime();
 							}
 
 							System.out.println();
@@ -163,6 +165,23 @@ public class Discovery {
 					}
 				}
 			}).start();
+
+			new Thread(() -> {
+
+				for (;;) {
+					for (String domain : this.record.keySet()) {
+						if (System.currentTimeMillis() - this.record.get(domain).getTime() > DEAD_PERIOD)
+							this.record.remove(domain);
+					}
+
+					try {
+						Thread.sleep(DISCOVERY_TIMEOUT);
+					} catch (InterruptedException e) {
+						
+					}
+				}
+
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

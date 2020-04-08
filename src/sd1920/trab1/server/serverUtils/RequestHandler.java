@@ -122,13 +122,13 @@ public class RequestHandler implements Runnable {
         DomainInfo uri = request.getUri();
         String mid = request.getMid();
 
-        System.out.println("POE O PEEPEE NO MEU POOPOO");
-
         if (uri.isRest()) {
 
             WebTarget target = client.target(uri.getUri()).path(MessageResourceRest.PATH).path("msg");
 
             target.path(mid).request().delete();
+
+            System.out.println("VOU ENVIAR UM PEDIDO PARA " + target.getUri().toURL());
 
         } else {
             MessageServiceSoap msgService = null;
@@ -166,6 +166,8 @@ public class RequestHandler implements Runnable {
             return true;
         }
 
+        System.out.println("SUCCESSFUL DELETE");
+
         return true;
     }
 
@@ -179,7 +181,6 @@ public class RequestHandler implements Runnable {
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
-            System.out.println("GOT ONE");
 
             while (true) {
                 if (r instanceof PostRequest ? this.execPostRequest((PostRequest) r)
