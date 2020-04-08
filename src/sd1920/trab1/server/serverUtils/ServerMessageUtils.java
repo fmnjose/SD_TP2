@@ -57,7 +57,7 @@ public abstract class ServerMessageUtils {
 	public static final String MESSAGES_WSDL = String.format("/%s/?wsdl", MessageServiceSoap.NAME);
 	public static final String USERS_WSDL = String.format("/%s/?wsdl", UserServiceSoap.NAME);
 
-    public static final int TIMEOUT = 10000;
+    public static final int TIMEOUT = 5000;
 	public static final int SLEEP_TIME = 500;
     public static final int N_TRIES = 5;
 
@@ -257,31 +257,17 @@ public abstract class ServerMessageUtils {
 			System.out.println("forwardMessage: Trying to forward message " + msg.getId() + " to " + domain);
 			Log.info("forwardMessage: Trying to forward message " + msg.getId() + " to " + domain);            
             
-            PostRequest pr = new PostRequest(uri, msg, domain);
-            RequestHandler rh = null;
-
             synchronized(this.requests){
-                rh = this.requests.get(domain);
+                RequestHandler rh = this.requests.get(domain);
                 if(rh == null){
                     rh = new RequestHandler(config, this);
                     this.requests.put(domain, rh);
 
                     new Thread(rh).start();
                 }
-            }  
-
-            try {
-                List<String> failedDeliveries = RequestHandler.processPostRequest(pr);
-
-                String senderName = ServerMessageUtils.getSenderCanonicalName(pr.getMessage().getSender());
-                for (String recipient : failedDeliveries) {
-                    saveErrorMessages(senderName, recipient, pr.getMessage());
-                }
-            } catch (ProcessingException | MalformedURLException | WebServiceException e) {
-                rh.addRequest(pr);
+                
+                rh.addRequest(new PostRequest(uri, msg, domain));
             }
-
-
         }
 	}
 
@@ -306,24 +292,17 @@ public abstract class ServerMessageUtils {
 			System.out.println("Sending delete request to domain: " + domain);
 			Log.info("Sending delete request to domain: " + domain);
 
-            DeleteRequest dr = new DeleteRequest(uri, mid, domain);
-            RequestHandler rh = null;
-
             synchronized(this.requests){
-                rh = this.requests.get(domain);
+                RequestHandler rh = this.requests.get(domain);
                 if(rh == null){
                     rh = new RequestHandler(config, this);
                     this.requests.put(domain, rh);
 
                     new Thread(rh).start();
                 }
-            }
 
-            try {
-                RequestHandler.processDeleteRequest(dr);
-            } catch (ProcessingException | WebServiceException | MalformedURLException | MessagesException e) {
-                rh.addRequest(dr);
-            }            
+                rh.addRequest(new DeleteRequest(uri, domain, mid));
+            }           
         }	
         
         System.out.println("DONE DELETE " + System.currentTimeMillis());
