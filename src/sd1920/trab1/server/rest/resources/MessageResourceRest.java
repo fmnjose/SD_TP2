@@ -69,7 +69,6 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 			allMessages.put(newID, msg);
 							
 		}
-		System.out.println("Created new message with id: " + newID);
 		Log.info("Created new message with id: " + newID);
 
 		for(String recipient: msg.getDestination()){
@@ -98,8 +97,6 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 		Log.info("Received request for message with id: " + mid +".");
 		synchronized(this.allMessages){
 			synchronized(this.userInboxs){
-				System.out.println(this.allMessages.containsKey(mid));
-				System.out.println(this.userInboxs.get(user).contains(mid));
 				if(!this.allMessages.containsKey(mid) || !this.userInboxs.get(user).contains(mid)) { //check if message exists
 					Log.info("Requested message does not exists.");
 					throw new WebApplicationException( Status.NOT_FOUND ); //if not send HTTP 404 back to client
@@ -114,7 +111,6 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 
 	@Override
 	public List<Long> getMessages(String user, String pwd) {
-		System.out.println("RECEBI PEDIDO " + System.currentTimeMillis());
 		Log.info("Received request for messages with optional user parameter set to: '" + user + "'");
 		User u = this.getUserRest(user, pwd);
 
@@ -136,7 +132,6 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 	@Override
 	public void deleteMessage(String user, long mid, String pwd) 
 	{
-		System.out.println("Received request to delete a message with the id: " + String.valueOf(mid));
 		Log.info("Received request to delete a message with the id: " + String.valueOf(mid));
 		
 		User sender = null;
@@ -145,7 +140,6 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 		
 		synchronized(this.allMessages){
 			msg = this.allMessages.get(mid);
-			this.allMessages.remove(mid);
 		}
 
 		
@@ -156,14 +150,18 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 		
+		
+		String userName = getSenderCanonicalName(user);
+		
+		if(msg == null || !getSenderCanonicalName(msg.getSender()).equals(userName))
+		return;
+		
+		/*synchronized(this.allMessages){
+			this.allMessages.remove(mid);
+		}*/
 		synchronized(this.userInboxs){
 			this.userInboxs.get(user).remove(mid);
 		}
-
-		String userName = getSenderCanonicalName(user);
-
-		if(msg == null || !getSenderCanonicalName(msg.getSender()).equals(userName))
-			return;
 
 		Set<String> recipientDomains = new HashSet<>();
 
@@ -172,14 +170,13 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 			if(tokens[1].equals(this.domain)){
 				synchronized(this.userInboxs){
 					userInboxs.get(tokens[0]).remove(mid);
-					System.out.println("Removing message for user " + u);
 					
 					Log.info("Removing message for user " + u);
 				}
 			}else
 				recipientDomains.add(tokens[1]);
 		}
-		
+
 		deleteFromDomains(recipientDomains, sender.getName(),String.valueOf(mid), true);
 	
 	}
@@ -231,7 +228,6 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 
 	@Override
 	public void deleteForwardedMessage(long mid) {
-		System.out.println("DELETE FORWARDED MESSAGE");
 		Set<String> recipients = null;
 		synchronized(this.allMessages){
 			if(!this.allMessages.containsKey(mid))
@@ -246,8 +242,7 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 			if(tokens[1].equals(this.domain)){
 				synchronized(this.userInboxs){
 					userInboxs.get(tokens[0]).remove(mid);
-					System.out.println("Removing message for user " + s);
-					
+
 					Log.info("Removing message for user " + s);
 				}
 			}

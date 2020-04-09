@@ -101,15 +101,17 @@ public class RequestHandler implements Runnable {
             failedDeliveries = processPostRequest(request);
         }
         catch (ProcessingException e) {
+            System.out.println("PROCESSING POST");
             Log.info("forwardMessage: Failed to forward message to " + request.getDomain() + ". Retrying...");
             return false;
         }
         catch (MalformedURLException e) {
+            System.out.println("MALFORMED POST");
             Log.info("forwardMessage: Bad Url");
             return false;
         } 
         catch (WebServiceException e) {
-            System.out.println("FEIJOADA DA BOA");
+            System.out.println("WEBSERVICE POST");
             Log.info("forwardMessage: Failed to forward message to " + request.getDomain() + ".");
             return true;
         }
@@ -156,13 +158,15 @@ public class RequestHandler implements Runnable {
         try {
             processDeleteRequest(request);
         } catch (ProcessingException e) {
-            System.out.println("deleteFromDomains: Failed to redirect request to " + request.getDomain() + ". Retrying...");
+            System.out.println("PROCESSING DELETE");
             Log.info("deleteFromDomains: Failed to redirect request to " + request.getDomain() + ". Retrying...");
             return false;
         } catch (MalformedURLException e) {
+            System.out.println("MALFORMED DELETE");
             Log.info("deleteFromDomains: Bad Url");
             return false;
         } catch (WebServiceException e) {
+            System.out.println("WEBSERVICE DELETE");
             Log.info("deleteFromDomains: Failed to forward message to " + request.getDomain() + ".");
             return true;
         } catch (MessagesException me) {

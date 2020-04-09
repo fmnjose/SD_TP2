@@ -1,11 +1,12 @@
 Using default tag: latest
 latest: Pulling from nunopreguica/sd1920-tester-tp1
-Digest: sha256:3f1102f04f7cdb7c4324daf5347c2928b30b10a9b27916673d3aa7b4b7bdc1da
+Digest: sha256:2f76f8aae0032abb294b47ce4e23dddd927cf1395416538d79746236ed4642cd
 Status: Image is up to date for nunopreguica/sd1920-tester-tp1:latest
 docker.io/nunopreguica/sd1920-tester-tp1:latest
 true
 SD1920 +++ TP1 +++ Testing image: sd1920-trab1-52890-53277
-Version 4 - 03/04/2020 V4
+Version 4 - 08/04/2020 V4
+killByImage(sd1920-trab1-52890-53277): Removing container: [/msgserver-1]
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 1a )	 Testing Docker environment [executing: docker info]
 ---------------------------------------------------------------
@@ -99,20 +100,29 @@ Docker ID: IHDA:GYRV:F3AZ:3P6E:SCFI:TZ2E:2LID:RKI6:3MWU:Y4H6:26BF:HCJM
 11b )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+11c )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+11d )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+11e )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 12a )	 Testing PostMessage with faults across multiple domains : 0 REST servers ; 3 SOAP servers; ; fault period (ms) :20000
 ---------------------------------------------------------------
 Starting 3 SOAP services instances <sd1920.trab1.server.soap.SOAPMailServer>
 INFO: Starting 3 SOAP services instances <sd1920.trab1.server.soap.SOAPMailServer>
 CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-1 -h msgserver-1 sd1920-trab1-52890-53277 java -cp /home/sd/sd1920.jar sd1920.trab1.server.soap.SOAPMailServer
 Started: msgserver-1 : java -cp /home/sd/sd1920.jar sd1920.trab1.server.soap.SOAPMailServer 
-9f71eb99cfa505f7fa390583927e8a8a32ed0b9952c4d50d85fa5a2d82468720
+5d65defd9787b59ac11e4b1610b82689d9378a6329d16517b44f8236c15ed066
 CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-2 -h msgserver-2 sd1920-trab1-52890-53277 java -cp /home/sd/sd1920.jar sd1920.trab1.server.soap.SOAPMailServer
 Started: msgserver-2 : java -cp /home/sd/sd1920.jar sd1920.trab1.server.soap.SOAPMailServer 
-2baf62996a9432e9f6236807dfb133adccfacae856ef570ea6d1673411269677
+410dc62cfa4e252f9e1e227f9b65b163d2ff938d4dbcd7012b9e98a75931c8b6
 CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-3 -h msgserver-3 sd1920-trab1-52890-53277 java -cp /home/sd/sd1920.jar sd1920.trab1.server.soap.SOAPMailServer
 Started: msgserver-3 : java -cp /home/sd/sd1920.jar sd1920.trab1.server.soap.SOAPMailServer 
-b9ec78685129022c463f2a7f167a5bccef67f6c22cbf4732b36adf4045234d9f
-sleeping: 4 s                                                                                sleeping: 3 s                                                                                sleeping: 2 s                                                                                sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Creating 5 users in each domain
+99758cfe14893e88e9f9a7423bceaf724b511a006c7e44090b1b4aff6c4ff818
+sleeping: 9 s                                                                                sleeping: 8 s                                                                                sleeping: 7 s                                                                                sleeping: 6 s                                                                                sleeping: 5 s                                                                                sleeping: 4 s                                                                                sleeping: 3 s                                                                                sleeping: 2 s                                                                                sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Creating 5 users in each domain
 1/5                                                                                [PostUser SOAP] User{chantel.rath, cfr3k96epfu5, msgserver-1, Miss Lavina Waelchi} -> OK:chantel.rath@msgserver-1
 2/5                                                                                [PostUser SOAP] User{aubrey.blick, 33floc73, msgserver-1, Dr. Temple Green} -> OK:aubrey.blick@msgserver-1
 3/5                                                                                [PostUser SOAP] User{perry.hessel, kq2g5v64pqqrdh9, msgserver-1, Herb Hansen} -> OK:perry.hessel@msgserver-1
@@ -128,14 +138,14 @@ sleeping: 4 s                                                                   
 3/5                                                                                [PostUser SOAP] User{jean.pagac, cfopd23olkm06, msgserver-3, Lou Ritchie} -> OK:jean.pagac@msgserver-3
 4/5                                                                                [PostUser SOAP] User{jill.feil, e71zhm4s56lch, msgserver-3, Georgine Legros} -> OK:jill.feil@msgserver-3
 5/5                                                                                [PostUser SOAP] User{myrle.haley, wjel2ogp9g, msgserver-3, Nanette Bernier} -> OK:myrle.haley@msgserver-3
-sleeping: 4 s                                                                                sleeping: 3 s                                                                                sleeping: 2 s                                                                                sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Creating message to faulty domain: 1 dst
+sleeping: 9 s                                                                                sleeping: 8 s                                                                                sleeping: 7 s                                                                                sleeping: 6 s                                                                                sleeping: 5 s                                                                                sleeping: 4 s                                                                                sleeping: 3 s                                                                                sleeping: 2 s                                                                                sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Creating message to faulty domain: 1 dst
 Starting failures for 20000 ms
 exec [/sbin/iptables -A INPUT -p tcp --destination-port 8080 -j DROP] in msgserver-2
 Executing op and waiting for failure to expire
-[PostMessage SOAP] scerl0yfs52, Msg{-1,corrie.bailey@msgserver-1,Velit.,[adelia.connelly@msgserver-2],1586374214399} -> OK:2213498043454628287
+[PostMessage SOAP] scerl0yfs52, Msg{-1,corrie.bailey@msgserver-1,Velit.,[adelia.connelly@msgserver-2],1586446880636} -> OK:6560859766932669280
 exec [/sbin/iptables --flush] in msgserver-2
-sleeping: 4 s                                                                                sleeping: 3 s                                                                                sleeping: 2 s                                                                                sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Checking if message was sent
-[GetMessage SOAP] adelia.connelly, mid=2213498043454628287, pwd=38brfogec6p -> -1 getMessage: Requested message does not exists. URI:http://172.18.0.4:8080/soap/messages/?wsdl
+sleeping: 9 s                                                                                sleeping: 8 s                                                                                sleeping: 7 s                                                                                sleeping: 6 s                                                                                sleeping: 5 s                                                                                sleeping: 4 s                                                                                sleeping: 3 s                                                                                sleeping: 2 s                                                                                sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Checking if message was sent
+[GetMessage SOAP] adelia.connelly, mid=6560859766932669280, pwd=38brfogec6p -> -1 getMessage: Requested message does not exists. URI:http://172.18.0.4:8080/soap/messages/?wsdl
 sd1920.trab1.api.soap.MessagesException: getMessage: Requested message does not exists.
 	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
 	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
@@ -151,21 +161,8 @@ sd1920.trab1.api.soap.MessagesException: getMessage: Requested message does not 
 	at com.sun.xml.ws.client.sei.SEIStub.invoke(SEIStub.java:131)
 	at com.sun.proxy.$Proxy76.getMessage(Unknown Source)
 	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:108)
-	at sd1920.trab1.ServerState.lambda$execGetMessage$5(ServerState.java:162)
-	at sd1920.trab1.ServerState.runOp(ServerState.java:213)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:162)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:181)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:175)
-	at tests.workloads.FaultsMessagesWorkload.lambda$execute$2(FaultsMessagesWorkload.java:69)
-	at java.lang.Iterable.forEach(Iterable.java:75)
-	at tests.workloads.FaultsMessagesWorkload.lambda$execute$3(FaultsMessagesWorkload.java:69)
-	at java.lang.Iterable.forEach(Iterable.java:75)
-	at tests.workloads.FaultsMessagesWorkload.execute(FaultsMessagesWorkload.java:67)
-	at tests.BaseTest.test(BaseTest.java:150)
-	at tests.Tester.main(Tester.java:134)
-
-TestFailedException: GetMsg = 2213498043454628287 ; user = adelia.connelly ; pwd = 38brfogec6p
-Expected : 200; received : 400
+	at sd1920.trab1.ServerState.lambda$execGetMessage$5(ServerState.java:169)
+	at sd1920.trab1.ServerState.runOp(ServerState.java:283)
 	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:169)
 	at tests.MessagesTest.execGetMessage(MessagesTest.java:181)
 	at tests.MessagesTest.execGetMessage(MessagesTest.java:175)
@@ -175,8 +172,21 @@ Expected : 200; received : 400
 	at java.lang.Iterable.forEach(Iterable.java:75)
 	at tests.workloads.FaultsMessagesWorkload.execute(FaultsMessagesWorkload.java:67)
 	at tests.BaseTest.test(BaseTest.java:150)
-	at tests.Tester.main(Tester.java:134)
-FAILED: GetMsg = 2213498043454628287 ; user = adelia.connelly ; pwd = 38brfogec6p
+	at tests.Tester.main(Tester.java:137)
+
+TestFailedException: GetMsg = 6560859766932669280 ; user = adelia.connelly ; pwd = 38brfogec6p
+Expected : 200; received : 400
+	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:176)
+	at tests.MessagesTest.execGetMessage(MessagesTest.java:181)
+	at tests.MessagesTest.execGetMessage(MessagesTest.java:175)
+	at tests.workloads.FaultsMessagesWorkload.lambda$execute$2(FaultsMessagesWorkload.java:69)
+	at java.lang.Iterable.forEach(Iterable.java:75)
+	at tests.workloads.FaultsMessagesWorkload.lambda$execute$3(FaultsMessagesWorkload.java:69)
+	at java.lang.Iterable.forEach(Iterable.java:75)
+	at tests.workloads.FaultsMessagesWorkload.execute(FaultsMessagesWorkload.java:67)
+	at tests.BaseTest.test(BaseTest.java:150)
+	at tests.Tester.main(Tester.java:137)
+FAILED: GetMsg = 6560859766932669280 ; user = adelia.connelly ; pwd = 38brfogec6p
 Expected : 200; received : 400
 
 
@@ -200,22 +210,36 @@ MessageService Server ready @ http://172.18.0.3:8080/soap
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 INFO: Sending request to create a new inbox in MessageResource.
 
 
 INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 INFO: Created new user with name: chantel.rath
 INFO: Sending request to create a new inbox in MessageResource.
-
 INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 INFO: Created new user with name: aubrey.blick
 INFO: Sending request to create a new inbox in MessageResource.
 INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 INFO: Created new user with name: perry.hessel
-
 INFO: Sending request to create a new inbox in MessageResource.
 INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 INFO: Created new user with name: corrie.bailey
+
 INFO: Sending request to create a new inbox in MessageResource.
 INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 INFO: Created new user with name: catherin.gutmann
@@ -245,16 +269,40 @@ INFO: Created new user with name: catherin.gutmann
 
 
 
+
+
+
+
+
+
+
+
+
 INFO: Received request to register a new message (Sender: corrie.bailey@msgserver-1; Subject: Velit.)
 JORNADA DE BOMBONS
-INFO: Created new message with id: 2213498043454628287
+Created new message with id: 6560859766932669280
+INFO: Created new message with id: 6560859766932669280
 INFO: TOKEN: msgserver-2.
-INFO: forwardMessage: Trying to forward message 2213498043454628287 to msgserver-2
-Created new message with id: 2213498043454628287
-forwardMessage: Trying to forward message 2213498043454628287 to msgserver-2
+forwardMessage: Trying to forward message 6560859766932669280 to msgserver-2
+INFO: forwardMessage: Trying to forward message 6560859766932669280 to msgserver-2
 REQUEST HANDLER COMEÇOU
 CRIAR SERVIÇO
-INFO: Recorded message with identifier: 2213498043454628287
+INFO: Recorded message with identifier: 6560859766932669280
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -353,23 +401,34 @@ MessageService Server ready @ http://172.18.0.4:8080/soap
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 INFO: Sending request to create a new inbox in MessageResource.
+
 
 INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 INFO: Created new user with name: duane.bradtke
 INFO: Sending request to create a new inbox in MessageResource.
-
 INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 INFO: Created new user with name: bradley.huel
 INFO: Sending request to create a new inbox in MessageResource.
-
 INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 INFO: Created new user with name: adelia.connelly
 INFO: Sending request to create a new inbox in MessageResource.
 INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 INFO: Created new user with name: tanja.will
 INFO: Sending request to create a new inbox in MessageResource.
-
 INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 INFO: Created new user with name: marhta.baumbach
 
@@ -467,10 +526,39 @@ INFO: Created new user with name: marhta.baumbach
 
 
 
-INFO: Received request for message with id: 2213498043454628287.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 false
 false
+INFO: Received request for message with id: 6560859766932669280.
 INFO: Requested message does not exists.
+
 
 
 -----------------------------------------------------------------------------------
@@ -494,25 +582,62 @@ MessageService Server ready @ http://172.18.0.5:8080/soap
 
 
 
+
+
+
+
+
+
+
+
+
+
 INFO: Sending request to create a new inbox in MessageResource.
-
-
 INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 INFO: Created new user with name: lauri.lakin
 INFO: Sending request to create a new inbox in MessageResource.
 INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 INFO: Created new user with name: klara.cartwright
 INFO: Sending request to create a new inbox in MessageResource.
-
 INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 INFO: Created new user with name: jean.pagac
 INFO: Sending request to create a new inbox in MessageResource.
+
+
 INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 INFO: Created new user with name: jill.feil
 INFO: Sending request to create a new inbox in MessageResource.
-
 INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 INFO: Created new user with name: myrle.haley
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
