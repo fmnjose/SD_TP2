@@ -3,7 +3,6 @@ package sd1920.trab1.server.serverUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -50,6 +49,8 @@ public abstract class ServerMessageUtils {
     protected final Map<String, Set<Long>> userInboxs = new HashMap<String, Set<Long>>();
     protected final Map<String, RequestHandler> requests = new HashMap<>();
 
+    public static final String DOMAIN_FORMAT_REST = "http://%s:%d/rest";
+    public static final String DOMAIN_FORMAT_SOAP = "http://%s:%d/soap";
     public static final String ERROR_FORMAT = "FALHA NO ENVIO DE %s PARA %s";
     public static final String SENDER_FORMAT = "%s <%s@%s>";
     public static final QName MESSAGE_QNAME = new QName(MessageServiceSoap.NAMESPACE, MessageServiceSoap.NAME);
@@ -70,14 +71,15 @@ public abstract class ServerMessageUtils {
     }
     
     /**
-     * Inserts error message into the sender inbox
+     * Inserts an error message into the sender inbox
      * 
-     * @param senderName
-     * @param recipientName
-     * @param msg
+     * @param senderName name of the message sender. No domain anotation
+     * @param recipientName name of one of the recipients
+     * @param msg message in question
      */
     protected void saveErrorMessages(String senderName, String recipientName, Message msg) {
         Long errorMessageId = Math.abs(randomNumberGenerator.nextLong());
+
         Message m = new Message(errorMessageId, msg.getSender(), msg.getDestination(),
                 String.format(ERROR_FORMAT, msg.getId(), recipientName), msg.getContents());
 
@@ -90,22 +92,24 @@ public abstract class ServerMessageUtils {
     }
 
     /**
-     * Saves a message in our domain. If the recipient does not exist, adds an error
+     * Saves a message in the domain. If the recipient does not exist, adds an error
      * message
      * 
-     * @param senderName
+     * @param senderName    message sender
      * @param recipientName name of a recipient in this domain. Always in this
      *                      domain.
-     * @param forwarded
+     * @param forwarded     was the message forwarded?
      * @param mid           id to be assigned
+     * @return was it not forwarded and succesful?
      */
     protected boolean saveMessage(String senderName, String recipientName, boolean forwarded, Message msg) {
         synchronized (this.userInboxs) {
             synchronized (this.allMessages) {
                 if (!userInboxs.containsKey(recipientName)) {
-                    if (forwarded)
+                    if (forwarded){
+                        Log.info("saveMessage: user does not exist for forwarded message " + msg.getId());
                         return false;
-                    else {
+                    }else {
                         this.saveErrorMessages(senderName, recipientName, msg);
                     }
                 } else {
@@ -114,13 +118,14 @@ public abstract class ServerMessageUtils {
                 }
             }
         }
+        Log.info("saveMessage: Sucessfuly saved message " + msg.getId());
         return true;
     }
 
     /**
-     * Fetches a sender of a message from the UserResource
+     * Fetches a user from the UserResource
      * 
-     * @param name name of the sender. Without the @
+     * @param name name of the user. No domain attached
      * @param pwd  password
      * @return the User Object corresponding to the sender. Null if none is found
      * @throws UnknownHostException can't compile if this isn't declared...
@@ -128,37 +133,17 @@ public abstract class ServerMessageUtils {
     protected User getUserRest(String name, String pwd) {
         Response r = null;
 
-        boolean error = true;
-
         WebTarget target = client.target(this.serverUri).path(UserServiceRest.PATH);
         target = target.queryParam("pwd", pwd);
 
-        int tries = 0;
-
-        while (error && tries < N_TRIES) {
-            error = false;
-
-            try {
-                r = target.path(name).request().accept(MediaType.APPLICATION_JSON).get();
-            } catch (ProcessingException e) {
-                Log.info("Could not communicate with the UserResource. Retrying...");
-                try {
-                    Thread.sleep(SLEEP_TIME);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
-                error = true;
-            }
-            tries++;
-        }
-
-        if (error) {
-            Log.info("GetSender: Exceeded number of tries. Assuming user does not exist...");
-            return null;
+        try {
+            r = target.path(name).request().accept(MediaType.APPLICATION_JSON).get();
+        } catch (ProcessingException e) {
+            Log.info("getUserRest: Could not communicate with the UserResource. What?");
         }
 
         if (r.getStatus() == Status.FORBIDDEN.getStatusCode()) {
-            Log.info("GetSender: User either doesn't exist or the password is incorrect");
+            Log.info("getUserRest: User either doesn't exist or the password is incorrect");
             return null;
         }
 
@@ -166,6 +151,11 @@ public abstract class ServerMessageUtils {
     }
 
 
+    /**
+     * Given a user in the format name@domain or displayName <name@domain> converts it to name
+     * @param senderName name to be converted
+     * @return name only
+     */
 	protected static String getSenderCanonicalName(String senderName){
 		String[] tokens = senderName.split(" <");
 		int nTokens = tokens.length;
@@ -181,17 +171,13 @@ public abstract class ServerMessageUtils {
 	/**
 	 * Fetches a sender of a message from the UserResource
 	 * 
-	 * @param name name of the sender. Without the @
+	 * @param name name of the sender. Without the domain
 	 * @param pwd  password
 	 * @return the User Object corresponding to the sender. Null if none is found
 	 * @throws UnknownHostException can't compile if this isn't declared...
 	 */
 	protected User getUserSoap(String name, String pwd){		
 		User user = null;
-
-		boolean error = true;
-		
-		int tries = 0;
 
 		UserServiceSoap userService = null;
 				
@@ -211,38 +197,25 @@ public abstract class ServerMessageUtils {
 		((BindingProvider) userService).getRequestContext().put(BindingProviderProperties.CONNECT_TIMEOUT, TIMEOUT);
 		((BindingProvider) userService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT, TIMEOUT);
 		
-
-		while (error && tries < N_TRIES) {
-			error = false;
-
-			try {
-				user = userService.getUser(name, pwd);
-			}
-			catch( MessagesException me){
-				Log.info("getUser: Error, could not send the message. Retrying...");
-			}
-			catch(WebServiceException wse){
-				Log.info("getUser: Communication error. Retrying...");
-				wse.printStackTrace();
-				try{
-					Thread.sleep(SLEEP_TIME);
-				}
-				catch(InterruptedException e){
-					Log.info("getUser: Log a dizer 'what?'");
-				}
-				error = true;
-			}
-			tries++;
-		}
-
-		if (error) {
-			Log.info("GetSender: Exceeded number of tries. Assuming user does not exist...");
-			return null;
-		}
+        try {
+            user = userService.getUser(name, pwd);
+        }
+        catch( MessagesException me){
+            Log.info("getUser: Error, could not send the message. Retrying...");
+        }
+        catch(WebServiceException wse){
+            Log.info("getUser: Communication error...");	
+        }
 
 		return user;
     }
     
+    /**
+     * Gives the requestHandler a new message to be posted to other domains
+     * @param recipientDomains domains to be contacted
+     * @param msg message to be forwarded
+     * @param isRest is the calling server REST?
+     */
     protected void forwardMessage(Set<String> recipientDomains, Message msg, boolean isRest) {
         for (String domain : recipientDomains) {
             DomainInfo uri = isRest ? RESTMailServer.serverRecord.knownUrisOf(domain)
@@ -254,7 +227,6 @@ public abstract class ServerMessageUtils {
 				continue;
 			}
 
-			System.out.println("forwardMessage: Trying to forward message " + msg.getId() + " to " + domain);
 			Log.info("forwardMessage: Trying to forward message " + msg.getId() + " to " + domain);            
             
             synchronized(this.requests){
@@ -275,22 +247,23 @@ public abstract class ServerMessageUtils {
 	 * When receiving a delete request for a mid, this function is used
 	 * to redirect the request to the domains containing the recipients
 	 * of the message
-	 * @param recipientDomains
-	 * @param mid
+     * 
+	 * @param recipientDomains domains to be contacted
+	 * @param mid mid of the message to be deleted
+     * @param isRest is the calling server REST?
 	 */
-	protected void deleteFromDomains(Set<String> recipientDomains, String user, String mid, boolean isRest) {
+	protected void forwardDelete(Set<String> recipientDomains, String mid, boolean isRest) {
 		for(String domain: recipientDomains){
 			DomainInfo uri = isRest ? RESTMailServer.serverRecord.knownUrisOf(domain)
                                     : SOAPMailServer.serverRecord.knownUrisOf(domain);
 			
 			if(uri == null){
-				Log.info("deleteFromDomains: " + domain + " does not exist or is offline.");
+				Log.info("forwardDelete: " + domain + " does not exist or is offline.");
 				continue;
 			}
 
 
-			System.out.println("Sending delete request to domain: " + domain);
-			Log.info("Sending delete request to domain: " + domain);
+			Log.info("forwardDelete: Sending delete request to domain: " + domain);
 
             synchronized(this.requests){
                 RequestHandler rh = this.requests.get(domain);
@@ -304,9 +277,7 @@ public abstract class ServerMessageUtils {
                 rh.addRequest(new DeleteRequest(uri, domain, mid));
             }           
         }	
-        
-        System.out.println("DONE DELETE " + System.currentTimeMillis());
-	}
+    }
 
 
 

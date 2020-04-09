@@ -33,7 +33,7 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 
 		this.domain = InetAddress.getLocalHost().getHostName();
 
-		this.serverUri = String.format("http://%s:%d/rest",InetAddress.getLocalHost().getHostAddress(),RESTMailServer.PORT);
+		this.serverUri = String.format(DOMAIN_FORMAT_REST, InetAddress.getLocalHost().getHostAddress(), RESTMailServer.PORT);
 	}
 
 	
@@ -44,13 +44,13 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 		String sender = msg.getSender();
 		Set<String> recipientDomains = new HashSet<>();
 
-		Log.info("Received request to register a new message (Sender: " + sender + "; Subject: "+msg.getSubject()+")");
+		Log.info("postMessage: Received request to register a new message (Sender: " + sender + "; Subject: "+msg.getSubject()+")");
 		
-		//Check if message is valid, if not return HTTP CONFLICT (409)
 		if(sender == null || msg.getDestination() == null || msg.getDestination().size() == 0) {
-			Log.info("Message was rejected due to lack of recepients.");
+			Log.info("postMessage: Message was rejected due to lack of recepients.");
 			throw new WebApplicationException(Status.CONFLICT );
 		}
+
 		String senderName = getSenderCanonicalName(sender);
 
 		user = this.getUserRest(senderName, pwd);
@@ -69,7 +69,7 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 			allMessages.put(newID, msg);
 							
 		}
-		Log.info("Created new message with id: " + newID);
+		Log.info("postMessage: Created new message with id: " + newID);
 
 		for(String recipient: msg.getDestination()){
 			String[] tokens = recipient.split("@");
@@ -81,7 +81,6 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 
 		this.forwardMessage(recipientDomains, msg, true);
 
-		Log.info("Recorded message with identifier: " + msg.getId());
 		return msg.getId();
 	}
 
@@ -94,45 +93,44 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
-		Log.info("Received request for message with id: " + mid +".");
+		Log.info("getMessage: Received request for message with id: " + mid +".");
 		synchronized(this.allMessages){
 			synchronized(this.userInboxs){
-				if(!this.allMessages.containsKey(mid) || !this.userInboxs.get(user).contains(mid)) { //check if message exists
-					Log.info("Requested message does not exists.");
-					throw new WebApplicationException( Status.NOT_FOUND ); //if not send HTTP 404 back to client
+				if(!this.allMessages.containsKey(mid) || !this.userInboxs.get(user).contains(mid)) {
+					Log.info("getMessage: Requested message does not exists.");
+					throw new WebApplicationException( Status.NOT_FOUND ); 
 				}
 			}
 		}
 		
-		Log.info("Returning requested message to user.");
-		return allMessages.get(mid); //Return message to the client with code HTTP 200
+		return allMessages.get(mid); 
 	
 	}
 
 	@Override
 	public List<Long> getMessages(String user, String pwd) {
-		Log.info("Received request for messages with optional user parameter set to: '" + user + "'");
+		Log.info("getMessages: Received request for messages to '" + user + "'");
+
 		User u = this.getUserRest(user, pwd);
 
 		if(u == null){
-			Log.info("User with name " + user + " does not exist in the domain.");
+			Log.info("getMessages: User with name " + user + " does not exist in the domain.");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
 		Set<Long> mids = new HashSet<Long>();
 		
-		Log.info("Collecting all messages in server for user " + user);
 		synchronized(this.userInboxs){
 			mids = userInboxs.getOrDefault(user, Collections.emptySet());
 		}
-		Log.info("Returning message list to user with " + mids.size() + " messages.");
+
+		Log.info("getMessages: Returning message list to user with " + mids.size() + " messages.");
 		return new ArrayList<>(mids);
 	}
 
 	@Override
-	public void deleteMessage(String user, long mid, String pwd) 
-	{
-		Log.info("Received request to delete a message with the id: " + String.valueOf(mid));
+	public void deleteMessage(String user, long mid, String pwd) {
+		Log.info("deleteMessage: Received request to delete a message with the id: " + String.valueOf(mid));
 		
 		User sender = null;
 		
@@ -146,7 +144,7 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 		sender  = this.getUserRest(user, pwd);
 		
 		if(sender == null){
-			Log.info("Delete message: User not found or wrong password");
+			Log.info("delete message: User not found or wrong password");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 		
@@ -154,15 +152,13 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 		String userName = getSenderCanonicalName(user);
 		
 		if(msg == null || !getSenderCanonicalName(msg.getSender()).equals(userName))
-		return;
+			return;
 		
-		/*synchronized(this.allMessages){
-			this.allMessages.remove(mid);
-		}*/
 		synchronized(this.userInboxs){
 			this.userInboxs.get(user).remove(mid);
 		}
 
+		//this will be used to compile the domains that we'll need to forward the request to
 		Set<String> recipientDomains = new HashSet<>();
 
 		for(String u : msg.getDestination()){
@@ -170,38 +166,33 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 			if(tokens[1].equals(this.domain)){
 				synchronized(this.userInboxs){
 					userInboxs.get(tokens[0]).remove(mid);
-					
-					Log.info("Removing message for user " + u);
 				}
 			}else
 				recipientDomains.add(tokens[1]);
 		}
 
-		deleteFromDomains(recipientDomains, sender.getName(),String.valueOf(mid), true);
-	
+		forwardDelete(recipientDomains, String.valueOf(mid), true);
 	}
 
 	@Override
 	public void removeFromUserInbox(String user, long mid, String pwd) {
-		Log.info("Received request to delete message " + String.valueOf(mid) + " from the inbox of " + user);
+		Log.info("removeFromUserInbox: Received request to delete message " + String.valueOf(mid) + " from the inbox of " + user);
 		
 		User u = this.getUserRest(user, pwd);
 
 		if(u == null){
-			Log.info("User with name " + user + " does not exist in the domain.");
+			Log.info("removeFromUserInbox: User with name " + user + " does not exist in the domain.");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 		
-		//DUVIDA: e possivel apagar uma mensagem que nao esteja na inbox do user fornecido?
 		synchronized(this.allMessages){
 			synchronized(this.userInboxs){
 				if(!this.allMessages.containsKey(mid) || !this.userInboxs.get(user).contains(mid)){
-					Log.info("Message not found");
+					Log.info("removeFromUserInbox: Message not found");
 					throw new WebApplicationException(Status.NOT_FOUND);
 				}
 			}
 		}
-		Log.info("Deleting message from user inbox");
 		synchronized(this.userInboxs){
 			this.userInboxs.get(user).remove(mid);
 		}
@@ -218,17 +209,23 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 	public List<String> postForwardedMessage(Message msg) {
 		List<String> failedDeliveries = new LinkedList<>();
 
+		Log.info("postForwardedMessage: Received request to save the message " + msg.getId());
 		for(String recipient: msg.getDestination()){
 			String[] tokens = recipient.split("@");
 			if(tokens[1].equals(this.domain) && !this.saveMessage(msg.getSender(), tokens[0], true, msg))
 				failedDeliveries.add(recipient);
 		}
+
+		Log.info("postForwardedMessage: Couldn't deliver the message to " + failedDeliveries.size() + " people");
 		return failedDeliveries;
 	}
 
 	@Override
 	public void deleteForwardedMessage(long mid) {
 		Set<String> recipients = null;
+
+		Log.info("deleteForwardedMessage: Received request to delete message " + mid);
+
 		synchronized(this.allMessages){
 			if(!this.allMessages.containsKey(mid))
 				return;
@@ -242,8 +239,6 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 			if(tokens[1].equals(this.domain)){
 				synchronized(this.userInboxs){
 					userInboxs.get(tokens[0]).remove(mid);
-
-					Log.info("Removing message for user " + s);
 				}
 			}
 		}

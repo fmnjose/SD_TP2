@@ -30,9 +30,13 @@ import sd1920.trab1.api.soap.MessageServiceSoap;
 import sd1920.trab1.api.soap.MessagesException;
 import sd1920.trab1.server.rest.resources.MessageResourceRest;
 
+/**
+ * Used for asynchronously launching requests to other servers
+ */
 public class RequestHandler implements Runnable {
 
-    // DUVIDA: Um client para todos os requests é seguro?
+    private static final int SLEEP_TIME = 200;
+
     protected static Client client;
     private ServerMessageUtils utils;
     private static Logger Log = ServerMessageUtils.Log;
@@ -53,47 +57,47 @@ public class RequestHandler implements Runnable {
         }
     }
 
+    /**
+     * Given a postRequest, forwards it to the target domain
+     * No logs here because it would be total chaos given that each domain has a thread 
+     * for every other domain
+     */
     public static List<String> processPostRequest(PostRequest request) throws ProcessingException, MalformedURLException, WebServiceException{
         Response r = null;
         List<String> failedDeliveries = null;
         DomainInfo uri = request.getUri();
         Message msg = request.getMessage();
 
-        if (uri.isRest()) {
-            System.out.println("MIAU");
-            
+        if (uri.isRest()) {            
             WebTarget target = client.target(uri.getUri()).path(MessageServiceRest.PATH).path("mbox");
             
             r = target.request().accept(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
 
-            failedDeliveries = r.readEntity(new GenericType<List<String>>() {
-            });
+            failedDeliveries = r.readEntity(new GenericType<List<String>>() {});
         } else {
             MessageServiceSoap msgService = null;
 
-            System.out.println("CRIAR SERVIÇO");
             Service service = Service.create(new URL(uri.getUri() + ServerMessageUtils.MESSAGES_WSDL),
                     ServerMessageUtils.MESSAGE_QNAME);
 
-            System.out.println("ANTES MSGSERVICE");
             msgService = service.getPort(MessageServiceSoap.class);
-            
-            
             
             ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.CONNECT_TIMEOUT,
                     ServerMessageUtils.TIMEOUT);
             ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT,
                     ServerMessageUtils.TIMEOUT);
-
-                    
-            System.out.println("TENTAR FAZER FORWARDMESSAGE");
+              
             failedDeliveries = msgService.postForwardedMessage(msg);
-            System.out.println("TERMINEI");
         }
         return failedDeliveries;
     }
 
+    /**
+     * Wrapper for processPostRequest. Catches the errors
+     * @param request postRequest to execute
+     * @return was it successful?
+     */
     public boolean execPostRequest(PostRequest request) {
        
         List<String> failedDeliveries = null;
@@ -101,23 +105,20 @@ public class RequestHandler implements Runnable {
             failedDeliveries = processPostRequest(request);
         }
         catch (ProcessingException e) {
-            System.out.println("PROCESSING POST");
-            Log.info("forwardMessage: Failed to forward message to " + request.getDomain() + ". Retrying...");
+            Log.info("execPostRequest: Failed to forward message to " + request.getDomain() + ". Retrying...");
             return false;
         }
         catch (MalformedURLException e) {
-            System.out.println("MALFORMED POST");
-            Log.info("forwardMessage: Bad Url");
+            Log.info("execPostRequest: Bad Url");
             return false;
         } 
         catch (WebServiceException e) {
-            System.out.println("WEBSERVICE POST");
-            Log.info("forwardMessage: Failed to forward message to " + request.getDomain() + ".");
+            Log.info("execPostRequest: Failed to forward message to " + request.getDomain() + ".");
             return true;
         }
 
-        System.out.println("FALIED DELIVERIES: " + failedDeliveries.size());
         String senderName = ServerMessageUtils.getSenderCanonicalName(request.getMessage().getSender());
+
         for (String recipient : failedDeliveries) {
             utils.saveErrorMessages(senderName, recipient, request.getMessage());
         }
@@ -125,6 +126,11 @@ public class RequestHandler implements Runnable {
         return true;
     }
 
+    /**
+     * Given a deleteRequest, forwards it to the target domain
+     * No logs here because it would be total chaos given that each domain has a thread 
+     * for every other domain
+     */
     public static void processDeleteRequest(DeleteRequest request) throws ProcessingException, 
                         MessagesException, WebServiceException, MalformedURLException {
     
@@ -132,7 +138,6 @@ public class RequestHandler implements Runnable {
         String mid = request.getMid();
 
         if (uri.isRest()) {
-
             WebTarget target = client.target(uri.getUri()).path(MessageResourceRest.PATH).path("msg");
 
             target.path(mid).request().delete();
@@ -143,49 +148,47 @@ public class RequestHandler implements Runnable {
                     ServerMessageUtils.MESSAGE_QNAME);
             msgService = service.getPort(MessageServiceSoap.class);
             
-
             ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.CONNECT_TIMEOUT,
                     ServerMessageUtils.TIMEOUT);
             ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT,
                     ServerMessageUtils.TIMEOUT);
-
             
             msgService.deleteForwardedMessage(Long.valueOf(mid));
         }
     }
 
+    /**
+     * Wrapper for procesDeleteRequest. Catches the errors
+     * @param request deleteRequest to execute
+     * @return was it successful?
+     */
     public boolean execDeleteRequest(DeleteRequest request) {
         try {
             processDeleteRequest(request);
         } catch (ProcessingException e) {
-            System.out.println("PROCESSING DELETE");
-            Log.info("deleteFromDomains: Failed to redirect request to " + request.getDomain() + ". Retrying...");
+            Log.info("execDeleteRequest: Failed to redirect request to " + request.getDomain() + ". Retrying...");
             return false;
         } catch (MalformedURLException e) {
-            System.out.println("MALFORMED DELETE");
-            Log.info("deleteFromDomains: Bad Url");
+            Log.info("execDeleteRequest: Bad Url");
             return false;
         } catch (WebServiceException e) {
-            System.out.println("WEBSERVICE DELETE");
-            Log.info("deleteFromDomains: Failed to forward message to " + request.getDomain() + ".");
+            Log.info("execDeleteRequest: Failed to forward message to " + request.getDomain() + ".");
             return true;
         } catch (MessagesException me) {
-            Log.info("deleteFromDomains: Error, could not send the message.");
+            Log.info("execDeleteRequest: Error, could not send the message.");
             return true;
         }
-
-        System.out.println("SUCCESSFUL DELETE");
 
         return true;
     }
 
     @Override
     public void run() {
-        System.out.println("REQUEST HANDLER COMEÇOU");
         for (;;) {
             Request r = null;
 
             try {
+                //there's no blocking peek... 
                 r = this.requests.take();
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
@@ -193,18 +196,14 @@ public class RequestHandler implements Runnable {
 
             while (true) {
                 if (r instanceof PostRequest ? this.execPostRequest((PostRequest) r)
-                        : this.execDeleteRequest((DeleteRequest) r)) {
-                    
-                    System.out.println("RequestHandler: Successfully completed request to domain " + r.getDomain()
-                    + ". More successful than i'll ever be!");        
+                        : this.execDeleteRequest((DeleteRequest) r)) {     
                     Log.info("RequestHandler: Successfully completed request to domain " + r.getDomain()
                             + ". More successful than i'll ever be!");
                     break;
                 } else {
-                    System.out.println("RequestHandler: Couldn't contact other domain " + r.getDomain() + ". I SLEEP...");
                     Log.info("RequestHandler: Couldn't contact other domain " + r.getDomain() + ". I SLEEP...");
                     try {
-                        Thread.sleep(200);
+                        Thread.sleep(SLEEP_TIME);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

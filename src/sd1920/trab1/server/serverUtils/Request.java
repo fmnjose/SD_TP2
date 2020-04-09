@@ -2,6 +2,9 @@ package sd1920.trab1.server.serverUtils;
 
 import sd1920.trab1.api.Discovery.DomainInfo;
 
+/**
+ * Represents a Request. Used for the RequestHandler
+ */
 public abstract class Request {
     protected DomainInfo uri;
     protected String domain;

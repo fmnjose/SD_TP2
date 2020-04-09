@@ -5,11 +5,8 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
-import java.net.URI;
 import java.net.UnknownHostException;
-import java.time.LocalTime;
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 /**
  * <p>
@@ -31,8 +28,6 @@ import java.util.logging.Logger;
  * </p>
  */
 public class Discovery {
-	private static Logger Log = Logger.getLogger(Discovery.class.getName());
-
 	static {
 		// addresses some multicast issues on some TCP/IP stacks
 		System.setProperty("java.net.preferIPv4Stack", "true");
@@ -73,6 +68,7 @@ public class Discovery {
 		private boolean isRest;
 
 		private DomainInfo(String uri) {
+			//Gets the last 4 chars of a URI to check if it's a soap or rest server
 			this.isRest = uri.substring(uri.length() - 4).equalsIgnoreCase("rest");
 			this.uri = uri;
 			this.time = System.currentTimeMillis();
@@ -104,16 +100,13 @@ public class Discovery {
 	 * Starts sending service announcements at regular intervals...
 	 */
 	public void start() {
-		// TODO cleanup dos tempos
-		// Log.info(String.format("Starting Discovery announcements on: %s for: %s ->
-		// %s\n", addr, serviceName, serviceURI));
-
 		byte[] announceBytes = String.format("%s%s%s", this.domainName, DELIMITER, serviceURI).getBytes();
 		DatagramPacket announcePkt = new DatagramPacket(announceBytes, announceBytes.length, addr);
 
 		try {
 			MulticastSocket ms = new MulticastSocket(addr.getPort());
 			ms.joinGroup(addr.getAddress());
+
 			// start thread to send periodic announcements
 			new Thread(() -> {
 				for (;;) {
@@ -130,8 +123,6 @@ public class Discovery {
 			// start thread to collect announcements
 			new Thread(() -> {
 				DatagramPacket pkt = new DatagramPacket(new byte[1024], 1024);
-				LocalTime rcvTime;
-				String serviceName;
 				String uri;
 				DomainInfo info;
 
@@ -143,22 +134,15 @@ public class Discovery {
 						String[] msgElems = msg.split(DELIMITER);
 						if (msgElems.length == 2) { // periodic announcement
 							String domainName = pkt.getAddress().getHostName().split("\\.")[0];
-							// Log.info(String.format("FROM %s (%s) : %s\n", domainName,
-							// pkt.getAddress().getHostAddress(), msg));
 
-							serviceName = msgElems[0];
 							uri = msgElems[1];
 							info = record.get(domainName);
 
-							if (info == null) {
+							if (info == null) 
 								record.put(domainName, new DomainInfo(uri));
-								// Log.info(String.format("Service Name: %s Service URI: %s TIME: %s\n",
-								// serviceName, uri, rcvTime));
-							} else {
+							 else 
 								info.setTime();
-							}
-
-							System.out.println();
+							
 						}
 					} catch (IOException e) {
 						// do nothing
@@ -166,6 +150,7 @@ public class Discovery {
 				}
 			}).start();
 
+			//Cleanup thread. Removes inactive servers.
 			new Thread(() -> {
 
 				for (;;) {
@@ -183,15 +168,15 @@ public class Discovery {
 
 			});
 		} catch (Exception e) {
-			e.printStackTrace();
+			//do nothing
 		}
 	}
 
 	/**
-	 * Returns the known servers for a service.
+	 * Returns the known server for a service.
 	 * 
 	 * @param  serviceName the name of the service being discovered
-	 * @return an array of URI with the service instances discovered. 
+	 * @return DomainInfo Object for the given domain. Null in none found 
 	 * 
 	 */
 	public DomainInfo knownUrisOf(String domainName) {

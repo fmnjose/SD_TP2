@@ -45,10 +45,11 @@ public class UserResourceRest implements UserServiceRest {
 		this.serverRestUri = String.format("http://%s:%d/rest",InetAddress.getLocalHost().getHostAddress(),RESTMailServer.PORT);
     }
 
-    boolean createUserInbox(String userName){
+    private boolean createUserInbox(String userName){
         boolean error = true;
 
-        Log.info("Sending request to create a new inbox in MessageResource.");
+        Log.info("createUserInbox: Sending request to create a new inbox in MessageResource.");
+
         int tries = 0;
 
         WebTarget target = client.target(serverRestUri).path(MessageResourceRest.PATH).path("/mbox");
@@ -77,31 +78,33 @@ public class UserResourceRest implements UserServiceRest {
     public String postUser(User user) {
         try{
             String serverDomain = InetAddress.getLocalHost().getHostName();
+
             String name = user.getName();
 
             if(name == null || name.equals("") || 
                 user.getPwd() == null || user.getPwd().equals("") || 
                     user.getDomain() == null || user.getDomain().equals("")){
-                Log.info("User creation was rejected due to lack of name, pwd or domain.");
+                Log.info("postUser: User creation was rejected due to lack of name, pwd or domain.");
                 throw new WebApplicationException(Status.CONFLICT);
             }
             else if(!user.getDomain().equals(serverDomain)){
-                Log.info("User creation was rejected due to mismatch between the provided domain and the server domain");
+                Log.info("postUser: User creation was rejected due to mismatch between the provided domain and the server domain");
                 throw new WebApplicationException(Status.FORBIDDEN);
             }
             synchronized(this.users){
                 if(this.users.containsKey(name)){
-                    Log.info("User creation was rejected due to the user already existing");
+                    Log.info("postUser: User creation was rejected due to the user already existing");
                     throw new WebApplicationException(Status.CONFLICT);
                 }
                 this.users.put(name, user);
             }
             
-            if(this.createUserInbox(name))
-            
+            if(this.createUserInbox(name)){
+                Log.info("postUser: User creation failed due to unresponsive MessageResource");
                 throw new WebApplicationException(Status.CONFLICT);
-            
-            Log.info("Created new user with name: " + name);
+            }
+
+            Log.info("postUser: Created new user with name: " + name);
             
             return String.format("%s@%s", name, user.getDomain());
         }
@@ -115,7 +118,7 @@ public class UserResourceRest implements UserServiceRest {
         User user;
 
         if(name == null || name.equals("")){
-            Log.info("User fetch was rejected due to invalid parameters");
+            Log.info("getUser: User fetch was rejected due to invalid parameters");
             throw new WebApplicationException(Status.CONFLICT);
         }
 
@@ -124,10 +127,10 @@ public class UserResourceRest implements UserServiceRest {
         }
 
         if(user == null){
-            Log.info("User fetch was rejected due to missing user");
+            Log.info("getUser: User fetch was rejected due to missing user");
             throw new WebApplicationException(Status.FORBIDDEN);
         }else if(pwd == null || !user.getPwd().equals(pwd)){
-            Log.info("User fetch was rejected due to an invalid password");
+            Log.info("getUser: User fetch was rejected due to an invalid password");
             throw new WebApplicationException(Status.FORBIDDEN);
         }else{
             return user;
@@ -140,7 +143,7 @@ public class UserResourceRest implements UserServiceRest {
         User existingUser;
         
         if(name == null || name.equals("")){
-            Log.info("User update was rejected due to invalid parameters");
+            Log.info("updateUser: User update was rejected due to invalid parameters");
             throw new WebApplicationException(Status.CONFLICT);
         }
 
@@ -148,10 +151,10 @@ public class UserResourceRest implements UserServiceRest {
             existingUser = this.users.get(name);
 
             if(existingUser == null){
-                Log.info("User update was rejected due to a missing user");
+                Log.info("updateUser: User update was rejected due to a missing user");
                 throw new WebApplicationException(Status.FORBIDDEN);
             }else if(!existingUser.getPwd().equals(pwd)){
-                Log.info("User update was rejected due to an invalid password");
+                Log.info("updateUser: User update was rejected due to an invalid password");
                 throw new WebApplicationException(Status.FORBIDDEN);
             }
 
@@ -169,7 +172,7 @@ public class UserResourceRest implements UserServiceRest {
         User user;
 
         if(name == null || name.equals("")){
-            Log.info("User deletion was rejected due to invalid parameters");
+            Log.info("deleteUser: User deletion was rejected due to invalid parameters");
             throw new WebApplicationException(Status.CONFLICT);
         }
 
@@ -177,17 +180,14 @@ public class UserResourceRest implements UserServiceRest {
             user = this.users.get(name);
             
             if(user == null){
-                Log.info("User deletion was rejected due to a missing user");
+                Log.info("deleteUser: User deletion was rejected due to a missing user");
                 throw new WebApplicationException(Status.FORBIDDEN);
             }else if(pwd == null || !user.getPwd().equals(pwd)){
-                Log.info("User update was rejected due to an invalid password");
+                Log.info("deleteUser: User update was rejected due to an invalid password");
                 throw new WebApplicationException(Status.FORBIDDEN);
             }
-
             this.users.remove(name);
         }
-
-
         return user;
     }
 

@@ -108,9 +108,9 @@ public interface MessageServiceRest {
 
 
 	/**
-	 * Forwards a message to the needed domains
-	 * 
-	 * @param msg              message to be forwarded
+	 * Saves a forwarded message
+	 * @param msg message to be saved
+	 * @return list of failed deliveries. Normally missing users
 	 */
 	@POST
 	@Path("/mbox")
@@ -120,8 +120,8 @@ public interface MessageServiceRest {
 
 
 	/**
-	 * Deletes a message in this server that was sent from another server
-	 * @param mid
+	 * Deletes a message from this servers. Forwarded request
+	 * @param mid mid of message to be deleted
 	 */
 	@DELETE
 	@Path("/msg/{mid}")
