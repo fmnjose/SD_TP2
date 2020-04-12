@@ -58,7 +58,7 @@ public abstract class ServerMessageUtils {
 	public static final String MESSAGES_WSDL = String.format("/%s/?wsdl", MessageServiceSoap.NAME);
 	public static final String USERS_WSDL = String.format("/%s/?wsdl", UserServiceSoap.NAME);
 
-    public static final int TIMEOUT = 5000;
+    public static final int TIMEOUT = 1000;
 	public static final int SLEEP_TIME = 500;
     public static final int N_TRIES = 5;
 
@@ -96,25 +96,26 @@ public abstract class ServerMessageUtils {
      * message
      * 
      * @param senderName    message sender
-     * @param recipientName name of a recipient in this domain. Always in this
+     * @param recipient name of a recipient in this domain. Always in this
      *                      domain.
      * @param forwarded     was the message forwarded?
      * @param mid           id to be assigned
      * @return was it not forwarded and succesful?
      */
-    protected boolean saveMessage(String senderName, String recipientName, boolean forwarded, Message msg) {
+    protected boolean saveMessage(String senderName, String recipient, boolean forwarded, Message msg) {
         synchronized (this.userInboxs) {
             synchronized (this.allMessages) {
-                if (!userInboxs.containsKey(recipientName)) {
+                String recipientCanonicalName = getSenderCanonicalName(recipient);
+                if (!userInboxs.containsKey(recipientCanonicalName)) {
                     if (forwarded){
                         Log.info("saveMessage: user does not exist for forwarded message " + msg.getId());
                         return false;
                     }else {
-                        this.saveErrorMessages(senderName, recipientName, msg);
+                        this.saveErrorMessages(senderName, recipient, msg);
                     }
                 } else {
                     this.allMessages.put(msg.getId(), msg);
-                    this.userInboxs.get(recipientName).add(msg.getId());
+                    this.userInboxs.get(recipientCanonicalName).add(msg.getId());
                 }
             }
         }

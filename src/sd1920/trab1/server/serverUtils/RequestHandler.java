@@ -114,7 +114,7 @@ public class RequestHandler implements Runnable {
         } 
         catch (WebServiceException e) {
             Log.info("execPostRequest: Failed to forward message to " + request.getDomain() + ".");
-            return true;
+            return false;
         }
 
         String senderName = ServerMessageUtils.getSenderCanonicalName(request.getMessage().getSender());
@@ -173,7 +173,7 @@ public class RequestHandler implements Runnable {
             return false;
         } catch (WebServiceException e) {
             Log.info("execDeleteRequest: Failed to forward message to " + request.getDomain() + ".");
-            return true;
+            return false;
         } catch (MessagesException me) {
             Log.info("execDeleteRequest: Error, could not send the message.");
             return true;

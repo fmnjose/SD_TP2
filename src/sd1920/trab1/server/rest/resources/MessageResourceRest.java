@@ -74,7 +74,7 @@ public class MessageResourceRest extends ServerMessageUtils implements MessageSe
 		for(String recipient: msg.getDestination()){
 			String[] tokens = recipient.split("@");
 			if(tokens[1].equals(this.domain))
-				saveMessage(senderName,tokens[0], false, msg);
+				saveMessage(senderName,recipient, false, msg);
 			else
 				recipientDomains.add(tokens[1]);
 		}	
