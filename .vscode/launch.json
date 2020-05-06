@@ -1,0 +1,43 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug (Launch) - Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-DropboxMailServer<sd1920-trab1>",
+            "request": "launch",
+            "mainClass": "sd1920.trab2.server.dropbox.DropboxMailServer",
+            "projectName": "sd1920-trab1",
+            "args": "true"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-ListDirectory<sd1920-trab1>",
+            "request": "launch",
+            "mainClass": "sd1920.trab2.server.dropbox.ListDirectory",
+            "projectName": "sd1920-trab1"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-RESTMailServer<sd1920-trab1>",
+            "request": "launch",
+            "mainClass": "sd1920.trab2.server.rest.RESTMailServer",
+            "projectName": "sd1920-trab1"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-SOAPMailServer<sd1920-trab1>",
+            "request": "launch",
+            "mainClass": "sd1920.trab2.server.soap.SOAPMailServer",
+            "projectName": "sd1920-trab1"
+        }
+    ]
+}
