@@ -54,7 +54,12 @@ public class DeleteDirectory{
     }
 
     public static boolean run(String directoryPath){
-        boolean success = execute(directoryPath);
+        boolean success = false;
+        
+        for(int i = 0; i < DropboxRequest.RETRIES; i++){
+            if(success = execute(directoryPath))
+                break;
+        }
 
 		if(success){
 			System.out.println("Directory '" + directoryPath + "' deleted successfuly.");

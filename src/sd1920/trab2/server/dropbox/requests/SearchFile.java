@@ -54,7 +54,13 @@ public class SearchFile {
     }
 
     public static boolean run(String directoryPath, String userName){
-        boolean success = execute(directoryPath, userName);
+		boolean success = false;
+        
+        for(int i = 0; i < DropboxRequest.RETRIES; i++){
+            if(success = execute(directoryPath, userName))
+                break;
+        }		
+		
 		if(success){
 			System.out.println("User with name " + userName + " was found.");
 			return true;

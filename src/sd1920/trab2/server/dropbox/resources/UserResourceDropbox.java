@@ -5,22 +5,23 @@ import java.net.UnknownHostException;
 import java.util.logging.Logger;
 
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response.Status;
 
 import sd1920.trab2.api.User;
-import sd1920.trab2.api.rest.UserServiceRest;
 import sd1920.trab2.server.dropbox.DropboxMailServer;
+import sd1920.trab2.server.dropbox.requests.CreateFile;
 import sd1920.trab2.server.dropbox.requests.SearchFile;
 import sd1920.trab2.server.rest.resources.UserResourceRest;
 
-public class UserResourceDropbox implements UserServiceRest {
+public class UserResourceDropbox extends UserResourceRest {
 
     private static Logger Log = Logger.getLogger(UserResourceDropbox.class.getName());
 
-    private boolean createUserInbox(String userName){
-        return false;
+    public UserResourceDropbox() throws UnknownHostException{
+        super();
     }
-
+    
     @Override
     public String postUser(User user) {
         try{
@@ -39,19 +40,14 @@ public class UserResourceDropbox implements UserServiceRest {
                 throw new WebApplicationException(Status.FORBIDDEN);
             }
 
-            if(!SearchFile.run(DropboxMailServer.hostname + "/users/", user.getName()){
+            String directoryPath = DropboxMailServer.hostname + "/users/";
+
+            if(!SearchFile.run(directoryPath, user.getName())){
                 Log.info("postUser: User creation was rejected due to the user already existing");
                 throw new WebApplicationException(Status.CONFLICT);
             }
 
-
-            //TODO
-            synchronized(this.users){
-                if(this.users.containsKey(name)){
-                    
-                }
-                this.users.put(name, user);
-            }
+            CreateFile.run(directoryPath + user.getName(), user);
             
             if(this.createUserInbox(name)){
                 Log.info("postUser: User creation failed due to unresponsive MessageResource");

@@ -45,7 +45,7 @@ public class UserResourceRest implements UserServiceRest {
 		this.serverRestUri = String.format("https://%s:%d/rest",InetAddress.getLocalHost().getHostAddress(),RESTMailServer.PORT);
     }
 
-    private boolean createUserInbox(String userName){
+    protected boolean createUserInbox(String userName){
         boolean error = true;
 
         Log.info("createUserInbox: Sending request to create a new inbox in MessageResource.");
