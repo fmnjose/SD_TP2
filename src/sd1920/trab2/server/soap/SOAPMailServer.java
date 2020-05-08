@@ -34,11 +34,13 @@ public class SOAPMailServer {
 	public static final String SOAP_MESSAGES_PATH = "/soap/messages";
 	public static final String SOAP_USERS_PATH = "/soap/users";
 
+	private static String secret;
 	public static void main(String[] args) throws Exception {
 
 		String ip = InetAddress.getLocalHost().getHostAddress();
 		String serverURI = String.format("https://%s:%s/soap", ip, PORT);
 
+		secret = args[1];
 		
 		// Create an HTTP server, accepting requests at PORT (from all local interfaces)	
 		HttpsURLConnection.setDefaultHostnameVerifier(new InsecureHostnameVerifier());

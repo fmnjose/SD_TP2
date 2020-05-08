@@ -1,6 +1,10 @@
 package sd1920.trab2.server.dropbox.requests;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.logging.Logger;
 
 import com.github.scribejava.core.builder.ServiceBuilder;
@@ -14,32 +18,29 @@ import com.google.gson.JsonSyntaxException;
 
 import org.pac4j.scribe.builder.api.DropboxApi20;
 
-import sd1920.trab2.server.dropbox.arguments.SearchFileArgs;
-import sd1920.trab2.server.dropbox.replies.SearchFileReturn;
+import sd1920.trab2.server.dropbox.arguments.DownloadFileArgs;
 
-public class SearchFile {
-
-	private static final String CREATE_FOLDER_V2_URL = "https://api.dropboxapi.com/2/files/search_v2";
+public class DownloadFile {
+    private static final String DOWNLOAD_FILE_URL = "https://content.dropboxapi.com/2/files/download";
 	
     private static Logger Log = Logger.getLogger(SearchFile.class.getName());
 
-	private static boolean execute(String directory, String userName) throws JsonSyntaxException, IOException {
-        OAuthRequest createFolder = new OAuthRequest(Verb.POST, CREATE_FOLDER_V2_URL);
+	private static Object execute(String filePath) throws JsonSyntaxException, IOException, ClassNotFoundException{
+        OAuthRequest downloadFile = new OAuthRequest(Verb.POST, DOWNLOAD_FILE_URL);
 		OAuth20Service service = new ServiceBuilder(DropboxRequest.apiKey)
 						.apiSecret(DropboxRequest.apiSecret).build(DropboxApi20.INSTANCE);
 		OAuth2AccessToken accessToken = new OAuth2AccessToken(DropboxRequest.accessTokenStr);
         Gson json = new Gson();
 
-        createFolder.addHeader("Content-Type", DropboxRequest.JSON_CONTENT_TYPE);
+        downloadFile.addHeader("Content-Type", DropboxRequest.OCTET_CONTENT_TYPE);
+        downloadFile.addHeader("Dropbox-API-Args", json.toJson(new DownloadFileArgs(filePath)));
 
-        createFolder.setPayload(json.toJson(new SearchFileArgs(directory, userName)));
-        
-        service.signRequest(accessToken, createFolder);
+        service.signRequest(accessToken, downloadFile);
 		
 		Response r = null;
 		
 		try {
-			r = service.execute(createFolder);
+			r = service.execute(downloadFile);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -47,8 +48,10 @@ public class SearchFile {
 		
 		
 		if(r.getCode() == 200) {
-			SearchFileReturn reply = json.fromJson(r.getBody(), SearchFileReturn.class);
-			return reply.foundFile();
+            ByteArrayInputStream b = new ByteArrayInputStream(r.getHeader("dropbox-api-result").getBytes());
+            ObjectInputStream o = new ObjectInputStream(b);
+
+            return o.readObject();
 		} else {
 			System.err.println("HTTP Error Code: " + r.getCode() + ": " + r.getMessage());
 			try {
@@ -56,27 +59,30 @@ public class SearchFile {
 			} catch (IOException e) {
 				System.err.println("No body in the response");
 			}
-			return false;
+			return null;
 		}
     }
 
-    public static boolean run(String directoryPath, String userName){
+    public static Object run(String filePath){
 		boolean success = false;
         
         for(int i = 0; i < DropboxRequest.RETRIES; i++){
 			try{
-				if(success = execute(directoryPath, userName))
-					break;
-			}catch(IOException e){
+                Object o = execute(filePath);
+				if(o != null){
+                    success = true;
+                    break;
+                }
+			}catch(Exception e){
 				Log.info("SearchFile: What the frog");
-			}
+            }
         }		
 		
 		if(success){
-			System.out.println("User with name " + userName + " was found.");
+			System.out.println("File: " + filePath + " was downloaded");
 			return true;
 		}else{
-			System.out.println("Couldn't find user with name " + userName + ".");
+			System.out.println("File: " + filePath + " was NOT found");
 			return false;
 		}
     }

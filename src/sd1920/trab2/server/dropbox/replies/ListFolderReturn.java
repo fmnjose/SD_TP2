@@ -45,8 +45,5 @@ public class ListFolderReturn {
 	public void setEntries(List<FolderEntry> entries) {
 		this.entries = entries;
 	}
-
-	
-	
 	
 }

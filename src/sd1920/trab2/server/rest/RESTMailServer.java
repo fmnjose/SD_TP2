@@ -28,9 +28,11 @@ public class RESTMailServer {
 
 	public static Discovery serverRecord;
 
+	private static String secret;
 	public static void main(String[] args) throws UnknownHostException {
 		String ip = InetAddress.getLocalHost().getHostAddress();
 
+		secret = args[0];
 		HttpsURLConnection.setDefaultHostnameVerifier(new InsecureHostnameVerifier());
 
 		ResourceConfig config = new ResourceConfig();

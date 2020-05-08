@@ -12,9 +12,9 @@ import com.google.gson.Gson;
 
 import org.pac4j.scribe.builder.api.DropboxApi20;
 
-import sd1920.trab2.server.dropbox.arguments.DeleteFolderArgs;
+import sd1920.trab2.server.dropbox.arguments.DeleteArgs;
 
-public class DeleteDirectory{
+public class Delete{
 
     private static final String DELETE_FOLDER_URL = "https://api.dropboxapi.com/2/files/delete_v2";
 
@@ -27,7 +27,7 @@ public class DeleteDirectory{
 
 		deleteFolder.addHeader("Content-Type", DropboxRequest.JSON_CONTENT_TYPE);
 
-		deleteFolder.setPayload(json.toJson(new DeleteFolderArgs(directory)));
+		deleteFolder.setPayload(json.toJson(new DeleteArgs(directory)));
 
         service.signRequest(accessToken, deleteFolder);
         

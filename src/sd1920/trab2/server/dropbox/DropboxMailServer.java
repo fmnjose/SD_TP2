@@ -14,7 +14,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import sd1920.trab2.api.Discovery;
 import sd1920.trab2.server.InsecureHostnameVerifier;
 import sd1920.trab2.server.dropbox.requests.CreateDirectory;
-import sd1920.trab2.server.dropbox.requests.DeleteDirectory;
+import sd1920.trab2.server.dropbox.requests.Delete;
 import sd1920.trab2.server.rest.resources.MessageResourceRest;
 import sd1920.trab2.server.rest.resources.UserResourceRest;
 
@@ -30,10 +30,12 @@ public class DropboxMailServer {
 
 	public static Discovery serverRecord;
 
+	private static String secret;
 
 	public static void main(String[] args) throws UnknownHostException {
 		String ip = InetAddress.getLocalHost().getHostAddress();
 
+		secret = args[1];
 		
 		hostname = InetAddress.getLocalHost().getHostName();
 
@@ -43,7 +45,7 @@ public class DropboxMailServer {
 
 		if(freshStart){		
 			//Deletes folder and all its content
-			DeleteDirectory.run(dirName);
+			Delete.run(dirName);
 
 			CreateDirectory.run(dirName);
 

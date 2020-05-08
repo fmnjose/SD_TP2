@@ -5,12 +5,14 @@ import java.net.UnknownHostException;
 import java.util.logging.Logger;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response.Status;
+
 
 import sd1920.trab2.api.User;
 import sd1920.trab2.server.dropbox.DropboxMailServer;
 import sd1920.trab2.server.dropbox.requests.CreateFile;
+import sd1920.trab2.server.dropbox.requests.Delete;
+import sd1920.trab2.server.dropbox.requests.DownloadFile;
 import sd1920.trab2.server.dropbox.requests.SearchFile;
 import sd1920.trab2.server.rest.resources.UserResourceRest;
 
@@ -65,20 +67,83 @@ public class UserResourceDropbox extends UserResourceRest {
 
     @Override
     public User getUser(String name, String pwd) {
-        // TODO Auto-generated method stub
-        return null;
+        User user;
+
+        if(name == null || name.equals("")){
+            Log.info("getUser: User fetch was rejected due to invalid parameters");
+            throw new WebApplicationException(Status.CONFLICT);
+        }
+
+        String directoryPath = DropboxMailServer.hostname + "/users/" + name;
+
+        user = (User)DownloadFile.run(directoryPath);
+
+        if(user == null){
+            Log.info("getUser: User fetch was rejected due to missing user");
+            throw new WebApplicationException(Status.FORBIDDEN);
+        }else if(pwd == null || !user.getPwd().equals(pwd)){
+            Log.info("getUser: User fetch was rejected due to an invalid password");
+            throw new WebApplicationException(Status.FORBIDDEN);
+        }else{
+            return user;
+        }
     }
 
     @Override
     public User updateUser(String name, String pwd, User user) {
-        // TODO Auto-generated method stub
-        return null;
+        User existingUser;
+        
+        if(name == null || name.equals("")){
+            Log.info("updateUser: User update was rejected due to invalid parameters");
+            throw new WebApplicationException(Status.CONFLICT);
+        }
+
+        String directoryPath = DropboxMailServer.hostname + "/users/" + name;
+
+        
+        existingUser = (User)DownloadFile.run(directoryPath);
+
+        if(existingUser == null){
+            Log.info("updateUser: User update was rejected due to a missing user");
+            throw new WebApplicationException(Status.FORBIDDEN);
+        }else if(!existingUser.getPwd().equals(pwd)){
+            Log.info("updateUser: User update was rejected due to an invalid password");
+            throw new WebApplicationException(Status.FORBIDDEN);
+        }
+
+        existingUser.setDisplayName(user.getDisplayName() == null ? existingUser.getDisplayName() : user.getDisplayName());
+
+        existingUser.setPwd(user.getPwd() == null ? existingUser.getPwd() : user.getPwd());
+        
+        CreateFile.run(directoryPath, existingUser);
+
+        return existingUser;
     }
 
     @Override
     public User deleteUser(String name, String pwd) {
-        // TODO Auto-generated method stub
-        return null;
+        User user;
+
+        if(name == null || name.equals("")){
+            Log.info("deleteUser: User deletion was rejected due to invalid parameters");
+            throw new WebApplicationException(Status.CONFLICT);
+        }
+
+        String directoryPath = DropboxMailServer.hostname + "/users/" + name;
+
+        user = (User)DownloadFile.run(directoryPath);
+        
+        if(user == null){
+            Log.info("deleteUser: User deletion was rejected due to a missing user");
+            throw new WebApplicationException(Status.FORBIDDEN);
+        }else if(pwd == null || !user.getPwd().equals(pwd)){
+            Log.info("deleteUser: User update was rejected due to an invalid password");
+            throw new WebApplicationException(Status.FORBIDDEN);
+        }
+        
+        Delete.run(directoryPath);
+        
+        return user;
     }
 
 }
