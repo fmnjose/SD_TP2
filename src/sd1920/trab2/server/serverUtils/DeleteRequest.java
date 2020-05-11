@@ -10,8 +10,8 @@ public class DeleteRequest extends Request {
 
     private String mid;
     
-    public DeleteRequest(DomainInfo uri, String domain, String mid){
-        super(uri,domain);
+    public DeleteRequest(DomainInfo uri, String domain, String mid, String secret){
+        super(uri,domain, secret);
         this.mid = mid;
     }
 

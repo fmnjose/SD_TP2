@@ -26,7 +26,7 @@ import sd1920.trab2.server.soap.SOAPMailServer;
 public class MessageResourceSoap extends LocalServerUtils implements MessageServiceSoap {
 	
 	public MessageResourceSoap() throws UnknownHostException {
-		super();
+		super(false);
 
 		this.randomNumberGenerator = new Random(System.currentTimeMillis());
 		
@@ -207,17 +207,28 @@ public class MessageResourceSoap extends LocalServerUtils implements MessageServ
 	}
 
 	@Override
-	public void createInbox(String user) throws MessagesException{
+	public void createInbox(String user, String secret) throws MessagesException{
+		if(!secret.equals(SOAPMailServer.secret)){
+			Log.info("An intruder!");
+			throw new MessagesException("Unauthorized access");
+		}
+
 		synchronized(this.userInboxs){
 			this.userInboxs.put(user, new HashSet<>());
 		}
 	}
 
 	@Override
-	public List<String> postForwardedMessage(Message msg){
+	public List<String> postForwardedMessage(Message msg, String secret) throws MessagesException{
+		Log.info("postForwardedMessage: Received forwarded message from " + msg.getSender() + ". ID: " + msg.getId());
+
+		if(!secret.equals(SOAPMailServer.secret)){
+			Log.info("An intruder!");
+			throw new MessagesException("Unauthorized access");
+		}
+
 		List<String> failedDeliveries = new LinkedList<>();
 
-		Log.info("postForwardedMessage: Received forwarded message from " + msg.getSender() + ". ID: " + msg.getId());
 
 		for(String recipient: msg.getDestination()){
 			String[] tokens = recipient.split("@");
@@ -229,10 +240,16 @@ public class MessageResourceSoap extends LocalServerUtils implements MessageServ
 	}
 
 	@Override
-	public void deleteForwardedMessage(long mid) throws MessagesException{
+	public void deleteForwardedMessage(long mid, String secret) throws MessagesException{
+		Log.info("deleteForwardedMessage: Received request to delete message " + mid);
+		
 		Set<String> recipients = null;
 
-		Log.info("deleteForwardedMessage: Received request to delete message " + mid);
+		if(!secret.equals(SOAPMailServer.secret)){
+			Log.info("An intruder!");
+			throw new MessagesException("Unauthorized access");
+		}
+
 		synchronized(this.allMessages){
 			if(!this.allMessages.containsKey(mid)){
 				Log.info("deleteForwardedMessage: Message not found");

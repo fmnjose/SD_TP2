@@ -70,7 +70,7 @@ public class UserResourceSoap implements UserServiceSoap{
             error = false;
 
             try{
-                msgService.createInbox(userName);
+                msgService.createInbox(userName, SOAPMailServer.secret);
             }
             catch(MessagesException me){
                 Log.info("createUserInbox: Error, could not send the request. Retrying...");

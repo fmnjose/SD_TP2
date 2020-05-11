@@ -2,11 +2,8 @@ package sd1920.trab2.server.serverUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
-import java.util.logging.Logger;
 
-import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 
 
@@ -14,13 +11,8 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 
 import sd1920.trab2.api.Message;
-
-import sd1920.trab2.api.soap.UserServiceSoap;
-
-import javax.xml.namespace.QName;
-
-
-import sd1920.trab2.api.soap.MessageServiceSoap;
+import sd1920.trab2.server.rest.RESTMailServer;
+import sd1920.trab2.server.soap.SOAPMailServer;
 
 
 public abstract class LocalServerUtils extends ServerUtils{
@@ -30,7 +22,8 @@ public abstract class LocalServerUtils extends ServerUtils{
     protected final Map<String, RequestHandler> requests = new HashMap<>();
 
 
-    public LocalServerUtils(){
+    public LocalServerUtils(boolean isRest){
+        super(isRest ? RESTMailServer.secret : SOAPMailServer.secret);
         this.config = new ClientConfig();
 		this.config.property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT);
         this.config.property(ClientProperties.READ_TIMEOUT, TIMEOUT);

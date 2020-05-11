@@ -25,7 +25,7 @@ import sd1920.trab2.api.User;
 public class MessageResourceRest extends LocalServerUtils implements MessageServiceRest {
 
 	public MessageResourceRest() throws UnknownHostException {
-		super();
+		super(true);
 
 		this.randomNumberGenerator = new Random(System.currentTimeMillis());
 		
@@ -199,17 +199,28 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 	}
 
 	@Override
-	public void createInbox(String user) {
+	public void createInbox(String user, String secret) {
+		if(!secret.equals(RESTMailServer.secret)){
+			Log.info("An intruder!");
+			throw new WebApplicationException(Status.FORBIDDEN);
+		}
+
 		synchronized(this.userInboxs){
 			this.userInboxs.put(user, new HashSet<>());
 		}
 	}
 
 	@Override
-	public List<String> postForwardedMessage(Message msg) {
+	public List<String> postForwardedMessage(Message msg, String secret) {
+		Log.info("postForwardedMessage: Received request to save the message " + msg.getId());
+
+		if(!secret.equals(RESTMailServer.secret)){
+			Log.info("An intruder!");
+			throw new WebApplicationException(Status.FORBIDDEN);
+		}
+
 		List<String> failedDeliveries = new LinkedList<>();
 
-		Log.info("postForwardedMessage: Received request to save the message " + msg.getId());
 		for(String recipient: msg.getDestination()){
 			String[] tokens = recipient.split("@");
 			if(tokens[1].equals(this.domain) && !this.saveMessage(msg.getSender(), tokens[0], true, msg))
@@ -221,10 +232,16 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 	}
 
 	@Override
-	public void deleteForwardedMessage(long mid) {
+	public void deleteForwardedMessage(long mid, String secret) {
+		Log.info("deleteForwardedMessage: Received request to delete message " + mid);
+
+		if(!secret.equals(RESTMailServer.secret)){
+			Log.info("An intruder!");
+			throw new WebApplicationException(Status.FORBIDDEN);
+		}
+
 		Set<String> recipients = null;
 
-		Log.info("deleteForwardedMessage: Received request to delete message " + mid);
 
 		synchronized(this.allMessages){
 			if(!this.allMessages.containsKey(mid))

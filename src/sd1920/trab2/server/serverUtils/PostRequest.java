@@ -10,8 +10,8 @@ public class PostRequest extends Request {
 
     private Message msg;
 
-    public PostRequest(DomainInfo uri, Message msg, String domain) {
-        super(uri, domain);
+    public PostRequest(DomainInfo uri, Message msg, String domain, String secret) {
+        super(uri, domain, secret);
         this.msg = msg;
     }
 

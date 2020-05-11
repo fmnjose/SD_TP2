@@ -104,7 +104,7 @@ public interface MessageServiceRest {
 	 */
 	@HEAD
 	@Path("/mbox/{user}")
-	void createInbox(@PathParam("user") String user);
+	void createInbox(@PathParam("user") String user, @QueryParam("secret") String secret);
 
 
 	/**
@@ -116,7 +116,7 @@ public interface MessageServiceRest {
 	@Path("/mbox")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	List<String> postForwardedMessage(Message msg);
+	List<String> postForwardedMessage(Message msg, @QueryParam("secret") String secret);
 
 
 	/**
@@ -125,5 +125,5 @@ public interface MessageServiceRest {
 	 */
 	@DELETE
 	@Path("/msg/{mid}")
-	void deleteForwardedMessage(@PathParam("mid") long mid);
+	void deleteForwardedMessage(@PathParam("mid") long mid, @QueryParam("secret") String secret);
 }

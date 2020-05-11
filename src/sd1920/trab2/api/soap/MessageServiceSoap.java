@@ -81,7 +81,7 @@ public interface MessageServiceSoap {
 	 * @param user name of user
 	 */
 	@WebMethod
-	void createInbox(String user) throws MessagesException;
+	void createInbox(String user, String secret) throws MessagesException;
 
 	/**
 	 * Forwards a message to the needed domains
@@ -89,12 +89,12 @@ public interface MessageServiceSoap {
 	 * @param msg              message to be forwarded
 	 */
 	@WebMethod
-	List<String> postForwardedMessage(Message msg);
+	List<String> postForwardedMessage(Message msg, String secret) throws MessagesException;
 
 	/**
 	 * Deletes a message in this server that was sent from another server
 	 * @param mid
 	 */
 	@WebMethod
-	void deleteForwardedMessage(long mid) throws MessagesException;
+	void deleteForwardedMessage(long mid, String secret) throws MessagesException;
 }

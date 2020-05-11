@@ -62,7 +62,8 @@ public class RequestHandler implements Runnable {
      * No logs here because it would be total chaos given that each domain has a thread 
      * for every other domain
      */
-    public static List<String> processPostRequest(PostRequest request) throws ProcessingException, MalformedURLException, WebServiceException{
+    public static List<String> processPostRequest(PostRequest request) throws ProcessingException, MalformedURLException, WebServiceException,
+                                                                             MessagesException{
         Response r = null;
         List<String> failedDeliveries = null;
         DomainInfo uri = request.getUri();
@@ -88,7 +89,7 @@ public class RequestHandler implements Runnable {
             ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT,
                     LocalServerUtils.TIMEOUT);
               
-            failedDeliveries = msgService.postForwardedMessage(msg);
+            failedDeliveries = msgService.postForwardedMessage(msg, request.getSecret());
         }
         return failedDeliveries;
     }
@@ -112,7 +113,7 @@ public class RequestHandler implements Runnable {
             Log.info("execPostRequest: Bad Url");
             return false;
         } 
-        catch (WebServiceException e) {
+        catch (WebServiceException| MessagesException e) {
             Log.info("execPostRequest: Failed to forward message to " + request.getDomain() + ".");
             return false;
         }
@@ -153,7 +154,7 @@ public class RequestHandler implements Runnable {
             ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT,
                     LocalServerUtils.TIMEOUT);
             
-            msgService.deleteForwardedMessage(Long.valueOf(mid));
+            msgService.deleteForwardedMessage(Long.valueOf(mid), request.getSecret());
         }
     }
 

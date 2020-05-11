@@ -3,7 +3,6 @@ package sd1920.trab2.server.dropbox.resources;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,7 +13,6 @@ import java.util.logging.Logger;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
-import com.fasterxml.jackson.annotation.ObjectIdGenerators.StringIdGenerator;
 
 import sd1920.trab2.api.Message;
 import sd1920.trab2.api.User;
@@ -210,7 +208,13 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 	}
 
 	@Override
-	public void createInbox(String user) {
+	public void createInbox(String user, String secret) {
+
+		if(!secret.equals(DropboxMailServer.secret)){
+			Log.info("An intruder!");
+			throw new WebApplicationException(Status.FORBIDDEN);
+		}
+
 		String directoryPath = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT, DropboxMailServer.hostname, user);
 		Set<Long> messageIds = new HashSet<>();
 
@@ -218,10 +222,16 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 	}
 
 	@Override
-	public List<String> postForwardedMessage(Message msg) {
+	public List<String> postForwardedMessage(Message msg, String secret) {
+		Log.info("postForwardedMessage: Received request to save the message " + msg.getId());
+
+		if(!secret.equals(DropboxMailServer.secret)){
+			Log.info("An intruder!");
+			throw new WebApplicationException(Status.FORBIDDEN);
+		}
+
 		List<String> failedDeliveries = new LinkedList<>();
 
-		Log.info("postForwardedMessage: Received request to save the message " + msg.getId());
 		for(String recipient: msg.getDestination()){
 			String[] tokens = recipient.split("@");
 			if(tokens[1].equals(this.domain) && !this.saveMessage(msg.getSender(), tokens[0], true, msg))
@@ -233,10 +243,16 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 	}
 
 	@Override
-	public void deleteForwardedMessage(long mid) {
+	public void deleteForwardedMessage(long mid, String secret) {
+		Log.info("deleteForwardedMessage: Received request to delete message " + mid);
+
+		if(!secret.equals(DropboxMailServer.secret)){
+			Log.info("An intruder!");
+			throw new WebApplicationException(Status.FORBIDDEN);
+		}
+
 		Set<String> recipients = null;
 
-		Log.info("deleteForwardedMessage: Received request to delete message " + mid);
 
 		String path = String.format(MESSAGE_FORMAT, 
 				DropboxMailServer.hostname, Long.toString(mid));

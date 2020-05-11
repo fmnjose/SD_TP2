@@ -38,6 +38,8 @@ import sd1920.trab2.api.soap.MessagesException;
 import sd1920.trab2.server.soap.SOAPMailServer;
 
 public abstract class ServerUtils {
+    private String secret;
+    
     protected Random randomNumberGenerator;
     protected Client client;
     protected ClientConfig config;
@@ -61,7 +63,8 @@ public abstract class ServerUtils {
 	public static final int SLEEP_TIME = 500;
     public static final int N_TRIES = 5;
 
-    public ServerUtils(){
+    public ServerUtils(String secret){
+        this.secret = secret;
         this.config = new ClientConfig();
 		this.config.property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT);
         this.config.property(ClientProperties.READ_TIMEOUT, TIMEOUT);
@@ -185,7 +188,7 @@ public abstract class ServerUtils {
                     new Thread(rh).start();
                 }
                 
-                rh.addRequest(new PostRequest(uri, msg, domain));
+                rh.addRequest(new PostRequest(uri, msg, domain, this.secret));
             }
         }
 	}
@@ -221,7 +224,7 @@ public abstract class ServerUtils {
                     new Thread(rh).start();
                 }
 
-                rh.addRequest(new DeleteRequest(uri, domain, mid));
+                rh.addRequest(new DeleteRequest(uri, domain, mid, this.secret));
             }           
         }	
     }
