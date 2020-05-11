@@ -17,7 +17,7 @@ import sd1920.trab2.api.User;
 import sd1920.trab2.api.soap.MessageServiceSoap;
 import sd1920.trab2.api.soap.MessagesException;
 import sd1920.trab2.api.soap.UserServiceSoap;
-import sd1920.trab2.server.serverUtils.ServerMessageUtils;
+import sd1920.trab2.server.serverUtils.LocalServerUtils;
 import sd1920.trab2.server.rest.resources.UserResourceRest;
 import sd1920.trab2.server.soap.SOAPMailServer;
 import javax.xml.ws.BindingProvider;
@@ -62,11 +62,11 @@ public class UserResourceSoap implements UserServiceSoap{
             return false;
         }
 
-        ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.CONNECT_TIMEOUT, ServerMessageUtils.TIMEOUT);
-        ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT, ServerMessageUtils.TIMEOUT);
+        ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.CONNECT_TIMEOUT, LocalServerUtils.TIMEOUT);
+        ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT, LocalServerUtils.TIMEOUT);
         
 
-        while(error && tries< ServerMessageUtils.N_TRIES){
+        while(error && tries< LocalServerUtils.N_TRIES){
             error = false;
 
             try{
@@ -80,7 +80,7 @@ public class UserResourceSoap implements UserServiceSoap{
                 Log.info("createUserInbox: Communication error. Retrying...");
                 wse.printStackTrace();
                 try{
-                    Thread.sleep(ServerMessageUtils.SLEEP_TIME);
+                    Thread.sleep(LocalServerUtils.SLEEP_TIME);
                 }
                 catch(InterruptedException e){
                     Log.info("Log a dizer 'what?'");

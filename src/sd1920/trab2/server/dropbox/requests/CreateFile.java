@@ -14,7 +14,6 @@ import com.google.gson.Gson;
 
 import org.pac4j.scribe.builder.api.DropboxApi20;
 
-import sd1920.trab2.api.User;
 import sd1920.trab2.server.dropbox.arguments.CreateFileArgs;
 
 public class CreateFile {

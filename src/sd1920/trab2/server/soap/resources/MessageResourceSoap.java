@@ -17,13 +17,13 @@ import sd1920.trab2.api.Message;
 import sd1920.trab2.api.User;
 import sd1920.trab2.api.soap.MessageServiceSoap;
 import sd1920.trab2.api.soap.MessagesException;
-import sd1920.trab2.server.serverUtils.ServerMessageUtils;
+import sd1920.trab2.server.serverUtils.LocalServerUtils;
 import sd1920.trab2.server.soap.SOAPMailServer;
 
 @WebService(serviceName=MessageServiceSoap.NAME, 
 	targetNamespace=MessageServiceSoap.NAMESPACE, 
 	endpointInterface=MessageServiceSoap.INTERFACE)
-public class MessageResourceSoap extends ServerMessageUtils implements MessageServiceSoap {
+public class MessageResourceSoap extends LocalServerUtils implements MessageServiceSoap {
 	
 	public MessageResourceSoap() throws UnknownHostException {
 		super();

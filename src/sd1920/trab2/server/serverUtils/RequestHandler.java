@@ -38,12 +38,12 @@ public class RequestHandler implements Runnable {
     private static final int SLEEP_TIME = 200;
 
     protected static Client client;
-    private ServerMessageUtils utils;
-    private static Logger Log = ServerMessageUtils.Log;
+    private ServerUtils utils;
+    private static Logger Log = LocalServerUtils.Log;
 
     private BlockingQueue<Request> requests;
 
-    public RequestHandler(ClientConfig config, ServerMessageUtils utils) {
+    public RequestHandler(ClientConfig config, ServerUtils utils) {
         client = ClientBuilder.newClient(config);
 
         this.utils = utils;
@@ -78,15 +78,15 @@ public class RequestHandler implements Runnable {
         } else {
             MessageServiceSoap msgService = null;
 
-            Service service = Service.create(new URL(uri.getUri() + ServerMessageUtils.MESSAGES_WSDL),
-                    ServerMessageUtils.MESSAGE_QNAME);
+            Service service = Service.create(new URL(uri.getUri() + LocalServerUtils.MESSAGES_WSDL),
+                    LocalServerUtils.MESSAGE_QNAME);
 
             msgService = service.getPort(MessageServiceSoap.class);
             
             ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.CONNECT_TIMEOUT,
-                    ServerMessageUtils.TIMEOUT);
+                    LocalServerUtils.TIMEOUT);
             ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT,
-                    ServerMessageUtils.TIMEOUT);
+                    LocalServerUtils.TIMEOUT);
               
             failedDeliveries = msgService.postForwardedMessage(msg);
         }
@@ -117,7 +117,7 @@ public class RequestHandler implements Runnable {
             return false;
         }
 
-        String senderName = ServerMessageUtils.getSenderCanonicalName(request.getMessage().getSender());
+        String senderName = LocalServerUtils.getSenderCanonicalName(request.getMessage().getSender());
 
         for (String recipient : failedDeliveries) {
             utils.saveErrorMessages(senderName, recipient, request.getMessage());
@@ -144,14 +144,14 @@ public class RequestHandler implements Runnable {
         } else {
             MessageServiceSoap msgService = null;
             
-            Service service = Service.create(new URL(uri.getUri() + ServerMessageUtils.MESSAGES_WSDL),
-                    ServerMessageUtils.MESSAGE_QNAME);
+            Service service = Service.create(new URL(uri.getUri() + LocalServerUtils.MESSAGES_WSDL),
+                    LocalServerUtils.MESSAGE_QNAME);
             msgService = service.getPort(MessageServiceSoap.class);
             
             ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.CONNECT_TIMEOUT,
-                    ServerMessageUtils.TIMEOUT);
+                    LocalServerUtils.TIMEOUT);
             ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT,
-                    ServerMessageUtils.TIMEOUT);
+                    LocalServerUtils.TIMEOUT);
             
             msgService.deleteForwardedMessage(Long.valueOf(mid));
         }
@@ -212,5 +212,4 @@ public class RequestHandler implements Runnable {
             
         }
     }
-
 }

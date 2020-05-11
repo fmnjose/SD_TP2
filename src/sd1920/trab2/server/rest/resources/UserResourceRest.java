@@ -19,7 +19,7 @@ import org.glassfish.jersey.client.ClientProperties;
 
 import sd1920.trab2.api.User;
 import sd1920.trab2.api.rest.UserServiceRest;
-import sd1920.trab2.server.serverUtils.ServerMessageUtils;
+import sd1920.trab2.server.serverUtils.LocalServerUtils;
 import sd1920.trab2.server.rest.RESTMailServer;
 
 @Singleton
@@ -37,8 +37,8 @@ public class UserResourceRest implements UserServiceRest {
 
     public UserResourceRest() throws UnknownHostException {
         this.config = new ClientConfig();
-		this.config.property(ClientProperties.CONNECT_TIMEOUT, ServerMessageUtils.TIMEOUT);
-		this.config.property(ClientProperties.READ_TIMEOUT, ServerMessageUtils.TIMEOUT);
+		this.config.property(ClientProperties.CONNECT_TIMEOUT, LocalServerUtils.TIMEOUT);
+		this.config.property(ClientProperties.READ_TIMEOUT, LocalServerUtils.TIMEOUT);
 
 		this.client = ClientBuilder.newClient(config);
 
@@ -54,7 +54,7 @@ public class UserResourceRest implements UserServiceRest {
 
         WebTarget target = client.target(serverRestUri).path(MessageResourceRest.PATH).path("/mbox");
 
-        while(error && tries< ServerMessageUtils.N_TRIES){
+        while(error && tries< LocalServerUtils.N_TRIES){
             error = false;
 
             try{

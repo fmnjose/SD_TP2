@@ -37,8 +37,7 @@ import sd1920.trab2.api.soap.MessageServiceSoap;
 import sd1920.trab2.api.soap.MessagesException;
 import sd1920.trab2.server.soap.SOAPMailServer;
 
-public abstract class ServerMessageUtils {
-    
+public abstract class ServerUtils {
     protected Random randomNumberGenerator;
     protected Client client;
     protected ClientConfig config;
@@ -62,68 +61,15 @@ public abstract class ServerMessageUtils {
 	public static final int SLEEP_TIME = 500;
     public static final int N_TRIES = 5;
 
-    public ServerMessageUtils(){
+    public ServerUtils(){
         this.config = new ClientConfig();
 		this.config.property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT);
         this.config.property(ClientProperties.READ_TIMEOUT, TIMEOUT);
         
         this.client = ClientBuilder.newClient(config);
     }
-    
-    /**
-     * Inserts an error message into the sender inbox
-     * 
-     * @param senderName name of the message sender. No domain anotation
-     * @param recipientName name of one of the recipients
-     * @param msg message in question
-     */
-    protected void saveErrorMessages(String senderName, String recipientName, Message msg) {
-        Long errorMessageId = Math.abs(randomNumberGenerator.nextLong());
 
-        Message m = new Message(errorMessageId, msg.getSender(), msg.getDestination(),
-                String.format(ERROR_FORMAT, msg.getId(), recipientName), msg.getContents());
-
-        synchronized (this.allMessages) {
-            this.allMessages.put(errorMessageId, m);
-        }
-        synchronized (this.userInboxs) {
-            this.userInboxs.get(senderName).add(errorMessageId);
-        }
-    }
-
-    /**
-     * Saves a message in the domain. If the recipient does not exist, adds an error
-     * message
-     * 
-     * @param senderName    message sender
-     * @param recipient name of a recipient in this domain. Always in this
-     *                      domain.
-     * @param forwarded     was the message forwarded?
-     * @param mid           id to be assigned
-     * @return was it not forwarded and succesful?
-     */
-    protected boolean saveMessage(String senderName, String recipient, boolean forwarded, Message msg) {
-        synchronized (this.userInboxs) {
-            synchronized (this.allMessages) {
-                String recipientCanonicalName = getSenderCanonicalName(recipient);
-                if (!userInboxs.containsKey(recipientCanonicalName)) {
-                    if (forwarded){
-                        Log.info("saveMessage: user does not exist for forwarded message " + msg.getId());
-                        return false;
-                    }else {
-                        this.saveErrorMessages(senderName, recipient, msg);
-                    }
-                } else {
-                    this.allMessages.put(msg.getId(), msg);
-                    this.userInboxs.get(recipientCanonicalName).add(msg.getId());
-                }
-            }
-        }
-        Log.info("saveMessage: Sucessfuly saved message " + msg.getId());
-        return true;
-    }
-
-    /**
+     /**
      * Fetches a user from the UserResource
      * 
      * @param name name of the user. No domain attached
@@ -280,6 +226,25 @@ public abstract class ServerMessageUtils {
         }	
     }
 
+       /**
+     * Inserts an error message into the sender inbox
+     * 
+     * @param senderName name of the message sender. No domain anotation
+     * @param recipientName name of one of the recipients
+     * @param msg message in question
+     */
+    protected abstract void saveErrorMessages(String senderName, String recipientName, Message msg);
 
-
+     /**
+     * Saves a message in the domain. If the recipient does not exist, adds an error
+     * message
+     * 
+     * @param senderName    message sender
+     * @param recipient name of a recipient in this domain. Always in this
+     *                      domain.
+     * @param forwarded     was the message forwarded?
+     * @param mid           id to be assigned
+     * @return was it not forwarded and succesful?
+     */
+    protected abstract boolean saveMessage(String senderName, String recipient, boolean forwarded, Message msg);
 }

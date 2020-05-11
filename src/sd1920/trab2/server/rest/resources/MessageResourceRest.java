@@ -16,13 +16,13 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
 import sd1920.trab2.api.rest.MessageServiceRest;
-import sd1920.trab2.server.serverUtils.ServerMessageUtils;
+import sd1920.trab2.server.serverUtils.LocalServerUtils;
 import sd1920.trab2.server.rest.RESTMailServer;
 import sd1920.trab2.api.Message;
 import sd1920.trab2.api.User;
 
 @Singleton
-public class MessageResourceRest extends ServerMessageUtils implements MessageServiceRest {
+public class MessageResourceRest extends LocalServerUtils implements MessageServiceRest {
 
 	public MessageResourceRest() throws UnknownHostException {
 		super();

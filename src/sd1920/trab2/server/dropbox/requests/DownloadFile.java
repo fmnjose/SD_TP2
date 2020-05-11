@@ -1,10 +1,8 @@
 package sd1920.trab2.server.dropbox.requests;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.logging.Logger;
 
 import com.github.scribejava.core.builder.ServiceBuilder;
