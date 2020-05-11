@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response.Status;
 
 import sd1920.trab2.api.User;
 import sd1920.trab2.server.dropbox.DropboxMailServer;
+import sd1920.trab2.server.dropbox.requests.CreateDirectory;
 import sd1920.trab2.server.dropbox.requests.CreateFile;
 import sd1920.trab2.server.dropbox.requests.Delete;
 import sd1920.trab2.server.dropbox.requests.DownloadFile;
@@ -17,6 +18,11 @@ import sd1920.trab2.server.dropbox.requests.SearchFile;
 import sd1920.trab2.server.rest.resources.UserResourceRest;
 
 public class UserResourceDropbox extends UserResourceRest {
+
+    public static final String USERS_DIR_FORMAT = "%s/users/";
+    public static final String USER_DATA_DIR_FORMAT = "%s/users/%s/";
+    public static final String USER_OBJECT_FILE_FORMAT = "%s/users/%s/user_object";
+    public static final String USER_MSGS_FILE_FORMAT = "%s/users/%s/messages_list";
 
     private static Logger Log = Logger.getLogger(UserResourceDropbox.class.getName());
 
@@ -42,14 +48,20 @@ public class UserResourceDropbox extends UserResourceRest {
                 throw new WebApplicationException(Status.FORBIDDEN);
             }
 
-            String directoryPath = DropboxMailServer.hostname + "/users/";
+            String directoryPath = String.format(USERS_DIR_FORMAT, DropboxMailServer.hostname);
 
             if(!SearchFile.run(directoryPath, user.getName())){
                 Log.info("postUser: User creation was rejected due to the user already existing");
                 throw new WebApplicationException(Status.CONFLICT);
             }
 
-            CreateFile.run(directoryPath + user.getName(), user);
+            directoryPath = String.format(USER_DATA_DIR_FORMAT, DropboxMailServer.hostname, user.getName());
+
+            if(!CreateDirectory.run(directoryPath))
+                throw new WebApplicationException(Status.REQUEST_TIMEOUT);
+
+            directoryPath = String.format(USER_OBJECT_FILE_FORMAT, DropboxMailServer.hostname, user.getName());
+            CreateFile.run(directoryPath, user);
             
             if(this.createUserInbox(name)){
                 Log.info("postUser: User creation failed due to unresponsive MessageResource");
@@ -74,7 +86,7 @@ public class UserResourceDropbox extends UserResourceRest {
             throw new WebApplicationException(Status.CONFLICT);
         }
 
-        String directoryPath = DropboxMailServer.hostname + "/users/" + name;
+        String directoryPath = String.format(USER_OBJECT_FILE_FORMAT, DropboxMailServer.hostname, name);
 
         user = (User)DownloadFile.run(directoryPath);
 
@@ -98,10 +110,10 @@ public class UserResourceDropbox extends UserResourceRest {
             throw new WebApplicationException(Status.CONFLICT);
         }
 
-        String directoryPath = DropboxMailServer.hostname + "/users/" + name;
+        String filePath = String.format(USER_OBJECT_FILE_FORMAT, DropboxMailServer.hostname, name);
 
         
-        existingUser = (User)DownloadFile.run(directoryPath);
+        existingUser = (User)DownloadFile.run(filePath);
 
         if(existingUser == null){
             Log.info("updateUser: User update was rejected due to a missing user");
@@ -115,7 +127,7 @@ public class UserResourceDropbox extends UserResourceRest {
 
         existingUser.setPwd(user.getPwd() == null ? existingUser.getPwd() : user.getPwd());
         
-        CreateFile.run(directoryPath, existingUser);
+        CreateFile.run(filePath, existingUser);
 
         return existingUser;
     }
@@ -129,9 +141,9 @@ public class UserResourceDropbox extends UserResourceRest {
             throw new WebApplicationException(Status.CONFLICT);
         }
 
-        String directoryPath = DropboxMailServer.hostname + "/users/" + name;
+        String filePath = String.format(USER_OBJECT_FILE_FORMAT, DropboxMailServer.hostname, name);
 
-        user = (User)DownloadFile.run(directoryPath);
+        user = (User)DownloadFile.run(filePath);
         
         if(user == null){
             Log.info("deleteUser: User deletion was rejected due to a missing user");
@@ -141,7 +153,7 @@ public class UserResourceDropbox extends UserResourceRest {
             throw new WebApplicationException(Status.FORBIDDEN);
         }
         
-        Delete.run(directoryPath);
+        Delete.run(filePath);
         
         return user;
     }

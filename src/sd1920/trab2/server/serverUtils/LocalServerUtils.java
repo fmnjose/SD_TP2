@@ -25,28 +25,10 @@ import sd1920.trab2.api.soap.MessageServiceSoap;
 
 public abstract class LocalServerUtils extends ServerUtils{
     
-    protected Random randomNumberGenerator;
-    protected Client client;
-    protected ClientConfig config;
-    protected String domain;
-    protected String serverUri;
-    protected static Logger Log;
     protected final Map<Long, Message> allMessages = new HashMap<Long, Message>();
     protected final Map<String, Set<Long>> userInboxs = new HashMap<String, Set<Long>>();
     protected final Map<String, RequestHandler> requests = new HashMap<>();
 
-    public static final String DOMAIN_FORMAT_REST = "https://%s:%d/rest";
-    public static final String DOMAIN_FORMAT_SOAP = "https://%s:%d/soap";
-    public static final String ERROR_FORMAT = "FALHA NO ENVIO DE %s PARA %s";
-    public static final String SENDER_FORMAT = "%s <%s@%s>";
-    public static final QName MESSAGE_QNAME = new QName(MessageServiceSoap.NAMESPACE, MessageServiceSoap.NAME);
-	public static final QName USER_QNAME = new QName(UserServiceSoap.NAMESPACE, UserServiceSoap.NAME);
-	public static final String MESSAGES_WSDL = String.format("/%s/?wsdl", MessageServiceSoap.NAME);
-	public static final String USERS_WSDL = String.format("/%s/?wsdl", UserServiceSoap.NAME);
-
-    public static final int TIMEOUT = 1000;
-	public static final int SLEEP_TIME = 500;
-    public static final int N_TRIES = 5;
 
     public LocalServerUtils(){
         this.config = new ClientConfig();

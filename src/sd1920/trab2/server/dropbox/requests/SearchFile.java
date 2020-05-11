@@ -60,12 +60,12 @@ public class SearchFile {
 		}
     }
 
-    public static boolean run(String directoryPath, String userName){
+    public static boolean run(String directoryPath, String query){
 		boolean success = false;
         
         for(int i = 0; i < DropboxRequest.RETRIES; i++){
 			try{
-				if(success = execute(directoryPath, userName))
+				if(success = execute(directoryPath, query))
 					break;
 			}catch(IOException e){
 				Log.info("SearchFile: What the frog");
@@ -73,10 +73,10 @@ public class SearchFile {
         }		
 		
 		if(success){
-			System.out.println("User with name " + userName + " was found.");
+			System.out.println("User with name " + query + " was found.");
 			return true;
 		}else{
-			System.out.println("Couldn't find user with name " + userName + ".");
+			System.out.println("Couldn't find user with name " + query + ".");
 			return false;
 		}
     }

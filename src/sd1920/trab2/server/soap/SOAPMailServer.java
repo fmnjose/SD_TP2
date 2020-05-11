@@ -39,7 +39,7 @@ public class SOAPMailServer {
 		String ip = InetAddress.getLocalHost().getHostAddress();
 		String serverURI = String.format("https://%s:%s/soap", ip, PORT);
 
-		secret = args[1];
+		secret = args[0];
 		
 		// Create an HTTP server, accepting requests at PORT (from all local interfaces)	
 		HttpsURLConnection.setDefaultHostnameVerifier(new InsecureHostnameVerifier());

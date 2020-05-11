@@ -15,6 +15,7 @@ import sd1920.trab2.api.Discovery;
 import sd1920.trab2.server.InsecureHostnameVerifier;
 import sd1920.trab2.server.dropbox.requests.CreateDirectory;
 import sd1920.trab2.server.dropbox.requests.Delete;
+import sd1920.trab2.server.dropbox.requests.DownloadFile;
 import sd1920.trab2.server.rest.resources.MessageResourceRest;
 import sd1920.trab2.server.rest.resources.UserResourceRest;
 
@@ -26,7 +27,7 @@ public class DropboxMailServer {
 
 	public static final int PORT = 8080;
 	public static final String SERVICE = "MailService";
-	public static String hostname;
+	public static String hostname, messagesPath, usersPath;
 
 	public static Discovery serverRecord;
 
@@ -38,6 +39,9 @@ public class DropboxMailServer {
 		secret = args[1];
 		
 		hostname = InetAddress.getLocalHost().getHostName();
+
+		messagesPath = hostname + "/messages";
+		usersPath = hostname + "/users";
 
 		boolean freshStart = Boolean.parseBoolean(args[0]);
 		String dirName = "/" + InetAddress.getLocalHost().getHostName();

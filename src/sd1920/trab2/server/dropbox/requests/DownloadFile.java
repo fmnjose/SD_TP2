@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.logging.Logger;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response.Status;
+
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.OAuthRequest;
@@ -50,6 +53,9 @@ public class DownloadFile {
             ObjectInputStream o = new ObjectInputStream(b);
 
             return o.readObject();
+		} else if(r.getCode() == 409){
+			Log.info("DownloadFile: File does not exist");
+			throw new WebApplicationException(Status.CONFLICT);
 		} else {
 			System.err.println("HTTP Error Code: " + r.getCode() + ": " + r.getMessage());
 			try {
@@ -63,25 +69,28 @@ public class DownloadFile {
 
     public static Object run(String filePath){
 		boolean success = false;
-        
+		Object o = null;
+		
         for(int i = 0; i < DropboxRequest.RETRIES; i++){
 			try{
-                Object o = execute(filePath);
+                o = execute(filePath);
 				if(o != null){
                     success = true;
                     break;
                 }
-			}catch(Exception e){
+			} catch(WebApplicationException e){
+				break;
+			} catch(Exception e){
 				Log.info("SearchFile: What the frog");
-            }
+			}
         }		
 		
 		if(success){
 			System.out.println("File: " + filePath + " was downloaded");
-			return true;
+			return o;
 		}else{
 			System.out.println("File: " + filePath + " was NOT found");
-			return false;
+			return null;
 		}
     }
 }

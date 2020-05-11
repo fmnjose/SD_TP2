@@ -14,14 +14,23 @@ import java.util.logging.Logger;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
+import com.fasterxml.jackson.annotation.ObjectIdGenerators.StringIdGenerator;
+
 import sd1920.trab2.api.Message;
 import sd1920.trab2.api.User;
 import sd1920.trab2.api.rest.MessageServiceRest;
 import sd1920.trab2.server.dropbox.DropboxMailServer;
+import sd1920.trab2.server.dropbox.requests.CreateFile;
+import sd1920.trab2.server.dropbox.requests.Delete;
+import sd1920.trab2.server.dropbox.requests.DownloadFile;
+import sd1920.trab2.server.dropbox.requests.SearchFile;
 import sd1920.trab2.server.rest.RESTMailServer;
 import sd1920.trab2.server.serverUtils.DropboxServerUtils;
 
 public class MessageResourceDropbox extends DropboxServerUtils implements MessageServiceRest {
+
+	public static final String MESSAGES_DIR_FORMAT = "%s/messages/";
+	public static final String MESSAGE_FORMAT = "%s/messages/%s";
 
     public MessageResourceDropbox() throws UnknownHostException {
 		super();
@@ -59,15 +68,14 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 
 		long newID = Math.abs(randomNumberGenerator.nextLong());
 
-		synchronized(this.allMessages){
-			while(allMessages.containsKey(newID))
-				newID = Math.abs(randomNumberGenerator.nextLong());
-			
-			msg.setSender(String.format(SENDER_FORMAT, user.getDisplayName(), user.getName(), user.getDomain()));
-			msg.setId(newID);
-			allMessages.put(newID, msg);
-							
-		}
+		String path = String.format(MESSAGES_DIR_FORMAT, DropboxMailServer.hostname);
+
+		while(SearchFile.run(path, Long.toString(newID)))
+			newID = Math.abs(randomNumberGenerator.nextLong());
+		
+		msg.setSender(String.format(SENDER_FORMAT, user.getDisplayName(), user.getName(), user.getDomain()));
+		msg.setId(newID);							
+		
 		Log.info("postMessage: Created new message with id: " + newID);
 
 		for(String recipient: msg.getDestination()){
@@ -83,6 +91,7 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 		return msg.getId();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Message getMessage(String user, long mid, String pwd) {
 		
@@ -92,20 +101,26 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
-		Log.info("getMessage: Received request for message with id: " + mid +".");
-		synchronized(this.allMessages){
-			synchronized(this.userInboxs){
-				if(!this.allMessages.containsKey(mid) || !this.userInboxs.get(user).contains(mid)) {
-					Log.info("getMessage: Requested message does not exists.");
-					throw new WebApplicationException( Status.NOT_FOUND ); 
-				}
-			}
-		}
+		String path = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT, 
+						DropboxMailServer.hostname, user);
+
+		Set<Long> ids = (Set<Long>)DownloadFile.run(path);
 		
-		return allMessages.get(mid); 
-	
+		Log.info("getMessage: Received request for message with id: " + mid +".");
+		
+		if(!ids.contains(mid)){
+			Log.info("getMessage: Requested message does not exist.");
+			throw new WebApplicationException( Status.NOT_FOUND );
+		}
+
+		path = String.format(MESSAGE_FORMAT, DropboxMailServer.hostname, Long.toString(mid));
+
+		Message message = (Message)DownloadFile.run(path);
+		
+		return message; 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Long> getMessages(String user, String pwd) {
 		Log.info("getMessages: Received request for messages to '" + user + "'");
@@ -117,11 +132,10 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
-		Set<Long> mids = new HashSet<Long>();
-		
-		synchronized(this.userInboxs){
-			mids = userInboxs.getOrDefault(user, Collections.emptySet());
-		}
+		String path = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT,
+					DropboxMailServer.hostname, user);
+
+		Set<Long> mids = (Set<Long>)DownloadFile.run(path);
 
 		Log.info("getMessages: Returning message list to user with " + mids.size() + " messages.");
 		return new ArrayList<>(mids);
@@ -135,11 +149,6 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 		
 		Message msg;
 		
-		synchronized(this.allMessages){
-			msg = this.allMessages.get(mid);
-		}
-
-		
 		sender  = this.getUserRest(user, pwd);
 		
 		if(sender == null){
@@ -147,25 +156,26 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 		
+		String path = String.format(MESSAGE_FORMAT, 
+					DropboxMailServer.hostname, Long.toString(mid));
+
+		msg = (Message)DownloadFile.run(path);
 		
 		String userName = getSenderCanonicalName(user);
 		
 		if(msg == null || !getSenderCanonicalName(msg.getSender()).equals(userName))
 			return;
 		
-		synchronized(this.userInboxs){
-			this.userInboxs.get(user).remove(mid);
-		}
+
+		removeMessage(user, mid);
 
 		//this will be used to compile the domains that we'll need to forward the request to
 		Set<String> recipientDomains = new HashSet<>();
 
 		for(String u : msg.getDestination()){
 			String[] tokens = u.split("@");
-			if(tokens[1].equals(this.domain)){
-				synchronized(this.userInboxs){
-					userInboxs.get(tokens[0]).remove(mid);
-				}
+			if(tokens[1].equals(this.domain)){				
+				removeMessage(tokens[0], mid);
 			}else
 				recipientDomains.add(tokens[1]);
 		}
@@ -173,6 +183,7 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 		forwardDelete(recipientDomains, String.valueOf(mid), true);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void removeFromUserInbox(String user, long mid, String pwd) {
 		Log.info("removeFromUserInbox: Received request to delete message " + String.valueOf(mid) + " from the inbox of " + user);
@@ -184,24 +195,26 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 		
-		synchronized(this.allMessages){
-			synchronized(this.userInboxs){
-				if(!this.allMessages.containsKey(mid) || !this.userInboxs.get(user).contains(mid)){
-					Log.info("removeFromUserInbox: Message not found");
-					throw new WebApplicationException(Status.NOT_FOUND);
-				}
-			}
+		String path = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT, 
+						DropboxMailServer.hostname, user);
+
+		Set<Long> ids = (Set<Long>)DownloadFile.run(path);
+		
+		
+		if(!ids.contains(mid)){
+			Log.info("removeFromUserInbox: Message not found");
+			throw new WebApplicationException(Status.NOT_FOUND);
 		}
-		synchronized(this.userInboxs){
-			this.userInboxs.get(user).remove(mid);
-		}
+			
+		removeMessage(user, mid);	
 	}
 
 	@Override
 	public void createInbox(String user) {
-		synchronized(this.userInboxs){
-			this.userInboxs.put(user, new HashSet<>());
-		}
+		String directoryPath = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT, DropboxMailServer.hostname, user);
+		Set<Long> messageIds = new HashSet<>();
+
+		CreateFile.run(directoryPath, messageIds);
 	}
 
 	@Override
@@ -225,22 +238,37 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 
 		Log.info("deleteForwardedMessage: Received request to delete message " + mid);
 
-		synchronized(this.allMessages){
-			if(!this.allMessages.containsKey(mid))
-				return;
+		String path = String.format(MESSAGE_FORMAT, 
+				DropboxMailServer.hostname, Long.toString(mid));
 
-			recipients = this.allMessages.get(mid).getDestination();
-			this.allMessages.remove(mid);
-		}
+		Message msg = (Message)DownloadFile.run(path);
+		
+		
+		if(msg == null)
+			return;
+
+		recipients = msg.getDestination();
+
+		Delete.run(path);
 
 		for(String s : recipients){
 			String[] tokens = s.split("@");
 			if(tokens[1].equals(this.domain)){
-				synchronized(this.userInboxs){
-					userInboxs.get(tokens[0]).remove(mid);
-				}
+				removeMessage(tokens[0],mid);
 			}
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void removeMessage(String user, long mid){
+		String path = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT, 
+				DropboxMailServer.hostname, user);
+
+		Set<Long> ids = (Set<Long>)DownloadFile.run(path);
+
+		ids.remove(mid);
+
+		CreateFile.run(path,ids);
 	}
 
 }
