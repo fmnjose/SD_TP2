@@ -70,7 +70,9 @@ public class RequestHandler implements Runnable {
         Message msg = request.getMessage();
 
         if (uri.isRest()) {            
-            WebTarget target = client.target(uri.getUri()).path(MessageServiceRest.PATH).path("mbox");
+            WebTarget target = client.target(uri.getUri());
+            target = target.path(MessageServiceRest.PATH).path("mbox");
+            target = target.queryParam("secret", request.getSecret());
             
             r = target.request().accept(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
@@ -139,9 +141,11 @@ public class RequestHandler implements Runnable {
         String mid = request.getMid();
 
         if (uri.isRest()) {
-            WebTarget target = client.target(uri.getUri()).path(MessageResourceRest.PATH).path("msg");
+            WebTarget target = client.target(uri.getUri());
+            target = target.path(MessageResourceRest.PATH).path("msg").path(mid);
+            target  = target.queryParam("secret", request.getSecret());
 
-            target.path(mid).request().delete();
+            target.request().delete();
         } else {
             MessageServiceSoap msgService = null;
             

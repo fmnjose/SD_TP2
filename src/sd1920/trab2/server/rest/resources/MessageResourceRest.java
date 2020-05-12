@@ -69,6 +69,7 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 			allMessages.put(newID, msg);
 							
 		}
+
 		Log.info("postMessage: Created new message with id: " + newID);
 
 		for(String recipient: msg.getDestination()){

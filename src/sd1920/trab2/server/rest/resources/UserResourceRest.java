@@ -58,7 +58,8 @@ public class UserResourceRest implements UserServiceRest {
             error = false;
 
             try{
-                target.path(userName).request().head();
+                target = target.path(userName).queryParam("secret", RESTMailServer.secret);
+                target.request().head();
             }
             catch(ProcessingException e){
                 Log.info("createUserInbox: Failed to send request to MessageResource. Retrying...");

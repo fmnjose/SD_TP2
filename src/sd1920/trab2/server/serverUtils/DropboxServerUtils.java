@@ -12,8 +12,8 @@ import sd1920.trab2.server.dropbox.resources.UserResourceDropbox;
 
 public class DropboxServerUtils extends ServerUtils {
 
-    public DropboxServerUtils(){
-        super(DropboxMailServer.secret);
+    public DropboxServerUtils(String secret){
+        super(secret);
     }
 
     @SuppressWarnings("unchecked")

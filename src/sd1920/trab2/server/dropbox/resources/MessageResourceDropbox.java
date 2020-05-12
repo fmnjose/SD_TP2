@@ -27,11 +27,13 @@ import sd1920.trab2.server.serverUtils.DropboxServerUtils;
 
 public class MessageResourceDropbox extends DropboxServerUtils implements MessageServiceRest {
 
-	public static final String MESSAGES_DIR_FORMAT = "%s/messages/";
-	public static final String MESSAGE_FORMAT = "%s/messages/%s";
+	public static final String MESSAGES_DIR_FORMAT = "/%s/messages";
+	public static final String MESSAGE_FORMAT = "/%s/messages/%s";
 
     public MessageResourceDropbox() throws UnknownHostException {
-		super();
+		super(DropboxMailServer.secret);
+
+		System.out.println(DropboxMailServer.secret);
 
 		this.randomNumberGenerator = new Random(System.currentTimeMillis());
 		

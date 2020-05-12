@@ -15,6 +15,8 @@ import sd1920.trab2.api.Discovery;
 import sd1920.trab2.server.InsecureHostnameVerifier;
 import sd1920.trab2.server.dropbox.requests.CreateDirectory;
 import sd1920.trab2.server.dropbox.requests.Delete;
+import sd1920.trab2.server.dropbox.resources.MessageResourceDropbox;
+import sd1920.trab2.server.dropbox.resources.UserResourceDropbox;
 import sd1920.trab2.server.rest.resources.MessageResourceRest;
 import sd1920.trab2.server.rest.resources.UserResourceRest;
 
@@ -61,8 +63,8 @@ public class DropboxMailServer {
 
 		ResourceConfig config = new ResourceConfig();
 
-		config.register(MessageResourceRest.class);
-		config.register(UserResourceRest.class);
+		config.register(MessageResourceDropbox.class);
+		config.register(UserResourceDropbox.class);
 
 		String serverURI = String.format("https://%s:%s/rest", ip, PORT);
 

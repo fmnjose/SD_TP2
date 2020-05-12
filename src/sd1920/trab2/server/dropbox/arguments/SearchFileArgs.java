@@ -1,15 +1,13 @@
 package sd1920.trab2.server.dropbox.arguments;
 
 public class SearchFileArgs {
-    final String path;
     final String query;
+    final SearchOptions options;
     final boolean include_highlights;
-    final boolean filename_only;
 
     public SearchFileArgs(String path, String query) {
-        this.path = path;
         this.query = query;
+        this.options = new SearchOptions(path);
         this.include_highlights = false;
-        this.filename_only = true;
     }
 }
