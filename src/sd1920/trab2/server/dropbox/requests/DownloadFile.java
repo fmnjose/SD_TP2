@@ -49,8 +49,7 @@ public class DownloadFile {
 		
 		
 		if(r.getCode() == 200) { 
-			String jstring = new String(r.getHeader("dropbox-api-result").getBytes());
-
+			String jstring = new String(r.getBody().getBytes());
             return jstring;
 		} else if(r.getCode() == 409){
 			Log.info("DownloadFile: File does not exist");

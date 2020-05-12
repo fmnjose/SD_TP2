@@ -47,8 +47,6 @@ public class DropboxMailServer {
 		boolean freshStart = Boolean.parseBoolean(args[0]);
 		String dirName = "/" + InetAddress.getLocalHost().getHostName();
 
-		System.out.println("FRESHSTART: " + args[0]);
-
 		if(freshStart){		
 			//Deletes folder and all its content
 			Delete.run(dirName);

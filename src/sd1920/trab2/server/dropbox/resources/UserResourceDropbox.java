@@ -143,12 +143,16 @@ public class UserResourceDropbox implements UserServiceRest {
 
         String directoryPath = String.format(USER_OBJECT_FILE_FORMAT, DropboxMailServer.hostname, name);
 
-        user = json.fromJson(DownloadFile.run(directoryPath), User.class);
+        String userString = DownloadFile.run(directoryPath);
         
-        if(user == null){
+        if(userString == null){
             Log.info("getUser: User fetch was rejected due to missing user");
             throw new WebApplicationException(Status.FORBIDDEN);
-        }else if(pwd == null || !user.getPwd().equals(pwd)){
+        }
+
+        user = json.fromJson( userString, User.class);
+
+        if(pwd == null || !user.getPwd().equals(pwd)){
             Log.info("getUser: User fetch was rejected due to an invalid password");
             throw new WebApplicationException(Status.FORBIDDEN);
         }else{

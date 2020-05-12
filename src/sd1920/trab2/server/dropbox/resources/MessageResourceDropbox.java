@@ -36,8 +36,6 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
     public MessageResourceDropbox() throws UnknownHostException {
 		super(DropboxMailServer.secret);
 
-		System.out.println(DropboxMailServer.secret);
-
 		this.randomNumberGenerator = new Random(System.currentTimeMillis());
 		
 		Log = Logger.getLogger(DropboxMailServer.class.getName());
