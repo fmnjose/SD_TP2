@@ -19,27 +19,27 @@ import sd1920.trab2.server.dropbox.replies.SearchFileReturn;
 
 public class SearchFile {
 
-	private static final String CREATE_FOLDER_V2_URL = "https://api.dropboxapi.com/2/files/search_v2";
+	private static final String SEARCH_FILE_URL = "https://api.dropboxapi.com/2/files/search_v2";
 	
     private static Logger Log = Logger.getLogger(SearchFile.class.getName());
-
+	
 	private static boolean execute(String directory, String userName) throws JsonSyntaxException, IOException {
-        OAuthRequest createFolder = new OAuthRequest(Verb.POST, CREATE_FOLDER_V2_URL);
+        OAuthRequest searchFile = new OAuthRequest(Verb.POST, SEARCH_FILE_URL);
 		OAuth20Service service = new ServiceBuilder(DropboxRequest.apiKey)
 						.apiSecret(DropboxRequest.apiSecret).build(DropboxApi20.INSTANCE);
 		OAuth2AccessToken accessToken = new OAuth2AccessToken(DropboxRequest.accessTokenStr);
         Gson json = new Gson();
 
-        createFolder.addHeader("Content-Type", DropboxRequest.JSON_CONTENT_TYPE);
+        searchFile.addHeader("Content-Type", DropboxRequest.JSON_CONTENT_TYPE);
 
-        createFolder.setPayload(json.toJson(new SearchFileArgs(directory, userName)));
+        searchFile.setPayload(json.toJson(new SearchFileArgs(directory, userName)));
         
-        service.signRequest(accessToken, createFolder);
+        service.signRequest(accessToken, searchFile);
 		
 		Response r = null;
 		
 		try {
-			r = service.execute(createFolder);
+			r = service.execute(searchFile);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -67,16 +67,17 @@ public class SearchFile {
 			try{
 				if(success = execute(directoryPath, query))
 					break;
+				
 			}catch(IOException e){
 				Log.info("SearchFile: What the frog");
 			}
         }		
 		
 		if(success){
-			System.out.println("User with name " + query + " was found.");
+			Log.info("User with name " + query + " was found.");
 			return true;
 		}else{
-			System.out.println("Couldn't find user with name " + query + ".");
+			Log.info("Couldn't find user with name " + query + ".");
 			return false;
 		}
     }

@@ -26,7 +26,7 @@ public class DownloadFile {
 	
     private static Logger Log = Logger.getLogger(SearchFile.class.getName());
 
-	private static Object execute(String filePath) throws JsonSyntaxException, IOException, ClassNotFoundException{
+	private static String execute(String filePath) throws JsonSyntaxException, IOException, ClassNotFoundException{
         OAuthRequest downloadFile = new OAuthRequest(Verb.POST, DOWNLOAD_FILE_URL);
 		OAuth20Service service = new ServiceBuilder(DropboxRequest.apiKey)
 						.apiSecret(DropboxRequest.apiSecret).build(DropboxApi20.INSTANCE);
@@ -34,7 +34,7 @@ public class DownloadFile {
         Gson json = new Gson();
 
         downloadFile.addHeader("Content-Type", DropboxRequest.OCTET_CONTENT_TYPE);
-        downloadFile.addHeader("Dropbox-API-Args", json.toJson(new DownloadFileArgs(filePath)));
+        downloadFile.addHeader("Dropbox-API-Arg", json.toJson(new DownloadFileArgs(filePath)));
 
         service.signRequest(accessToken, downloadFile);
 		
@@ -44,15 +44,14 @@ public class DownloadFile {
 			r = service.execute(downloadFile);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
+			return null;
 		}
 		
 		
-		if(r.getCode() == 200) {
-            ByteArrayInputStream b = new ByteArrayInputStream(r.getHeader("dropbox-api-result").getBytes());
-            ObjectInputStream o = new ObjectInputStream(b);
+		if(r.getCode() == 200) { 
+			String jstring = new String(r.getHeader("dropbox-api-result").getBytes());
 
-            return o.readObject();
+            return jstring;
 		} else if(r.getCode() == 409){
 			Log.info("DownloadFile: File does not exist");
 			throw new WebApplicationException(Status.CONFLICT);
@@ -67,9 +66,9 @@ public class DownloadFile {
 		}
     }
 
-    public static Object run(String filePath){
+    public static String run(String filePath){
 		boolean success = false;
-		Object o = null;
+		String o = null;
 		
         for(int i = 0; i < DropboxRequest.RETRIES; i++){
 			try{

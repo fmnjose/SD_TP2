@@ -1,6 +1,9 @@
 package sd1920.trab2.server.serverUtils;
 
+import java.util.HashSet;
 import java.util.Set;
+
+import com.google.gson.Gson;
 
 import sd1920.trab2.api.Message;
 import sd1920.trab2.server.dropbox.DropboxMailServer;
@@ -11,6 +14,8 @@ import sd1920.trab2.server.dropbox.resources.MessageResourceDropbox;
 import sd1920.trab2.server.dropbox.resources.UserResourceDropbox;
 
 public class DropboxServerUtils extends ServerUtils {
+
+    public static Gson json = new Gson();
 
     public DropboxServerUtils(String secret){
         super(secret);
@@ -31,7 +36,7 @@ public class DropboxServerUtils extends ServerUtils {
         path = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT, DropboxMailServer.hostname,
                     senderName);
 
-        Set<Long> messageIds = (Set<Long>)DownloadFile.run(path);                    
+        Set<Long> messageIds = json.fromJson(DownloadFile.run(path) , HashSet.class);;                    
         messageIds.add(m.getId());
 
         CreateFile.run(path, messageIds);
@@ -60,7 +65,7 @@ public class DropboxServerUtils extends ServerUtils {
             path = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT, DropboxMailServer.hostname,
                                 recipientCanonicalName);
             
-            Set<Long> messageIds = (Set<Long>)DownloadFile.run(path);                    
+            Set<Long> messageIds = json.fromJson(DownloadFile.run(path) , HashSet.class);;                    
             messageIds.add(msg.getId());
             
             CreateFile.run(path, messageIds);

@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
+import com.google.gson.Gson;
 
 import sd1920.trab2.api.Message;
 import sd1920.trab2.api.User;
@@ -29,6 +30,8 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 
 	public static final String MESSAGES_DIR_FORMAT = "/%s/messages";
 	public static final String MESSAGE_FORMAT = "/%s/messages/%s";
+	
+	private static Gson json = new Gson();
 
     public MessageResourceDropbox() throws UnknownHostException {
 		super(DropboxMailServer.secret);
@@ -104,7 +107,7 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 		String path = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT, 
 						DropboxMailServer.hostname, user);
 
-		Set<Long> ids = (Set<Long>)DownloadFile.run(path);
+		Set<Long> ids = json.fromJson(DownloadFile.run(path) , HashSet.class);
 		
 		Log.info("getMessage: Received request for message with id: " + mid +".");
 		
@@ -115,7 +118,7 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 
 		path = String.format(MESSAGE_FORMAT, DropboxMailServer.hostname, Long.toString(mid));
 
-		Message message = (Message)DownloadFile.run(path);
+		Message message = json.fromJson(DownloadFile.run(path) , Message.class);
 		
 		return message; 
 	}
@@ -135,7 +138,7 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 		String path = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT,
 					DropboxMailServer.hostname, user);
 
-		Set<Long> mids = (Set<Long>)DownloadFile.run(path);
+		Set<Long> mids = json.fromJson(DownloadFile.run(path) , HashSet.class);
 
 		Log.info("getMessages: Returning message list to user with " + mids.size() + " messages.");
 		return new ArrayList<>(mids);
@@ -159,7 +162,7 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 		String path = String.format(MESSAGE_FORMAT, 
 					DropboxMailServer.hostname, Long.toString(mid));
 
-		msg = (Message)DownloadFile.run(path);
+		msg = json.fromJson(DownloadFile.run(path) , Message.class);
 		
 		String userName = getSenderCanonicalName(user);
 		
@@ -198,7 +201,7 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 		String path = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT, 
 						DropboxMailServer.hostname, user);
 
-		Set<Long> ids = (Set<Long>)DownloadFile.run(path);
+		Set<Long> ids = json.fromJson(DownloadFile.run(path) , HashSet.class);
 		
 		
 		if(!ids.contains(mid)){
@@ -259,7 +262,7 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 		String path = String.format(MESSAGE_FORMAT, 
 				DropboxMailServer.hostname, Long.toString(mid));
 
-		Message msg = (Message)DownloadFile.run(path);
+		Message msg = json.fromJson(DownloadFile.run(path) , Message.class);;
 		
 		
 		if(msg == null)
@@ -282,7 +285,7 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 		String path = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT, 
 				DropboxMailServer.hostname, user);
 
-		Set<Long> ids = (Set<Long>)DownloadFile.run(path);
+		Set<Long> ids = json.fromJson(DownloadFile.run(path) , HashSet.class);;
 
 		ids.remove(mid);
 

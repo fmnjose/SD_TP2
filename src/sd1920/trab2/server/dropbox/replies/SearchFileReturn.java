@@ -3,10 +3,11 @@ package sd1920.trab2.server.dropbox.replies;
 import java.util.HashMap;
 import java.util.List;
 
+
 public class SearchFileReturn {
 
     private boolean has_more;
-	private List<FileEntry> entries;
+	private List<FileEntry> matches;
 	
 	public static class FileEntry extends HashMap<String, Object> {
 		private static final long serialVersionUID = 1L;
@@ -30,11 +31,11 @@ public class SearchFileReturn {
 	}
 
 	public List<FileEntry> getEntries() {
-		return entries;
+		return matches;
     }
     
     public boolean foundFile(){
-        return entries.size() == 1;
+        return matches.size() == 1;
     }
 
 	/*public void setEntries(List<FolderEntry> entries) {

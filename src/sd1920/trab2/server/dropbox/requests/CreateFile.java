@@ -27,19 +27,11 @@ public class CreateFile {
 		Gson json = new Gson();
 
         createFile.addHeader("Dropbox-API-Arg", json.toJson(new CreateFileArgs(filePath)));
-		createFile.addHeader("Content-Type", DropboxRequest.JSON_CONTENT_TYPE);
+		createFile.addHeader("Content-Type", DropboxRequest.OCTET_CONTENT_TYPE);
 
-        try{
-            ByteArrayOutputStream b = new ByteArrayOutputStream();
-            ObjectOutputStream o = new ObjectOutputStream(b);
+		String s = json.toJson(file);
 
-            o.writeObject(file);
-            b.flush();
-            
-            createFile.setPayload(b.toByteArray());
-        }catch(IOException e){
-            System.out.println("What the frog");
-        }
+		createFile.setPayload(s.getBytes());   
         
 		service.signRequest(accessToken, createFile);
 		

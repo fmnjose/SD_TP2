@@ -64,7 +64,6 @@ public abstract class ServerUtils {
     public static final int N_TRIES = 5;
 
     public ServerUtils(String secret){
-        System.out.println("Secret is " + secret);
         this.secret = secret;
         this.config = new ClientConfig();
 		this.config.property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT);
