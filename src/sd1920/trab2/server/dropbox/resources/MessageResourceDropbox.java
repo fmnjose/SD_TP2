@@ -1,5 +1,6 @@
 package sd1920.trab2.server.dropbox.resources;
 
+import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import sd1920.trab2.api.Message;
 import sd1920.trab2.api.User;
@@ -28,9 +30,10 @@ import sd1920.trab2.server.serverUtils.DropboxServerUtils;
 
 public class MessageResourceDropbox extends DropboxServerUtils implements MessageServiceRest {
 
+	
+	
 	public static final String MESSAGES_DIR_FORMAT = "/%s/messages";
 	public static final String MESSAGE_FORMAT = "/%s/messages/%s";
-	
 	private static Gson json = new Gson();
 
     public MessageResourceDropbox() throws UnknownHostException {
@@ -53,15 +56,17 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 		String sender = msg.getSender();
 		Set<String> recipientDomains = new HashSet<>();
 
-		Log.info("postMessage: Received request to register a new message (Sender: " + sender + "; Subject: "+msg.getSubject()+")");
+		System.out.println("postMessage: Received request to register a new message (Sender: " + sender + "; Subject: "+msg.getSubject()+")");
 		
 		if(sender == null || msg.getDestination() == null || msg.getDestination().size() == 0) {
-			Log.info("postMessage: Message was rejected due to lack of recepients.");
+			System.out.println("postMessage: Message was rejected due to lack of recepients.");
 			throw new WebApplicationException(Status.CONFLICT );
 		}
 
 		String senderName = getSenderCanonicalName(sender);
 
+
+		long curr = System.currentTimeMillis();
 		user = this.getUserRest(senderName, pwd);
 
 		if(user == null)
@@ -77,7 +82,7 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 		msg.setSender(String.format(SENDER_FORMAT, user.getDisplayName(), user.getName(), user.getDomain()));
 		msg.setId(newID);							
 		
-		Log.info("postMessage: Created new message with id: " + newID);
+		System.out.println("postMessage: Created new message with id: " + newID);
 
 		for(String recipient: msg.getDestination()){
 			String[] tokens = recipient.split("@");
@@ -89,10 +94,11 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 
 		this.forwardMessage(recipientDomains, msg, true);
 
+		System.out.println("Time elapsed PostMessage: " + (System.currentTimeMillis() - curr));
+
 		return msg.getId();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Message getMessage(String user, long mid, String pwd) {
 		
@@ -104,13 +110,13 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 
 		String path = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT, 
 						DropboxMailServer.hostname, user);
-
-		Set<Long> ids = json.fromJson(DownloadFile.run(path) , HashSet.class);
 		
-		Log.info("getMessage: Received request for message with id: " + mid +".");
+		Set<Long> ids = json.fromJson(DownloadFile.run(path) , LONG_SET_TYPE);
+		
+		System.out.println("getMessage: Received request for message with id: " + mid +".");
 		
 		if(!ids.contains(mid)){
-			Log.info("getMessage: Requested message does not exist.");
+			System.out.println("getMessage: Requested message does not exist.");
 			throw new WebApplicationException( Status.NOT_FOUND );
 		}
 
@@ -121,30 +127,30 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 		return message; 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Long> getMessages(String user, String pwd) {
-		Log.info("getMessages: Received request for messages to '" + user + "'");
+		System.out.println("getMessages: Received request for messages to '" + user + "'");
 
 		User u = this.getUserRest(user, pwd);
 
 		if(u == null){
-			Log.info("getMessages: User with name " + user + " does not exist in the domain.");
+			System.out.println("getMessages: User with name " + user + " does not exist in the domain.");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
 		String path = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT,
 					DropboxMailServer.hostname, user);
 
-		Set<Long> mids = json.fromJson(DownloadFile.run(path) , HashSet.class);
 
-		Log.info("getMessages: Returning message list to user with " + mids.size() + " messages.");
+		Set<Long> mids = json.fromJson(DownloadFile.run(path) , LONG_SET_TYPE);
+
+		System.out.println("getMessages: Returning message list to user with " + mids.size() + " messages.");
 		return new ArrayList<>(mids);
 	}
 
 	@Override
 	public void deleteMessage(String user, long mid, String pwd) {
-		Log.info("deleteMessage: Received request to delete a message with the id: " + String.valueOf(mid));
+		System.out.println("deleteMessage: Received request to delete a message with the id: " + String.valueOf(mid));
 		
 		User sender = null;
 		
@@ -153,7 +159,7 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 		sender  = this.getUserRest(user, pwd);
 		
 		if(sender == null){
-			Log.info("delete message: User not found or wrong password");
+			System.out.println("delete message: User not found or wrong password");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 		
@@ -184,26 +190,25 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 		forwardDelete(recipientDomains, String.valueOf(mid), true);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void removeFromUserInbox(String user, long mid, String pwd) {
-		Log.info("removeFromUserInbox: Received request to delete message " + String.valueOf(mid) + " from the inbox of " + user);
+		System.out.println("removeFromUserInbox: Received request to delete message " + String.valueOf(mid) + " from the inbox of " + user);
 		
 		User u = this.getUserRest(user, pwd);
 
 		if(u == null){
-			Log.info("removeFromUserInbox: User with name " + user + " does not exist in the domain.");
+			System.out.println("removeFromUserInbox: User with name " + user + " does not exist in the domain.");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 		
 		String path = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT, 
 						DropboxMailServer.hostname, user);
 
-		Set<Long> ids = json.fromJson(DownloadFile.run(path) , HashSet.class);
-		
+		Set<Long> ids = json.fromJson(DownloadFile.run(path) , LONG_SET_TYPE);
+
 		
 		if(!ids.contains(mid)){
-			Log.info("removeFromUserInbox: Message not found");
+			System.out.println("removeFromUserInbox: Message not found");
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
 			
@@ -214,7 +219,7 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 	public void createInbox(String user, String secret) {
 
 		if(!secret.equals(DropboxMailServer.secret)){
-			Log.info("An intruder!");
+			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -226,10 +231,10 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 
 	@Override
 	public List<String> postForwardedMessage(Message msg, String secret) {
-		Log.info("postForwardedMessage: Received request to save the message " + msg.getId());
+		System.out.println("postForwardedMessage: Received request to save the message " + msg.getId());
 
 		if(!secret.equals(DropboxMailServer.secret)){
-			Log.info("An intruder!");
+			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -241,16 +246,16 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 				failedDeliveries.add(recipient);
 		}
 
-		Log.info("postForwardedMessage: Couldn't deliver the message to " + failedDeliveries.size() + " people");
+		System.out.println("postForwardedMessage: Couldn't deliver the message to " + failedDeliveries.size() + " people");
 		return failedDeliveries;
 	}
 
 	@Override
 	public void deleteForwardedMessage(long mid, String secret) {
-		Log.info("deleteForwardedMessage: Received request to delete message " + mid);
+		System.out.println("deleteForwardedMessage: Received request to delete message " + mid);
 
 		if(!secret.equals(DropboxMailServer.secret)){
-			Log.info("An intruder!");
+			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -278,12 +283,11 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void removeMessage(String user, long mid){
 		String path = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT, 
 				DropboxMailServer.hostname, user);
 
-		Set<Long> ids = json.fromJson(DownloadFile.run(path) , HashSet.class);;
+		Set<Long> ids = json.fromJson(DownloadFile.run(path) , LONG_SET_TYPE);
 
 		ids.remove(mid);
 

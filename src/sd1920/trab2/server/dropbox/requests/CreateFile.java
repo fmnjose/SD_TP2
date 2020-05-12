@@ -38,7 +38,9 @@ public class CreateFile {
 		Response r = null;
 		
 		try {
+			Long curr = System.currentTimeMillis();
 			r = service.execute(createFile);
+			System.out.println("Time Elapsed Upload: " + (System.currentTimeMillis() - curr));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;

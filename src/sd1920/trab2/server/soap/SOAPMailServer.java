@@ -65,7 +65,7 @@ public class SOAPMailServer {
 
 		server.start();
 
-		Log.info(String.format("\n%s Server ready @ %s\n", SERVICE, serverURI));
+		System.out.println(String.format("\n%s Server ready @ %s\n", SERVICE, serverURI));
 
 		serverRecord = new Discovery(SERVICE, serverURI);
 

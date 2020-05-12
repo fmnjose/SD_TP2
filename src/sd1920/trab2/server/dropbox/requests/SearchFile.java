@@ -3,6 +3,9 @@ package sd1920.trab2.server.dropbox.requests;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response.Status;
+
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.OAuthRequest;
@@ -39,7 +42,9 @@ public class SearchFile {
 		Response r = null;
 		
 		try {
+			Long curr = System.currentTimeMillis();
 			r = service.execute(searchFile);
+			System.out.println("Time Elapsed Search: " + (System.currentTimeMillis() - curr));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -56,29 +61,32 @@ public class SearchFile {
 			} catch (IOException e) {
 				System.err.println("No body in the response");
 			}
-			return false;
+
+			throw new WebApplicationException(Status.BAD_REQUEST);
 		}
     }
 
     public static boolean run(String directoryPath, String query){
-		boolean success = false;
+		boolean result = false;
         
         for(int i = 0; i < DropboxRequest.RETRIES; i++){
 			try{
-				if(success = execute(directoryPath, query))
-					break;
-				
+				result = execute(directoryPath, query);
+				break;
 			}catch(IOException e){
-				Log.info("SearchFile: What the frog");
+				System.out.println("SearchFile: What the frog");
+			}catch(WebApplicationException e){
+				System.out.println("SearchFile: What the frog");
 			}
         }		
 		
-		if(success){
-			Log.info("User with name " + query + " was found.");
+		if(result){
+			System.out.println("User with name " + query + " was found.");
 			return true;
-		}else{
-			Log.info("Couldn't find user with name " + query + ".");
-			return false;
 		}
+			
+		System.out.println("Couldn't find user with name " + query + ".");
+		return false;
+		
     }
 }

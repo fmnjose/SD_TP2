@@ -53,7 +53,7 @@ public abstract class LocalServerUtils extends ServerUtils{
                 String recipientCanonicalName = getSenderCanonicalName(recipient);
                 if (!userInboxs.containsKey(recipientCanonicalName)) {
                     if (forwarded){
-                        Log.info("saveMessage: user does not exist for forwarded message " + msg.getId());
+                        System.out.println("saveMessage: user does not exist for forwarded message " + msg.getId());
                         return false;
                     }else {
                         this.saveErrorMessages(senderName, recipient, msg);
@@ -64,7 +64,7 @@ public abstract class LocalServerUtils extends ServerUtils{
                 }
             }
         }
-        Log.info("saveMessage: Sucessfuly saved message " + msg.getId());
+        System.out.println("saveMessage: Sucessfuly saved message " + msg.getId());
         return true;
     }
 

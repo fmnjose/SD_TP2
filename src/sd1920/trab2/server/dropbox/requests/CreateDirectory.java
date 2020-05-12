@@ -35,7 +35,9 @@ public class CreateDirectory{
 		Response r = null;
 		
 		try {
+			long curr = System.currentTimeMillis();
 			r = service.execute(createFolder);
+			System.out.println("Time Elapsed newDir: " + (System.currentTimeMillis() - curr));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
