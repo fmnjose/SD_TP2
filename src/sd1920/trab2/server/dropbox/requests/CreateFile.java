@@ -60,6 +60,7 @@ public class CreateFile {
     }
     
     public static boolean run(String directoryPath, Object object){
+		System.out.println("Creating file on " + directoryPath);
         boolean success = false;
         
         for(int i = 0; i < DropboxRequest.RETRIES; i++){

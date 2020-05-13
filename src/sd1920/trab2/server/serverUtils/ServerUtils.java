@@ -38,7 +38,7 @@ import sd1920.trab2.api.soap.MessagesException;
 import sd1920.trab2.server.soap.SOAPMailServer;
 
 public abstract class ServerUtils {
-    private String secret;
+    protected String secret;
     
     protected Random randomNumberGenerator;
     protected Client client;

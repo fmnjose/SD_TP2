@@ -1,8 +1,6 @@
 package sd1920.trab2.server.dropbox.requests;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.logging.Logger;
 
 import javax.ws.rs.WebApplicationException;
@@ -19,12 +17,13 @@ import com.google.gson.JsonSyntaxException;
 
 import org.pac4j.scribe.builder.api.DropboxApi20;
 
+import sd1920.trab2.server.dropbox.ProxyMailServer;
 import sd1920.trab2.server.dropbox.arguments.DownloadFileArgs;
 
 public class DownloadFile {
     private static final String DOWNLOAD_FILE_URL = "https://content.dropboxapi.com/2/files/download";
 	
-    private static Logger Log = Logger.getLogger(SearchFile.class.getName());
+    private static Logger Log = Logger.getLogger(ProxyMailServer.class.getName());
 
 	private static String execute(String filePath) throws JsonSyntaxException, IOException, ClassNotFoundException{
         OAuthRequest downloadFile = new OAuthRequest(Verb.POST, DOWNLOAD_FILE_URL);
@@ -79,7 +78,7 @@ public class DownloadFile {
                     break;
 				}
 				System.out.println("I SLEEP");
-				Thread.sleep(5000);
+				Thread.sleep(1000);
 			} catch(WebApplicationException e){
 				break;
 			} catch(Exception e){

@@ -12,9 +12,9 @@
         },
         {
             "type": "java",
-            "name": "Debug (Launch)-DropboxMailServer<sd1920-trab1>",
+            "name": "Debug (Launch)-ProxyMailServer<sd1920-trab1>",
             "request": "launch",
-            "mainClass": "sd1920.trab2.server.dropbox.DropboxMailServer",
+            "mainClass": "sd1920.trab2.server.dropbox.ProxyMailServer",
             "projectName": "sd1920-trab1",
             "args": "true"
         },

@@ -15,12 +15,12 @@ import sd1920.trab2.api.Discovery;
 import sd1920.trab2.server.InsecureHostnameVerifier;
 import sd1920.trab2.server.dropbox.requests.CreateDirectory;
 import sd1920.trab2.server.dropbox.requests.Delete;
-import sd1920.trab2.server.dropbox.resources.MessageResourceDropbox;
-import sd1920.trab2.server.dropbox.resources.UserResourceDropbox;
+import sd1920.trab2.server.dropbox.resources.MessageResourceProxy;
+import sd1920.trab2.server.dropbox.resources.UserResourceProxy;
 import sd1920.trab2.server.rest.resources.MessageResourceRest;
 import sd1920.trab2.server.rest.resources.UserResourceRest;
 
-public class DropboxMailServer {
+public class ProxyMailServer {
     static {
 		System.setProperty("java.net.preferIPv4Stack", "true");
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s\n");
@@ -62,8 +62,8 @@ public class DropboxMailServer {
 
 		ResourceConfig config = new ResourceConfig();
 
-		config.register(MessageResourceDropbox.class);
-		config.register(UserResourceDropbox.class);
+		config.register(MessageResourceProxy.class);
+		config.register(UserResourceProxy.class);
 
 		String serverURI = String.format("https://%s:%s/rest", ip, PORT);
 

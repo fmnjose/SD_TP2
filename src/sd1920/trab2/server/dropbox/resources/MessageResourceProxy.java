@@ -1,6 +1,5 @@
 package sd1920.trab2.server.dropbox.resources;
 
-import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -15,33 +14,30 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import sd1920.trab2.api.Message;
 import sd1920.trab2.api.User;
+import sd1920.trab2.api.proxy.UserProxy;
 import sd1920.trab2.api.rest.MessageServiceRest;
-import sd1920.trab2.server.dropbox.DropboxMailServer;
+import sd1920.trab2.server.dropbox.ProxyMailServer;
 import sd1920.trab2.server.dropbox.requests.CreateFile;
 import sd1920.trab2.server.dropbox.requests.Delete;
 import sd1920.trab2.server.dropbox.requests.DownloadFile;
-import sd1920.trab2.server.dropbox.requests.SearchFile;
 import sd1920.trab2.server.rest.RESTMailServer;
 import sd1920.trab2.server.serverUtils.DropboxServerUtils;
 
-public class MessageResourceDropbox extends DropboxServerUtils implements MessageServiceRest {
+public class MessageResourceProxy extends DropboxServerUtils implements MessageServiceRest {
 
-	
-	
 	public static final String MESSAGES_DIR_FORMAT = "/%s/messages";
 	public static final String MESSAGE_FORMAT = "/%s/messages/%s";
 	private static Gson json = new Gson();
 
-    public MessageResourceDropbox() throws UnknownHostException {
-		super(DropboxMailServer.secret);
+	public MessageResourceProxy() throws UnknownHostException {
+		super(ProxyMailServer.secret);
 
 		this.randomNumberGenerator = new Random(System.currentTimeMillis());
 		
-		Log = Logger.getLogger(DropboxMailServer.class.getName());
+		Log = Logger.getLogger(ProxyMailServer.class.getName());
 
 		this.domain = InetAddress.getLocalHost().getHostName();
 
@@ -74,14 +70,15 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 
 		long newID = Math.abs(randomNumberGenerator.nextLong());
 
-		String path = String.format(MESSAGES_DIR_FORMAT, DropboxMailServer.hostname);
-
-		while(SearchFile.run(path, Long.toString(newID)))
-			newID = Math.abs(randomNumberGenerator.nextLong());
+		newID = Math.abs(randomNumberGenerator.nextLong());
 		
 		msg.setSender(String.format(SENDER_FORMAT, user.getDisplayName(), user.getName(), user.getDomain()));
-		msg.setId(newID);							
+		msg.setId(newID);	
 		
+		String path = String.format(MESSAGE_FORMAT, ProxyMailServer.hostname, Long.toString(newID));
+
+		CreateFile.run(path, msg);
+
 		System.out.println("postMessage: Created new message with id: " + newID);
 
 		for(String recipient: msg.getDestination()){
@@ -101,28 +98,31 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 
 	@Override
 	public Message getMessage(String user, long mid, String pwd) {
+		System.out.println("getMessage: Received request for message with id: " + mid +".");
 		
-		User u = this.getUserRest(user, pwd);
+		UserProxy u = this.getUserProxy(user);
 		
 		if(u == null){
+			System.out.println("getMessage: User does not exist");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
-		String path = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT, 
-						DropboxMailServer.hostname, user);
+		if(!u.getUser().getPwd().equals(pwd)){
+			System.out.println("getMessage: Invalid Password");
+			throw new WebApplicationException(Status.FORBIDDEN);
+		}
+
 		
-		Set<Long> ids = json.fromJson(DownloadFile.run(path) , LONG_SET_TYPE);
-		
-		System.out.println("getMessage: Received request for message with id: " + mid +".");
-		
-		if(!ids.contains(mid)){
+		if(!u.getMids().contains(mid)){
 			System.out.println("getMessage: Requested message does not exist.");
 			throw new WebApplicationException( Status.NOT_FOUND );
 		}
 
-		path = String.format(MESSAGE_FORMAT, DropboxMailServer.hostname, Long.toString(mid));
+		String path = String.format(MESSAGE_FORMAT, ProxyMailServer.hostname, Long.toString(mid));
 
-		Message message = json.fromJson(DownloadFile.run(path) , Message.class);
+		String messageString = DownloadFile.run(path);
+
+		Message message = json.fromJson(messageString , Message.class);
 		
 		return message; 
 	}
@@ -131,50 +131,65 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 	public List<Long> getMessages(String user, String pwd) {
 		System.out.println("getMessages: Received request for messages to '" + user + "'");
 
-		User u = this.getUserRest(user, pwd);
-
+		
+		UserProxy u = this.getUserProxy(user);
+		
 		if(u == null){
-			System.out.println("getMessages: User with name " + user + " does not exist in the domain.");
+			System.out.println("getMessages: User does not exist");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
-		String path = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT,
-					DropboxMailServer.hostname, user);
+		if(!u.getUser().getPwd().equals(pwd)){
+			System.out.println("getMessages: Invalid Password");
+			throw new WebApplicationException(Status.FORBIDDEN);
+		}
 
-
-		Set<Long> mids = json.fromJson(DownloadFile.run(path) , LONG_SET_TYPE);
-
-		System.out.println("getMessages: Returning message list to user with " + mids.size() + " messages.");
-		return new ArrayList<>(mids);
+		System.out.println("getMessages: Returning message list to user with " + u.getMids().size() + " messages.");
+		return new ArrayList<>(u.getMids());
 	}
 
 	@Override
 	public void deleteMessage(String user, long mid, String pwd) {
 		System.out.println("deleteMessage: Received request to delete a message with the id: " + String.valueOf(mid));
 		
-		User sender = null;
+		String senderName = getSenderCanonicalName(user);
 		
-		Message msg;
-		
-		sender  = this.getUserRest(user, pwd);
-		
+		UserProxy sender = this.getUserProxy(senderName);
+				
 		if(sender == null){
-			System.out.println("delete message: User not found or wrong password");
+			System.out.println("getMessage: User does not exist");
+			throw new WebApplicationException(Status.FORBIDDEN);
+		}
+
+		if(!sender.getUser().getPwd().equals(pwd)){
+			System.out.println("getMessage: Invalid Password");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 		
-		String path = String.format(MESSAGE_FORMAT, 
-					DropboxMailServer.hostname, Long.toString(mid));
+		String path = String.format(UserResourceProxy.USER_DATA_FORMAT, 
+					ProxyMailServer.hostname, Long.toString(mid));
 
-		msg = json.fromJson(DownloadFile.run(path) , Message.class);
-		
-		String userName = getSenderCanonicalName(user);
-		
-		if(msg == null || !getSenderCanonicalName(msg.getSender()).equals(userName))
+		sender.getMids().remove(mid);
+
+		CreateFile.run(path, sender);
+	
+		removeMessageFromInbox(senderName, mid);
+
+		path = String.format(MESSAGE_FORMAT, ProxyMailServer.hostname, Long.toString(mid));
+
+		String messageString = DownloadFile.run(path);
+
+		if(messageString == null){
+			System.out.println("deleteMessage: Message does not exist");
 			return;
-		
+		}
 
-		removeMessage(user, mid);
+		Message msg = json.fromJson(messageString, Message.class);
+
+		if(!getSenderCanonicalName(msg.getSender()).equals(senderName)){
+			System.out.println("deleteMessage: Sender mismatch");
+			return;
+		}
 
 		//this will be used to compile the domains that we'll need to forward the request to
 		Set<String> recipientDomains = new HashSet<>();
@@ -182,7 +197,7 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 		for(String u : msg.getDestination()){
 			String[] tokens = u.split("@");
 			if(tokens[1].equals(this.domain)){				
-				removeMessage(tokens[0], mid);
+				removeMessageFromInbox(tokens[0], mid);
 			}else
 				recipientDomains.add(tokens[1]);
 		}
@@ -194,46 +209,38 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 	public void removeFromUserInbox(String user, long mid, String pwd) {
 		System.out.println("removeFromUserInbox: Received request to delete message " + String.valueOf(mid) + " from the inbox of " + user);
 		
-		User u = this.getUserRest(user, pwd);
+		String name = getSenderCanonicalName(user);
 
-		if(u == null){
-			System.out.println("removeFromUserInbox: User with name " + user + " does not exist in the domain.");
+		UserProxy u = this.getUserProxy(name);
+
+		if(u == null || !u.getUser().getPwd().equals(pwd)){
+			System.out.println("removeFromUserInbox: User does not exist or invalid Password");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
-		
-		String path = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT, 
-						DropboxMailServer.hostname, user);
 
-		Set<Long> ids = json.fromJson(DownloadFile.run(path) , LONG_SET_TYPE);
-
-		
-		if(!ids.contains(mid)){
-			System.out.println("removeFromUserInbox: Message not found");
+		if(u.getMids().contains(mid)){
+			System.out.println("removeFromUSerInbox: Message does not exist");
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
-			
-		removeMessage(user, mid);	
+
+		u.getMids().remove(mid);
+
+		String path = String.format(UserResourceProxy.USER_DATA_FORMAT, 
+									ProxyMailServer.hostname, name);
+
+		CreateFile.run(path, u);
 	}
 
 	@Override
 	public void createInbox(String user, String secret) {
-
-		if(!secret.equals(DropboxMailServer.secret)){
-			System.out.println("An intruder!");
-			throw new WebApplicationException(Status.FORBIDDEN);
-		}
-
-		String directoryPath = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT, DropboxMailServer.hostname, user);
-		Set<Long> messageIds = new HashSet<>();
-
-		CreateFile.run(directoryPath, messageIds);
+		//Deprecated
 	}
 
 	@Override
 	public List<String> postForwardedMessage(Message msg, String secret) {
 		System.out.println("postForwardedMessage: Received request to save the message " + msg.getId());
 
-		if(!secret.equals(DropboxMailServer.secret)){
+		if(!secret.equals(ProxyMailServer.secret)){
 			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
@@ -247,6 +254,7 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 		}
 
 		System.out.println("postForwardedMessage: Couldn't deliver the message to " + failedDeliveries.size() + " people");
+		
 		return failedDeliveries;
 	}
 
@@ -254,7 +262,7 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 	public void deleteForwardedMessage(long mid, String secret) {
 		System.out.println("deleteForwardedMessage: Received request to delete message " + mid);
 
-		if(!secret.equals(DropboxMailServer.secret)){
+		if(!secret.equals(ProxyMailServer.secret)){
 			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
@@ -263,13 +271,16 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 
 
 		String path = String.format(MESSAGE_FORMAT, 
-				DropboxMailServer.hostname, Long.toString(mid));
+				ProxyMailServer.hostname, Long.toString(mid));
 
-		Message msg = json.fromJson(DownloadFile.run(path) , Message.class);;
-		
-		
-		if(msg == null)
+		String messageString = DownloadFile.run(path);
+
+		if(messageString == null){
+			System.out.println("deleteForwardedMessage: Message does not exist");
 			return;
+		}
+
+		Message msg = json.fromJson(messageString , Message.class);;
 
 		recipients = msg.getDestination();
 
@@ -278,20 +289,20 @@ public class MessageResourceDropbox extends DropboxServerUtils implements Messag
 		for(String s : recipients){
 			String[] tokens = s.split("@");
 			if(tokens[1].equals(this.domain)){
-				removeMessage(tokens[0],mid);
+				removeMessageFromInbox(tokens[0],mid);
 			}
 		}
 	}
 	
-	private void removeMessage(String user, long mid){
-		String path = String.format(UserResourceDropbox.USER_MSGS_FILE_FORMAT, 
-				DropboxMailServer.hostname, user);
+	private void removeMessageFromInbox(String user, long mid){
+		String path = String.format(UserResourceProxy.USER_DATA_FORMAT, 
+				ProxyMailServer.hostname, user);
 
-		Set<Long> ids = json.fromJson(DownloadFile.run(path) , LONG_SET_TYPE);
+		UserProxy u = this.getUserProxy(user);
 
-		ids.remove(mid);
+		u.getMids().remove(mid);
 
-		CreateFile.run(path,ids);
+		CreateFile.run(path, u);
 	}
 
 }

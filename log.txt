@@ -1,0 +1,385 @@
+latest: Pulling from nunopreguica/sd1920-tester-tp2
+Digest: sha256:b1f40e492ed7a515a256c262429a87da1fe2c7f65135c848b2e1834de74f6d1d
+Status: Image is up to date for nunopreguica/sd1920-tester-tp2:latest
+docker.io/nunopreguica/sd1920-tester-tp2:latest
+SD1920 +++ TP2 +++ Testing image: sd1920-trab2-52890-53277
+Version 2 - 7/05/2020
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+1a )	 Testing Docker environment [executing: docker info]
+---------------------------------------------------------------
+Docker ID: BUKL:GM2K:YW2Q:5U57:UBRI:WNI5:ELR5:TVVM:RMWY:CGPX:DCII:IQMF
+OK                                                                                                                   
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+1b )	Testing: Docker engine CPU cores...
+---------------------------------------------------------------
+OK                                                                                                                   
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+1c )	Checking messages.props [executing: docker run sd1920-trab2-52890-53277 /bin/cat messages.props and nunopreguica/sd1920tpbase]
+---------------------------------------------------------------
+; Read properties from: ./messages.props
+;	MESSAGES_SOAP_SERVER_MAINCLASS=sd1920.trab2.server.soap.SOAPMailServer
+;	CLIENT_TRUSTSTORE=truststore.ks
+;	DISCOVERY_MULTICAST_PORT=2266
+;	DISCOVERY_MULTICAST_IP=226.226.226.226
+;	SERVER_KEYSTORE_PWD=password
+;	SERVER_EXTRA_ARGS=lemonke
+;	SERVER_KEYSTORE=server.ks
+;	MESSAGES_SOAP_PORT=8080
+;	MESSAGES_PROXY_PORT=8080
+;	PROXY_EXTRA_ARGS=lemonke
+;	MESSAGES_REST_PORT=8080
+;	MESSAGES_PROXY_SERVER_MAINCLASS=sd1920.trab2.server.dropbox.DropboxMailServer
+;	CLIENT_TRUSTSTORE_PWD=changeit
+;	MESSAGES_REST_SERVER_MAINCLASS=sd1920.trab2.server.rest.RESTMailServer
+OK                                                                                                                   
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+1d )	Checking TLS keys in client truststore
+---------------------------------------------------------------
+OK                                                                                                                   
+killByImage(sd1920-trab2-52890-53277): Removing container: [/peaceful_bassi]
+killByImage(sd1920-trab2-52890-53277): Removing container: [/stupefied_lederberg]
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+101a )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+102a )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+102b )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+102c )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+103a )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+103b )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+103c )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+104a )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+104b )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+105a )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+105b )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+105c )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+106a )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+106b )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+106c )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+107a )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+107b )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+108a )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+108b )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+109a )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+109b )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+109c )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+110a )	 Testing PostMessage and GetMessage(s) : 0 REST servers ; 0 SOAP servers; 1 PROXY servers
+---------------------------------------------------------------
+Starting 1 PROXY services instances <sd1920.trab2.server.dropbox.DropboxMailServer> ; TLS : true
+INFO: Starting 1 PROXY services instances <sd1920.trab2.server.dropbox.DropboxMailServer> ; TLS : true
+CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-1 -h msgserver-1 sd1920-trab2-52890-53277 java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.dropbox.DropboxMailServer true lemonke
+Started: msgserver-1 : java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.dropbox.DropboxMailServer true lemonke
+db9f0c369aafafac0c7ed826990eccd5f67c844d8a416879a62f07fde90cd385
+sleeping: 9 s                                                                                sleeping: 8 s                                                                                sleeping: 7 s                                                                                sleeping: 6 s                                                                                sleeping: 5 s                                                                                sleeping: 4 s                                                                                sleeping: 3 s                                                                                sleeping: 2 s                                                                                sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Creating 4 users
+1/4                                                                                [PostUser] User{chantel.rath, cfr3k96epfu5, msgserver-1, Miss Lavina Waelchi} -> 200:chantel.rath@msgserver-1
+2/4                                                                                [PostUser] User{aubrey.blick, 33floc73, msgserver-1, Dr. Temple Green} -> 200:aubrey.blick@msgserver-1
+3/4                                                                                [PostUser] User{perry.hessel, kq2g5v64pqqrdh9, msgserver-1, Herb Hansen} -> 200:perry.hessel@msgserver-1
+4/4                                                                                [PostUser] User{corrie.bailey, scerl0yfs52, msgserver-1, Dannie Armstrong} -> 200:corrie.bailey@msgserver-1
+---------- Creating 4 correct messages
+[PostMessage] cfr3k96epfu5, Msg{-1,chantel.rath,Et id.,[aubrey.blick@msgserver-1],1589314313932} -> 200:5458610973340092914
+[PostMessage] 33floc73, Msg{-1,aubrey.blick@msgserver-1,Porro quo.,[perry.hessel@msgserver-1],1589314319845} -> 200:3146720118325373183
+[PostMessage] kq2g5v64pqqrdh9, Msg{-1,perry.hessel,Maxime temporibus laboriosam molestiae error magnam.,[corrie.bailey@msgserver-1],1589314324746} -> 200:4132536113494597038
+[PostMessage] scerl0yfs52, Msg{-1,corrie.bailey@msgserver-1,Vero doloremque necessitatibus velit officia rerum.,[chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1589314329614} -> 200:505986315847215973
+---------- Getting inboxes correctly
+[GetMessageS] chantel.rath, pwd=cfr3k96epfu5 -> 200:[505986315847215973]
+[GetMessageS] aubrey.blick, pwd=33floc73 -> 200:[505986315847215973, 5458610973340092914]
+[GetMessageS] perry.hessel, pwd=kq2g5v64pqqrdh9 -> 200:[3146720118325373183]
+[GetMessageS] corrie.bailey, pwd=scerl0yfs52 -> 200:[4132536113494597038]
+---------- Getting individual messages correctly
+[GetMessage] aubrey.blick, mid=5458610973340092914, pwd=33floc73 -> 200:Msg{5458610973340092914,Miss Lavina Waelchi <chantel.rath@msgserver-1>,Et id.,[aubrey.blick@msgserver-1],1589314313932}
+[GetMessage] perry.hessel, mid=3146720118325373183, pwd=kq2g5v64pqqrdh9 -> 200:Msg{3146720118325373183,Dr. Temple Green <aubrey.blick@msgserver-1>,Porro quo.,[perry.hessel@msgserver-1],1589314319845}
+[GetMessage] corrie.bailey, mid=4132536113494597038, pwd=scerl0yfs52 -> 200:Msg{4132536113494597038,Herb Hansen <perry.hessel@msgserver-1>,Maxime temporibus laboriosam molestiae error magnam.,[corrie.bailey@msgserver-1],1589314324746}
+[GetMessage] chantel.rath, mid=505986315847215973, pwd=cfr3k96epfu5 -> 200:Msg{505986315847215973,Dannie Armstrong <corrie.bailey@msgserver-1>,Vero doloremque necessitatibus velit officia rerum.,[chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1589314329614}
+[GetMessage] aubrey.blick, mid=505986315847215973, pwd=33floc73 -> 200:Msg{505986315847215973,Dannie Armstrong <corrie.bailey@msgserver-1>,Vero doloremque necessitatibus velit officia rerum.,[chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1589314329614}
+---------- Getting inboxes incorrectly
+[GetMessageS] chantel.rath, pwd=cfr3k96epfu5asd -> 403:null
+[GetMessageS] chantel.rath, pwd= -> 403:null
+[GetMessageS] chantel.rath, pwd=null -> 403:null
+[GetMessageS] dion.damore, pwd=o6wyv737mfmwcfo -> 403:null
+---------- Getting messages incorrectly
+[GetMessage] aubrey.blickasd, mid=5458610973340092914, pwd=33floc73 -> 403:null
+[GetMessage] aubrey.blick, mid=5458610973340092914, pwd=33floc73asd -> 500:null
+TestFailedException: GetMsg = 5458610973340092914 ; user = aubrey.blick ; pwd = 33floc73asd
+Expected : 403; received : 500
+	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:183)
+	at tests.MessagesTest.execGetMessage(MessagesTest.java:198)
+	at tests.workloads.MessagesPostGetWorkload.execute(MessagesPostGetWorkload.java:72)
+	at tests.BaseTest.test(BaseTest.java:152)
+	at tests.Tester.main(Tester.java:209)
+FAILED: GetMsg = 5458610973340092914 ; user = aubrey.blick ; pwd = 33floc73asd
+Expected : 403; received : 500
+
+
+Removing: msgserver-1
+-----------------------------------------------------------------------------------
+msgserver-1
+-----------------------------------------------------------------------------------
+Directory '/msgserver-1' deleted successfuly.
+Time Elapsed newDir: 566
+Directory '/msgserver-1' created successfuly.
+Time Elapsed newDir: 599
+Directory '/msgserver-1/messages' created successfuly.
+Time Elapsed newDir: 785
+Directory '/msgserver-1/users' created successfuly.
+Time Elapsed Search: 437
+Couldn't find user with name chantel.rath.
+Time Elapsed newDir: 450
+Directory '/msgserver-1/users/chantel.rath' created successfuly.
+Time Elapsed Upload: 1055
+Succesfully created file: /msgserver-1/users/chantel.rath/user_object
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Failed to send request to MessageResource. Retrying...
+Time Elapsed Upload: 1027
+Succesfully created file: /msgserver-1/users/chantel.rath/messages_list
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+postUser: Created new user with name: chantel.rath
+Time Elapsed Search: 445
+Couldn't find user with name aubrey.blick.
+Time Elapsed newDir: 437
+Directory '/msgserver-1/users/aubrey.blick' created successfuly.
+Time Elapsed Upload: 1180
+Succesfully created file: /msgserver-1/users/aubrey.blick/user_object
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Failed to send request to MessageResource. Retrying...
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+postUser: Created new user with name: aubrey.blick
+Time Elapsed Search: 400
+Couldn't find user with name perry.hessel.
+Time Elapsed newDir: 978
+HTTP Error Code: 429: Too Many Requests
+{"error_summary": "too_many_write_operations/", "error": {"reason": {".tag": "too_many_write_operations"}}}
+Time Elapsed Upload: 2446
+Succesfully created file: /msgserver-1/users/aubrey.blick/messages_list
+Time Elapsed newDir: 472
+Directory '/msgserver-1/users/perry.hessel' created successfuly.
+Time Elapsed Upload: 1261
+Succesfully created file: /msgserver-1/users/perry.hessel/user_object
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Failed to send request to MessageResource. Retrying...
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+postUser: Created new user with name: perry.hessel
+Time Elapsed Upload: 1445
+Succesfully created file: /msgserver-1/users/perry.hessel/messages_list
+Time Elapsed Search: 423
+Couldn't find user with name corrie.bailey.
+Time Elapsed newDir: 450
+Directory '/msgserver-1/users/corrie.bailey' created successfuly.
+Time Elapsed Upload: 960
+Succesfully created file: /msgserver-1/users/corrie.bailey/user_object
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Failed to send request to MessageResource. Retrying...
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+postUser: Created new user with name: corrie.bailey
+Time Elapsed Upload: 1069
+Succesfully created file: /msgserver-1/users/corrie.bailey/messages_list
+postMessage: Received request to register a new message (Sender: chantel.rath; Subject: Et id.)
+Time Elapsed Download: 738
+File: /msgserver-1/users/chantel.rath/user_object was downloaded
+Time Elapsed Search: 877
+Couldn't find user with name 5458610973340092914.
+postMessage: Created new message with id: 5458610973340092914
+Time Elapsed Search: 303
+User with name aubrey.blick was found.
+Time Elapsed Upload: 1010
+Succesfully created file: /msgserver-1/messages/5458610973340092914
+Time Elapsed Download: 888
+File: /msgserver-1/users/aubrey.blick/messages_list was downloaded
+Time Elapsed Upload: 1397
+Succesfully created file: /msgserver-1/users/aubrey.blick/messages_list
+saveMessage: Sucessfuly saved message 5458610973340092914
+Time elapsed PostMessage: 5636
+postMessage: Received request to register a new message (Sender: aubrey.blick@msgserver-1; Subject: Porro quo.)
+Time Elapsed Download: 727
+File: /msgserver-1/users/aubrey.blick/user_object was downloaded
+Time Elapsed Search: 320
+Couldn't find user with name 3146720118325373183.
+postMessage: Created new message with id: 3146720118325373183
+Time Elapsed Search: 301
+User with name perry.hessel was found.
+Time Elapsed Upload: 984
+Succesfully created file: /msgserver-1/messages/3146720118325373183
+Time Elapsed Download: 833
+File: /msgserver-1/users/perry.hessel/messages_list was downloaded
+Time Elapsed Upload: 1278
+Succesfully created file: /msgserver-1/users/perry.hessel/messages_list
+saveMessage: Sucessfuly saved message 3146720118325373183
+Time elapsed PostMessage: 4836
+postMessage: Received request to register a new message (Sender: perry.hessel; Subject: Maxime temporibus laboriosam molestiae error magnam.)
+Time Elapsed Download: 731
+File: /msgserver-1/users/perry.hessel/user_object was downloaded
+Time Elapsed Search: 516
+Couldn't find user with name 4132536113494597038.
+postMessage: Created new message with id: 4132536113494597038
+Time Elapsed Search: 312
+User with name corrie.bailey was found.
+Time Elapsed Upload: 1042
+Succesfully created file: /msgserver-1/messages/4132536113494597038
+Time Elapsed Download: 813
+File: /msgserver-1/users/corrie.bailey/messages_list was downloaded
+Time Elapsed Upload: 1060
+Succesfully created file: /msgserver-1/users/corrie.bailey/messages_list
+saveMessage: Sucessfuly saved message 4132536113494597038
+Time elapsed PostMessage: 4850
+postMessage: Received request to register a new message (Sender: corrie.bailey@msgserver-1; Subject: Vero doloremque necessitatibus velit officia rerum.)
+Time Elapsed Download: 649
+File: /msgserver-1/users/corrie.bailey/user_object was downloaded
+Time Elapsed Search: 288
+Couldn't find user with name 505986315847215973.
+postMessage: Created new message with id: 505986315847215973
+Time Elapsed Search: 352
+User with name chantel.rath was found.
+Time Elapsed Upload: 1249
+Succesfully created file: /msgserver-1/messages/505986315847215973
+Time Elapsed Download: 646
+File: /msgserver-1/users/chantel.rath/messages_list was downloaded
+Time Elapsed Upload: 1160
+Succesfully created file: /msgserver-1/users/chantel.rath/messages_list
+saveMessage: Sucessfuly saved message 505986315847215973
+Time Elapsed Search: 297
+User with name aubrey.blick was found.
+Time Elapsed Upload: 841
+Succesfully created file: /msgserver-1/messages/505986315847215973
+Time Elapsed Download: 603
+File: /msgserver-1/users/aubrey.blick/messages_list was downloaded
+Time Elapsed Upload: 1283
+Succesfully created file: /msgserver-1/users/aubrey.blick/messages_list
+saveMessage: Sucessfuly saved message 505986315847215973
+Time elapsed PostMessage: 7740
+getMessages: Received request for messages to 'chantel.rath'
+Time Elapsed Download: 995
+File: /msgserver-1/users/chantel.rath/user_object was downloaded
+Time Elapsed Download: 869
+File: /msgserver-1/users/chantel.rath/messages_list was downloaded
+getMessages: Returning message list to user with 1 messages.
+getMessages: Received request for messages to 'aubrey.blick'
+Time Elapsed Download: 472
+File: /msgserver-1/users/aubrey.blick/user_object was downloaded
+Time Elapsed Download: 586
+File: /msgserver-1/users/aubrey.blick/messages_list was downloaded
+getMessages: Returning message list to user with 2 messages.
+getMessages: Received request for messages to 'perry.hessel'
+Time Elapsed Download: 591
+File: /msgserver-1/users/perry.hessel/user_object was downloaded
+Time Elapsed Download: 514
+File: /msgserver-1/users/perry.hessel/messages_list was downloaded
+getMessages: Returning message list to user with 1 messages.
+getMessages: Received request for messages to 'corrie.bailey'
+Time Elapsed Download: 641
+File: /msgserver-1/users/corrie.bailey/user_object was downloaded
+Time Elapsed Download: 784
+File: /msgserver-1/users/corrie.bailey/messages_list was downloaded
+getMessages: Returning message list to user with 1 messages.
+Time Elapsed Download: 596
+File: /msgserver-1/users/aubrey.blick/user_object was downloaded
+Time Elapsed Download: 772
+File: /msgserver-1/users/aubrey.blick/messages_list was downloaded
+getMessage: Received request for message with id: 5458610973340092914.
+Time Elapsed Download: 781
+File: /msgserver-1/messages/5458610973340092914 was downloaded
+Time Elapsed Download: 666
+File: /msgserver-1/users/perry.hessel/user_object was downloaded
+Time Elapsed Download: 643
+File: /msgserver-1/users/perry.hessel/messages_list was downloaded
+getMessage: Received request for message with id: 3146720118325373183.
+Time Elapsed Download: 577
+File: /msgserver-1/messages/3146720118325373183 was downloaded
+Time Elapsed Download: 519
+File: /msgserver-1/users/corrie.bailey/user_object was downloaded
+Time Elapsed Download: 517
+File: /msgserver-1/users/corrie.bailey/messages_list was downloaded
+getMessage: Received request for message with id: 4132536113494597038.
+Time Elapsed Download: 543
+File: /msgserver-1/messages/4132536113494597038 was downloaded
+Time Elapsed Download: 514
+File: /msgserver-1/users/chantel.rath/user_object was downloaded
+Time Elapsed Download: 594
+File: /msgserver-1/users/chantel.rath/messages_list was downloaded
+getMessage: Received request for message with id: 505986315847215973.
+Time Elapsed Download: 607
+File: /msgserver-1/messages/505986315847215973 was downloaded
+Time Elapsed Download: 483
+File: /msgserver-1/users/aubrey.blick/user_object was downloaded
+Time Elapsed Download: 592
+File: /msgserver-1/users/aubrey.blick/messages_list was downloaded
+getMessage: Received request for message with id: 505986315847215973.
+Time Elapsed Download: 756
+File: /msgserver-1/messages/505986315847215973 was downloaded
+getMessages: Received request for messages to 'chantel.rath'
+Time Elapsed Download: 507
+File: /msgserver-1/users/chantel.rath/user_object was downloaded
+getUser: User fetch was rejected due to an invalid password
+getUserRest: User either doesn't exist or the password is incorrect
+getMessages: User with name chantel.rath does not exist in the domain.
+getMessages: Received request for messages to 'chantel.rath'
+Time Elapsed Download: 703
+File: /msgserver-1/users/chantel.rath/user_object was downloaded
+getUser: User fetch was rejected due to an invalid password
+getUserRest: User either doesn't exist or the password is incorrect
+getMessages: User with name chantel.rath does not exist in the domain.
+getMessages: Received request for messages to 'chantel.rath'
+Time Elapsed Download: 586
+File: /msgserver-1/users/chantel.rath/user_object was downloaded
+getUser: User fetch was rejected due to an invalid password
+getUserRest: User either doesn't exist or the password is incorrect
+getMessages: User with name chantel.rath does not exist in the domain.
+getMessages: Received request for messages to 'dion.damore'
+Time Elapsed Download: 346
+DownloadFile: File does not exist
+File: /msgserver-1/users/dion.damore/user_object was NOT found
+getUser: User fetch was rejected due to missing user
+getUserRest: User either doesn't exist or the password is incorrect
+getMessages: User with name dion.damore does not exist in the domain.
+Time Elapsed Download: 457
+DownloadFile: File does not exist
+File: /msgserver-1/users/aubrey.blickasd/user_object was NOT found
+getUser: User fetch was rejected due to missing user
+getUserRest: User either doesn't exist or the password is incorrect
+getUserRest: Could not communicate with the UserResource. What?
+
+
+
+Continue (Y/N) ?
+n
+Exiting...
