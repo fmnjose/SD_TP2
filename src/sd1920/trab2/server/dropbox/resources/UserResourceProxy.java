@@ -62,7 +62,7 @@ public class UserResourceProxy implements UserServiceProxy {
     }
 
     @Override
-    public UserProxy getUserProxy(String name, String secret) {
+    public String getUserProxy(String name, String secret) {
         System.out.println("getUserProxy: Request for user " + name);
         if(!secret.equals(ProxyMailServer.secret)){
             System.out.println("An intruder!");
@@ -77,10 +77,7 @@ public class UserResourceProxy implements UserServiceProxy {
             return null;
         }
 
-        UserProxy user = json.fromJson(userString, UserProxy.class);
-
-        System.out.println("getUserProxy: Request done. Returning...");
-        return user;
+        return userString;
     }
     
     @Override

@@ -21,5 +21,5 @@ public interface UserServiceProxy extends UserServiceRest {
 	@GET
 	@Path("/{name}/proxy")
 	@Produces(MediaType.APPLICATION_JSON)
-	UserProxy getUserProxy(@PathParam("name") String name, @QueryParam("secret") String secret);
+	String getUserProxy(@PathParam("name") String name, @QueryParam("secret") String secret);
 }

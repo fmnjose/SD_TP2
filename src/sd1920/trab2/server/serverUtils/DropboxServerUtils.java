@@ -50,8 +50,15 @@ public class DropboxServerUtils extends ServerUtils {
             return null;
         }
 
-        System.out.println("It answered. Returning...");
-        return r.readEntity(UserProxy.class);
+        String proxyString = r.readEntity(String.class);
+
+        if(proxyString == null){
+            System.out.println("getUserProxy: Not found");
+        }
+        UserProxy u = json.fromJson(proxyString, UserProxy.class);
+
+        System.out.println("It answered. Returning " + u);
+        return u;
     }
 
     @Override
@@ -86,7 +93,7 @@ public class DropboxServerUtils extends ServerUtils {
                 System.out.println("saveMessage: user does not exist for forwarded message " + msg.getId());
                 return false;
             }else {
-                this.saveErrorMessages(senderName, recipient, msg);
+                this.saveErrorMessages(senderName, recipientCanonicalName, msg);
             }
         } else {
             System.out.println("Beans1");

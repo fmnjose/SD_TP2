@@ -59,8 +59,8 @@ public abstract class ServerUtils {
 	public static final String MESSAGES_WSDL = String.format("/%s/?wsdl", MessageServiceSoap.NAME);
 	public static final String USERS_WSDL = String.format("/%s/?wsdl", UserServiceSoap.NAME);
 
-    public static final int TIMEOUT = 1000;
-	public static final int SLEEP_TIME = 500;
+    public static final int TIMEOUT = 10000;
+	public static final int SLEEP_TIME = 1000;
     public static final int N_TRIES = 5;
 
     public ServerUtils(String secret){

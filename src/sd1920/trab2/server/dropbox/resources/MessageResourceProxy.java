@@ -218,7 +218,7 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
-		if(u.getMids().contains(mid)){
+		if(!u.getMids().contains(mid)){
 			System.out.println("removeFromUSerInbox: Message does not exist");
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}

@@ -19,7 +19,15 @@ public class UserProxy {
         return this.user;
     }
 
+    public void setUser(User user){
+        this.user = user;
+    }
+
     public Set<Long> getMids(){
         return this.mids;
+    }
+
+    public void setMids(Set<Long> mids){
+        this.mids = mids;
     }
 }

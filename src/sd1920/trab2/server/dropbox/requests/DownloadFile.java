@@ -44,7 +44,7 @@ public class DownloadFile {
 			r = service.execute(downloadFile);
 			System.out.println("Time Elapsed Download: " + (System.currentTimeMillis() - curr));
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Damn dropbox!");
 			return null;
 		}
 		
@@ -67,6 +67,7 @@ public class DownloadFile {
     }
 
     public static String run(String filePath){
+		System.out.println("Downloading " + filePath);
 		boolean success = false;
 		String o = null;
 		
