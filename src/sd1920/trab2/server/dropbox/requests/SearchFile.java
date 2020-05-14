@@ -35,8 +35,12 @@ public class SearchFile {
 
         searchFile.addHeader("Content-Type", DropboxRequest.JSON_CONTENT_TYPE);
 
-        searchFile.setPayload(json.toJson(new SearchFileArgs(directory, userName)));
-        
+		String j = json.toJson(new SearchFileArgs(directory, userName));
+
+		System.out.println(j);
+
+		searchFile.setPayload(j);
+		     
         service.signRequest(accessToken, searchFile);
 		
 		Response r = null;
@@ -44,6 +48,7 @@ public class SearchFile {
 		try {
 			Long curr = System.currentTimeMillis();
 			r = service.execute(searchFile);
+			System.out.println(r.getBody());
 			System.out.println("Time Elapsed Search: " + (System.currentTimeMillis() - curr));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -67,6 +72,7 @@ public class SearchFile {
     }
 
     public static boolean run(String directoryPath, String query){
+		System.out.println("SearchFile: " + directoryPath);
 		boolean result = false;
         
         for(int i = 0; i < DropboxRequest.RETRIES; i++){

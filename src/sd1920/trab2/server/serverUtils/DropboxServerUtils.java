@@ -107,14 +107,9 @@ public class DropboxServerUtils extends ServerUtils {
             CreateFile.run(path, recipientUser);
 
             System.out.println("Beans4");
-
-            path = String.format(MessageResourceProxy.MESSAGE_FORMAT,
-                                ProxyMailServer.hostname, msg.getId());
-
-            CreateFile.run(path, msg);
         }
 
-        System.out.println("saveMessage: Sucessfuly saved message " + msg.getId());
+        System.out.println("saveMessage: Sucessfuly saved message " + msg.getId() + " to user " + recipientCanonicalName);
         return true;
     }
     
