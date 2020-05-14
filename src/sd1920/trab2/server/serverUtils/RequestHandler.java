@@ -138,11 +138,11 @@ public class RequestHandler implements Runnable {
                         MessagesException, WebServiceException, MalformedURLException {
     
         DomainInfo uri = request.getUri();
-        String mid = request.getMid();
+        long mid = request.getMid();
 
         if (uri.isRest()) {
             WebTarget target = client.target(uri.getUri());
-            target = target.path(MessageResourceRest.PATH).path("msg").path(mid);
+            target = target.path(MessageResourceRest.PATH).path("msg").path(Long.toString(mid));
             target  = target.queryParam("secret", request.getSecret());
 
             target.request().delete();
@@ -158,7 +158,7 @@ public class RequestHandler implements Runnable {
             ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT,
                     LocalServerUtils.TIMEOUT);
             
-            msgService.deleteForwardedMessage(Long.valueOf(mid), request.getSecret());
+            msgService.deleteForwardedMessage(mid, request.getSecret());
         }
     }
 

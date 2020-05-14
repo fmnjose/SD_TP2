@@ -14,7 +14,7 @@ import org.pac4j.scribe.builder.api.DropboxApi20;
 
 import sd1920.trab2.server.dropbox.arguments.CreateFileArgs;
 
-public class CreateFile {
+public class Create {
     private static final String CREATE_FILE_URL = "https://content.dropboxapi.com/2/files/upload";
 
     private static boolean execute(String filePath, Object file) {

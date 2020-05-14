@@ -8,14 +8,14 @@ import sd1920.trab2.api.Discovery.DomainInfo;
  */
 public class DeleteRequest extends Request {
 
-    private String mid;
+    private long mid;
     
-    public DeleteRequest(DomainInfo uri, String domain, String mid, String secret){
+    public DeleteRequest(DomainInfo uri, String domain, long mid, String secret){
         super(uri,domain, secret);
         this.mid = mid;
     }
 
-    public String getMid(){
+    public long getMid(){
         return this.mid;
     }
 }

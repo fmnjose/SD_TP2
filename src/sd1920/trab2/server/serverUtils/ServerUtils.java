@@ -221,7 +221,7 @@ public abstract class ServerUtils {
 	 * @param mid mid of the message to be deleted
      * @param isRest is the calling server REST?
 	 */
-	protected void forwardDelete(Set<String> recipientDomains, String mid, ServerTypes type) {
+	protected void forwardDelete(Set<String> recipientDomains, long mid, ServerTypes type) {
         DomainInfo uri;
         
         for(String domain: recipientDomains){

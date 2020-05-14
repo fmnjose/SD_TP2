@@ -1,6 +1,8 @@
 package sd1920.trab2.server.dropbox.requests;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.OAuth2AccessToken;
@@ -13,28 +15,30 @@ import com.google.gson.Gson;
 import org.pac4j.scribe.builder.api.DropboxApi20;
 
 import sd1920.trab2.server.dropbox.arguments.DeleteArgs;
+import sd1920.trab2.server.dropbox.arguments.DeleteBatchArgs;
 
 public class Delete{
 
-    private static final String DELETE_FOLDER_URL = "https://api.dropboxapi.com/2/files/delete_v2";
+    private static final String DELETE_BATCH_URL = "https://api.dropboxapi.com/2/files/delete_batch";
 
-    private static boolean execute(String directory){
-        OAuthRequest deleteFolder = new OAuthRequest(Verb.POST, DELETE_FOLDER_URL);
+    private static boolean execute(List<DeleteArgs> args){
+        OAuthRequest deleteBatch = new OAuthRequest(Verb.POST, DELETE_BATCH_URL);
 		OAuth20Service service = new ServiceBuilder(DropboxRequest.apiKey)
 						.apiSecret(DropboxRequest.apiSecret).build(DropboxApi20.INSTANCE);
 		OAuth2AccessToken accessToken = new OAuth2AccessToken(DropboxRequest.accessTokenStr);
+
 		Gson json = new Gson();
 
-		deleteFolder.addHeader("Content-Type", DropboxRequest.JSON_CONTENT_TYPE);
+		deleteBatch.addHeader("Content-Type", DropboxRequest.JSON_CONTENT_TYPE);
 
-		deleteFolder.setPayload(json.toJson(new DeleteArgs(directory)));
+		deleteBatch.setPayload(json.toJson(new DeleteBatchArgs(args)));
 
-        service.signRequest(accessToken, deleteFolder);
+        service.signRequest(accessToken, deleteBatch);
         
         Response r = null;
 
         try {
-			r = service.execute(deleteFolder);
+			r = service.execute(deleteBatch);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -53,11 +57,16 @@ public class Delete{
 		}
     }
 
-    public static boolean run(String directoryPath){
-        boolean success = false;
+    public static boolean run(List<String> paths){
+		boolean success = false;
+
+		List<DeleteArgs> args = new LinkedList<>();
+		
+		for(String path: paths)
+			args.add(new DeleteArgs(path));
         
         for(int i = 0; i < DropboxRequest.RETRIES; i++){
-            if(success = execute(directoryPath))
+            if(success = execute(args))
 				break;
 				
 			try {
@@ -68,11 +77,19 @@ public class Delete{
         }
 
 		if(success){
-			System.out.println("Directory '" + directoryPath + "' deleted successfuly.");
+			System.out.println("Deletion for " + paths.size() + " files successful");
 			return true;
 		}else{
-			System.out.println("Failed to delete directory '" + directoryPath + "'");
+			System.out.println("Failed to delete " + paths.size() + " files");
 			return false;
 		}
-    }
+	}
+	
+	public static boolean run(String path){
+		List<String> paths = new LinkedList<>();
+
+		paths.add(path);
+
+		return run(paths);
+	}
 }

@@ -12,7 +12,7 @@ import sd1920.trab2.api.User;
 import sd1920.trab2.api.rest.UserServiceRest;
 import sd1920.trab2.server.dropbox.ProxyMailServer;
 import sd1920.trab2.server.dropbox.requests.CreateDirectory;
-import sd1920.trab2.server.dropbox.requests.CreateFile;
+import sd1920.trab2.server.dropbox.requests.Create;
 import sd1920.trab2.server.dropbox.requests.Delete;
 import sd1920.trab2.server.dropbox.requests.DownloadFile;
 import sd1920.trab2.server.dropbox.requests.GetMeta;
@@ -69,7 +69,7 @@ public class UserResourceProxy implements UserServiceRest {
         
         directoryPath = String.format(USER_DATA_FORMAT, ProxyMailServer.hostname,user.getName());   
 
-        CreateFile.run(directoryPath, user);
+        Create.run(directoryPath, user);
 
         System.out.println("postUser: Created new user with name: " + name);
         
@@ -118,7 +118,7 @@ public class UserResourceProxy implements UserServiceRest {
         
         String filePath = String.format(USER_DATA_FORMAT, ProxyMailServer.hostname, existingUser.getName());
         
-        CreateFile.run(filePath, existingUser);
+        Create.run(filePath, existingUser);
 
         return existingUser;
     }

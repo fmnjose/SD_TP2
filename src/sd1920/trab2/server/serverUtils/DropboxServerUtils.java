@@ -13,7 +13,7 @@ import sd1920.trab2.api.Message;
 import sd1920.trab2.server.dropbox.ProxyMailServer;
 import sd1920.trab2.server.dropbox.arguments.CopyArgs;
 import sd1920.trab2.server.dropbox.requests.Copy;
-import sd1920.trab2.server.dropbox.requests.CreateFile;
+import sd1920.trab2.server.dropbox.requests.Create;
 import sd1920.trab2.server.dropbox.requests.GetMeta;
 import sd1920.trab2.server.dropbox.resources.MessageResourceProxy;
 import sd1920.trab2.server.dropbox.resources.UserResourceProxy;
@@ -40,14 +40,14 @@ public class DropboxServerUtils extends ServerUtils {
         String path = String.format(MessageResourceProxy.MESSAGE_FORMAT, 
                                     ProxyMailServer.hostname, Long.toString(errorMessageId));
 
-        CreateFile.run(path, m);
+        Create.run(path, m);
         
         String toPath = String.format(UserResourceProxy.USER_MESSAGE_FORMAT, ProxyMailServer.hostname, senderName, Long.toString(errorMessageId));
         
         Copy.run(new CopyArgs(path, toPath));
     }
 
-    protected boolean saveMessages(Set<String> recipients, Message msg, boolean forwarded) {
+    protected boolean saveMessage(Set<String> recipients, Message msg, boolean forwarded) {
         System.out.println("Saving message " + msg.getId() + " from " + msg.getSender() + " to " + recipients.size() + " recipients");
 
         List<CopyArgs> copies = new LinkedList<>();

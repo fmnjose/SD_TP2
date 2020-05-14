@@ -83,29 +83,11 @@ public class Copy {
 		}
     }
 
-    public static boolean run(CopyArgs copy){
-		System.out.println("Copying 1 copies");
-        boolean success = false;
-        
-        CopyBatchArgs args = new CopyBatchArgs(new LinkedList<CopyArgs>(copy));
+    public static boolean run(CopyArgs copy){		
+		List<CopyArgs> copies = new LinkedList<>();
 
-        for(int i = 0; i < DropboxRequest.RETRIES; i++){
-            if(success = execute(args))
-				break;
-				
-			try {
-				Thread.sleep(DropboxRequest.SLEEP_TIME);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-        }
+		copies.add(copy);
 
-		if(success){
-			System.out.println("Copy: Succesfully copied all files");
-			return true;
-		}else{
-			System.out.println("Copy: Something went wrong");
-			return false;
-		}
-    }
+		return run(copies);
+	}
 }

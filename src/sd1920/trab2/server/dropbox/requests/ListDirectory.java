@@ -2,7 +2,6 @@ package sd1920.trab2.server.dropbox.requests;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import org.pac4j.scribe.builder.api.DropboxApi20;
 
@@ -27,7 +26,7 @@ public class ListDirectory {
 	private static final String LIST_FOLDER_CONTINUE_URL = "https://api.dropboxapi.com/2/files/list_folder/continue";
 	
 	
-	public static List<String> execute(String directoryName) {
+	private static List<String> execute(String directoryName) {
 		OAuthRequest listDir = new OAuthRequest(Verb.POST, LIST_FOLDER_URL);
 		OAuth20Service service = new ServiceBuilder(DropboxRequest.apiKey)
 						.apiSecret(DropboxRequest.apiSecret).build(DropboxApi20.INSTANCE);
@@ -109,5 +108,4 @@ public class ListDirectory {
 			return null;
 		}
 	}
-
 }

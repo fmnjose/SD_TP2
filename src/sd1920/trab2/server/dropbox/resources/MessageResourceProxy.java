@@ -21,9 +21,12 @@ import sd1920.trab2.api.proxy.UserProxy;
 import sd1920.trab2.api.rest.MessageServiceRest;
 import sd1920.trab2.server.dropbox.ListDirectory;
 import sd1920.trab2.server.dropbox.ProxyMailServer;
+import sd1920.trab2.server.dropbox.requests.Create;
 import sd1920.trab2.server.dropbox.requests.CreateFile;
 import sd1920.trab2.server.dropbox.requests.Delete;
 import sd1920.trab2.server.dropbox.requests.DownloadFile;
+import sd1920.trab2.server.dropbox.requests.GetMeta;
+import sd1920.trab2.server.dropbox.requests.ListDirectory;
 import sd1920.trab2.server.rest.RESTMailServer;
 import sd1920.trab2.server.serverUtils.DropboxServerUtils;
 
@@ -84,7 +87,7 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 		//Upload the msg
 		String path = String.format(MESSAGE_FORMAT, ProxyMailServer.hostname, Long.toString(newID));
 
-		CreateFile.run(path, msg);
+		Create.run(path, msg);
 
 		System.out.println("postMessage: Created new message with id: " + newID);
 
@@ -96,7 +99,7 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 				recipientDomains.add(tokens[1]);
 		}	
 
-		this.saveMessages(recipients, msg, false);
+		this.saveMessage(recipients, msg, false);
 
 		this.forwardMessage(recipientDomains, msg, ServerTypes.PROXY);
 
@@ -177,15 +180,11 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 		User sender = this.getUserRest(senderName, pwd);
 				
 		if(sender == null){
-			System.out.println("getMessage: User does not exist");
+			System.out.println("deleteMessage: User does not exist");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 		
-		String path = String.format(UserResourceProxy.USER_DATA_FORMAT, 
-					ProxyMailServer.hostname, Long.toString(mid));
-
-
-		path = String.format(MESSAGE_FORMAT, ProxyMailServer.hostname, Long.toString(mid));
+		String path = String.format(MESSAGE_FORMAT, ProxyMailServer.hostname, Long.toString(mid));
 
 		String messageString = DownloadFile.run(path);
 
@@ -196,23 +195,31 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 
 		Message msg = json.fromJson(messageString, Message.class);
 
-		if(!getSenderCanonicalName(msg.getSender()).equals(senderName)){
+		if(getSenderCanonicalName(msg.getSender()).equals(senderName)){
 			System.out.println("deleteMessage: Sender mismatch");
 			return;
 		}
 
-		//this will be used to compile the domains that we'll need to forward the request to
-		Set<String> recipientDomains = new HashSet<>();
+		//List of deletions to be made
+		List<String> deletePaths = new LinkedList<>();
 
-		for(String u : msg.getDestination()){
-			String[] tokens = u.split("@");
-			if(tokens[1].equals(this.domain)){				
-				removeMessageFromInbox(tokens[0], mid);
-			}else
-				recipientDomains.add(tokens[1]);
+		//delete the message in the general messages
+		deletePaths.add(path);
+
+		Set<String> forwardDomains = new HashSet<>();
+
+		for(String recipient : msg.getDestination()){
+			String[] tokens = recipient.split("@");
+			if(tokens[1].equals(this.domain))
+				deletePaths.add(String.format(UserResourceProxy.USER_MESSAGE_FORMAT, ProxyMailServer.hostname, tokens[0], mid));
+			else
+				forwardDomains.add(tokens[1]);
 		}
 
-		forwardDelete(recipientDomains, String.valueOf(mid), ServerTypes.PROXY);
+		//Dropbox handles the async request
+		Delete.run(deletePaths);
+
+		this.forwardDelete(forwardDomains, mid, ServerTypes.PROXY);
 	}
 
 	@Override
@@ -221,24 +228,22 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 		
 		String name = getSenderCanonicalName(user);
 
-		UserProxy u = this.getUserProxy(name);
+		User u = this.getUserRest(name, pwd);
 
-		if(u == null || !u.getUser().getPwd().equals(pwd)){
+		if(u == null || !u.getPwd().equals(pwd)){
 			System.out.println("removeFromUserInbox: User does not exist or invalid Password");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
-		if(!u.getMids().contains(mid)){
-			System.out.println("removeFromUSerInbox: Message does not exist");
+		String path = String.format(UserResourceProxy.USER_MESSAGE_FORMAT, ProxyMailServer.hostname, name, mid);
+
+		if(!GetMeta.run(path)){
+			System.out.println("removeFromUserInbox: Message not found");
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
 
-		u.getMids().remove(mid);
-
-		String path = String.format(UserResourceProxy.USER_DATA_FORMAT, 
-									ProxyMailServer.hostname, name);
-
-		CreateFile.run(path, u);
+		Delete.run(path);
+		System.out.println("removeFromUserInbox: Successful");
 	}
 
 	@Override
@@ -255,13 +260,31 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
+		//Create the message in this domain
+		String path = String.format(MESSAGE_FORMAT, ProxyMailServer.hostname, Long.toString(msg.getId()));
+
+		Create.run(path, msg);
+
+		System.out.println("posForwardedMessage: Saved message with ID: " + Long.toString(msg.getId()));
+
+		Set<String> recipients = new HashSet<>();
+
 		List<String> failedDeliveries = new LinkedList<>();
 
+		//Iterates the recipients in this domain, if they exist, add message to inbox, if not, add to failed deliveries
 		for(String recipient: msg.getDestination()){
 			String[] tokens = recipient.split("@");
-			if(tokens[1].equals(this.domain) && !this.saveMessage(msg.getSender(), tokens[0], true, msg))
-				failedDeliveries.add(recipient);
-		}
+			if(tokens[1].equals(this.domain)){
+				path = String.format(UserResourceProxy.USER_FOLDER_FORMAT, ProxyMailServer.hostname, tokens[0]);
+				if(GetMeta.run(path))
+					recipients.add(tokens[0]);
+				else
+					failedDeliveries.add(tokens[0]);
+			}
+
+		}	
+
+		this.saveMessage(recipients, msg, false);
 
 		System.out.println("postForwardedMessage: Couldn't deliver the message to " + failedDeliveries.size() + " people");
 		
@@ -277,11 +300,8 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
-		Set<String> recipients = null;
-
-
-		String path = String.format(MESSAGE_FORMAT, 
-				ProxyMailServer.hostname, Long.toString(mid));
+		//Downloads Message to check it
+		String path = String.format(MESSAGE_FORMAT, ProxyMailServer.hostname, Long.toString(mid));
 
 		String messageString = DownloadFile.run(path);
 
@@ -290,29 +310,25 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 			return;
 		}
 
-		Message msg = json.fromJson(messageString , Message.class);;
+		Message msg = json.fromJson(messageString, Message.class);
 
-		recipients = msg.getDestination();
-
+		//DeletesMessage
 		Delete.run(path);
 
-		for(String s : recipients){
-			String[] tokens = s.split("@");
+		System.out.println("deleteForwardedMessage: Deleted message with ID: " + Long.toString(mid));
+
+		List<String> deletePaths = new LinkedList<>();
+
+		//Iterates the recipients in this domain, if they exist, add message to inbox, if not, add to failed deliveries
+		for(String recipient: msg.getDestination()){
+			String[] tokens = recipient.split("@");
 			if(tokens[1].equals(this.domain)){
-				removeMessageFromInbox(tokens[0],mid);
+				path = String.format(UserResourceProxy.USER_MESSAGE_FORMAT, ProxyMailServer.hostname, tokens[0], Long.toString(mid));
+				deletePaths.add(path);
 			}
-		}
+		}	
+
+		Delete.run(deletePaths);
+		System.out.println("deleteForwardedMessage: Deletion request sent");
 	}
-	
-	private void removeMessageFromInbox(String user, long mid){
-		String path = String.format(UserResourceProxy.USER_DATA_FORMAT, 
-				ProxyMailServer.hostname, user);
-
-		UserProxy u = this.getUserProxy(user);
-
-		u.getMids().remove(mid);
-
-		CreateFile.run(path, u);
-	}
-
 }
