@@ -31,7 +31,6 @@ public abstract class LocalServerUtils extends ServerUtils{
         this.client = ClientBuilder.newClient(config);
     }
     
-    @Override
     protected void saveErrorMessages(String senderName, String recipientName, Message msg) {
         Long errorMessageId = Math.abs(randomNumberGenerator.nextLong());
 
@@ -46,7 +45,6 @@ public abstract class LocalServerUtils extends ServerUtils{
         }
     }
 
-   @Override
     protected boolean saveMessage(String senderName, String recipient, boolean forwarded, Message msg) {
         synchronized (this.userInboxs) {
             synchronized (this.allMessages) {

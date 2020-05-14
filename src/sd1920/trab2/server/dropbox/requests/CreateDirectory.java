@@ -14,14 +14,14 @@ import org.pac4j.scribe.builder.api.DropboxApi20;
 
 import sd1920.trab2.server.dropbox.arguments.CreateFolderV2Args;
 
-public class CreateDirectory{
-	
+public class CreateDirectory {
+
 	private static final String CREATE_FOLDER_V2_URL = "https://api.dropboxapi.com/2/files/create_folder_v2";
-		
+
 	private static boolean execute(String directory) {
 		OAuthRequest createFolder = new OAuthRequest(Verb.POST, CREATE_FOLDER_V2_URL);
-		OAuth20Service service = new ServiceBuilder(DropboxRequest.apiKey)
-						.apiSecret(DropboxRequest.apiSecret).build(DropboxApi20.INSTANCE);
+		OAuth20Service service = new ServiceBuilder(DropboxRequest.apiKey).apiSecret(DropboxRequest.apiSecret)
+				.build(DropboxApi20.INSTANCE);
 		OAuth2AccessToken accessToken = new OAuth2AccessToken(DropboxRequest.accessTokenStr);
 		Gson json = new Gson();
 
@@ -29,11 +29,10 @@ public class CreateDirectory{
 
 		createFolder.setPayload(json.toJson(new CreateFolderV2Args(directory, false)));
 
-
 		service.signRequest(accessToken, createFolder);
-		
+
 		Response r = null;
-		
+
 		try {
 			long curr = System.currentTimeMillis();
 			r = service.execute(createFolder);
@@ -42,8 +41,8 @@ public class CreateDirectory{
 			e.printStackTrace();
 			return false;
 		}
-		
-		if(r.getCode() == 200) {
+
+		if (r.getCode() == 200) {
 			return true;
 		} else {
 			System.err.println("HTTP Error Code: " + r.getCode() + ": " + r.getMessage());
@@ -55,13 +54,19 @@ public class CreateDirectory{
 			return false;
 		}
 	}
-	
-	public static boolean run(String directoryPath){
+
+	public static boolean run(String directoryPath) {
 		boolean success = false;
-        
-        for(int i = 0; i < DropboxRequest.RETRIES; i++){
-            if(success = execute(directoryPath))
-                break;
+
+		for (int i = 0; i < DropboxRequest.RETRIES; i++) {
+			if (success = execute(directoryPath))
+				break;
+
+			try {
+				Thread.sleep(DropboxRequest.SLEEP_TIME);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		if(success){

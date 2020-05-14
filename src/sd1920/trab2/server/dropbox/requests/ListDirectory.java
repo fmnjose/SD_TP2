@@ -1,4 +1,4 @@
-package sd1920.trab2.server.dropbox;
+package sd1920.trab2.server.dropbox.requests;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +20,6 @@ import sd1920.trab2.server.dropbox.replies.ListFolderReturn;
 import sd1920.trab2.server.dropbox.replies.ListFolderReturn.FolderEntry;
 
 public class ListDirectory {
-
-	private static final String apiKey = "INSERT YOURS";
-	private static final String apiSecret = "INSERT YOURS";
-	private static final String accessTokenStr = "INSERT YOURS";
 	
 	protected static final String JSON_CONTENT_TYPE = "application/json; charset=utf-8";
 	
@@ -31,35 +27,28 @@ public class ListDirectory {
 	private static final String LIST_FOLDER_CONTINUE_URL = "https://api.dropboxapi.com/2/files/list_folder/continue";
 	
 	
-	private OAuth20Service service;
-	private OAuth2AccessToken accessToken;
-	
-	private Gson json;
-	
-	public ListDirectory() {
-		service = new ServiceBuilder(apiKey).apiSecret(apiSecret).build(DropboxApi20.INSTANCE);
-		accessToken = new OAuth2AccessToken(accessTokenStr);
+	public static List<String> execute(String directoryName) {
+		OAuthRequest listDir = new OAuthRequest(Verb.POST, LIST_FOLDER_URL);
+		OAuth20Service service = new ServiceBuilder(DropboxRequest.apiKey)
+						.apiSecret(DropboxRequest.apiSecret).build(DropboxApi20.INSTANCE);
+		OAuth2AccessToken accessToken = new OAuth2AccessToken(DropboxRequest.accessTokenStr);
+		Gson json = new Gson();
 		
-		json = new Gson();
-	}
-	
-	public List<String> execute(String directoryName) {
 		List<String> directoryContents = new ArrayList<String>();
 		
-		OAuthRequest listDirectory = new OAuthRequest(Verb.POST, LIST_FOLDER_URL);
-		listDirectory.addHeader("Content-Type", JSON_CONTENT_TYPE);
-		listDirectory.setPayload(json.toJson(new ListFolderArgs(directoryName, false)));
+		listDir.addHeader("Content-Type", JSON_CONTENT_TYPE);
+		listDir.setPayload(json.toJson(new ListFolderArgs(directoryName, false)));
 		
-		service.signRequest(accessToken, listDirectory);
+		service.signRequest(accessToken, listDir);
 		
 		Response r = null;
 		
 		try {
 			while(true) {
-				r = service.execute(listDirectory);
+				r = service.execute(listDir);
 				
 				if(r.getCode() != 200) {
-					System.err.println("Failed to list directory '" + directoryName + "'. Status " + r.getCode() + ": " + r.getMessage());
+					System.err.println("ListDir: Failed to list directory '" + directoryName + "'. Status " + r.getCode() + ": " + r.getMessage());
 					System.err.println(r.getBody());
 					return null;
 				}
@@ -72,11 +61,11 @@ public class ListDirectory {
 				
 				if(reply.has_more()) {
 					//There are more elements to read, prepare a new request (now a continuation)
-					listDirectory = new OAuthRequest(Verb.POST, LIST_FOLDER_CONTINUE_URL);
-					listDirectory.addHeader("Content-Type", JSON_CONTENT_TYPE);
+					listDir = new OAuthRequest(Verb.POST, LIST_FOLDER_CONTINUE_URL);
+					listDir.addHeader("Content-Type", JSON_CONTENT_TYPE);
 					//In this case the arguments is just an object containing the cursor that was returned in the previous reply.
-					listDirectory.setPayload(json.toJson(new ListFolderContinueArgs(reply.getCursor())));
-					service.signRequest(accessToken, listDirectory);
+					listDir.setPayload(json.toJson(new ListFolderContinueArgs(reply.getCursor())));
+					service.signRequest(accessToken, listDir);
 				} else {
 					break; //There are no more elements to read. Operation can terminate.
 				}
@@ -90,27 +79,35 @@ public class ListDirectory {
 		return directoryContents;
 	}
 	
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
+	public static List<String> run(String directoryPath) {
+		System.out.println("Listing " + directoryPath);
+
+		List<String> result = null;
+
+		Boolean success = false;
 		
-		ListDirectory ld = new ListDirectory();
-		
-		System.out.println("Provide the name of the directory to be read:");
-		String directory = sc.nextLine().trim();
-		
-		sc.close();
-		
-		List<String> dir = ld.execute(directory);
-		if(dir != null) {
-			System.out.println("Directory " + directory + ":");
-			for(String entry: dir) {
-				System.out.println(entry);
+        for(int i = 0; i < DropboxRequest.RETRIES; i++){
+			try{
+                result = execute(directoryPath);
+				if(result != null){
+                    success = true;
+                    break;
+				}
+				System.out.println("I SLEEP");
+				Thread.sleep(DropboxRequest.SLEEP_TIME);
+			} catch(InterruptedException e){
+				System.out.println("SearchFile: What the frog");
 			}
-			System.out.println("Complete (" + dir.size() + " entries)");
-		} else {
-			System.out.println("Failed to read directory '" + directory + "'");
-		}
+
+        }		
 		
+		if(success){
+			System.out.println("Folder: " + directoryPath + " was listed");
+			return result;
+		}else{
+			System.out.println("Folder: " + directoryPath + " was NOT found");
+			return null;
+		}
 	}
 
 }

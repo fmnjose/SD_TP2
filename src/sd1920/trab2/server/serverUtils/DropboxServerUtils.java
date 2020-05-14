@@ -2,20 +2,19 @@ package sd1920.trab2.server.serverUtils;
 
 import java.lang.reflect.Type;
 import java.util.HashSet;
-
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import sd1920.trab2.api.Message;
-import sd1920.trab2.api.proxy.UserProxy;
 import sd1920.trab2.server.dropbox.ProxyMailServer;
+import sd1920.trab2.server.dropbox.arguments.CopyArgs;
+import sd1920.trab2.server.dropbox.requests.Copy;
 import sd1920.trab2.server.dropbox.requests.CreateFile;
+import sd1920.trab2.server.dropbox.requests.GetMeta;
 import sd1920.trab2.server.dropbox.resources.MessageResourceProxy;
 import sd1920.trab2.server.dropbox.resources.UserResourceProxy;
 
@@ -31,37 +30,6 @@ public class DropboxServerUtils extends ServerUtils {
         super(secret);
     }
 
-    protected UserProxy getUserProxy(String name){
-        System.out.println("Calling UserResourceProxy for a UserProxy " + name);
-        Response r = null;
-
-        WebTarget target = client.target(this.serverUri).path(UserResourceProxy.PATH);
-        target = target.queryParam("secret", this.secret);
-
-        try {
-            target = target.path(name).path("proxy");
-            r = target.request().accept(MediaType.APPLICATION_JSON).get();
-        } catch (ProcessingException e) {
-            System.out.println("getUserProxy: Could not communicate with the UserResource. What?");
-        }
-
-        if (r.getStatus() == Status.FORBIDDEN.getStatusCode()) {
-            System.out.println("getUserRest: User doesn't exist.");
-            return null;
-        }
-
-        String proxyString = r.readEntity(String.class);
-
-        if(proxyString == null){
-            System.out.println("getUserProxy: Not found");
-        }
-        UserProxy u = json.fromJson(proxyString, UserProxy.class);
-
-        System.out.println("It answered. Returning " + u);
-        return u;
-    }
-
-    @Override
     protected void saveErrorMessages(String senderName, String recipientName, Message msg) {
         System.out.println("Saving error message: From " + senderName + " to " + recipientName);
         Long errorMessageId = Math.abs(randomNumberGenerator.nextLong());
@@ -69,42 +37,49 @@ public class DropboxServerUtils extends ServerUtils {
         Message m = new Message(errorMessageId, msg.getSender(), msg.getDestination(),
                 String.format(ERROR_FORMAT, msg.getId(), recipientName), msg.getContents());
 
-        UserProxy sender = this.getUserProxy(senderName);
-
-        sender.getMids().add(errorMessageId);
-
         String path = String.format(MessageResourceProxy.MESSAGE_FORMAT, 
                                     ProxyMailServer.hostname, Long.toString(errorMessageId));
 
         CreateFile.run(path, m);
+        
+        String toPath = String.format(UserResourceProxy.USER_MESSAGE_FORMAT, ProxyMailServer.hostname, senderName, Long.toString(errorMessageId));
+        
+        Copy.run(new CopyArgs(path, toPath));
     }
 
-    @Override
-    synchronized protected boolean saveMessage(String senderName, String recipient, boolean forwarded, Message msg) {
-        System.out.println("Saving message " + msg.getId() + " from " + senderName + " to " + recipient);
+    protected boolean saveMessages(Set<String> recipients, Message msg, boolean forwarded) {
+        System.out.println("Saving message " + msg.getId() + " from " + msg.getSender() + " to " + recipients.size() + " recipients");
 
-        String recipientCanonicalName = getSenderCanonicalName(recipient);
-        
-        UserProxy recipientUser = this.getUserProxy(recipientCanonicalName);
+        List<CopyArgs> copies = new LinkedList<>();
 
-        if (recipientUser == null) {
-            if (forwarded){
-                System.out.println("saveMessage: user does not exist for forwarded message " + msg.getId());
-                return false;
-            }else {
-                this.saveErrorMessages(senderName, recipientCanonicalName, msg);
+        String senderName = getSenderCanonicalName(msg.getSender());
+
+        String fromPath = String.format(MessageResourceProxy.MESSAGE_FORMAT, ProxyMailServer.hostname, msg.getId());
+
+        for(String recipient : recipients){
+
+            String recipientName = getSenderCanonicalName(recipient);
+            
+            String userPath = String.format(UserResourceProxy.USER_FOLDER_FORMAT, ProxyMailServer.hostname, recipient);
+
+            if (!GetMeta.run(userPath)) {
+                if (forwarded){
+                    System.out.println("saveMessages: user does not exist for forwarded message " + msg.getId());
+                }else {
+                    this.saveErrorMessages(senderName, recipientName, msg);
+                }
+            } else {
+                String toPath = String.format(UserResourceProxy.USER_MESSAGE_FORMAT, ProxyMailServer.hostname, recipientName, Long.toString(msg.getId()));
+
+                copies.add(new CopyArgs(fromPath, toPath));                               
             }
-        } else {
-            String path = String.format(UserResourceProxy.USER_DATA_FORMAT, 
-                                        ProxyMailServer.hostname, recipientCanonicalName);
-
-            recipientUser.getMids().add(msg.getId());
-
-            CreateFile.run(path, recipientUser);
         }
 
-        System.out.println("saveMessage: Sucessfuly saved message " + msg.getId() + " to user " + recipientCanonicalName);
+        if(Copy.run(copies))
+            System.out.println("saveMessages: Sucessfuly saved messages");
+        else 
+            System.out.println("saveMessages: Unsuccessful");
+
         return true;
     }
-    
 }

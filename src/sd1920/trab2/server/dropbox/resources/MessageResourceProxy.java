@@ -19,6 +19,7 @@ import sd1920.trab2.api.Message;
 import sd1920.trab2.api.User;
 import sd1920.trab2.api.proxy.UserProxy;
 import sd1920.trab2.api.rest.MessageServiceRest;
+import sd1920.trab2.server.dropbox.ListDirectory;
 import sd1920.trab2.server.dropbox.ProxyMailServer;
 import sd1920.trab2.server.dropbox.requests.CreateFile;
 import sd1920.trab2.server.dropbox.requests.Delete;
@@ -29,6 +30,7 @@ import sd1920.trab2.server.serverUtils.DropboxServerUtils;
 public class MessageResourceProxy extends DropboxServerUtils implements MessageServiceRest {
 
 	public static final String MESSAGES_DIR_FORMAT = "/%s/messages";
+	public static final String USER_INBOX_FORMAT = "/%s/users/%s%s";
 	public static final String MESSAGE_FORMAT = "/%s/messages/%s";
 	private static Gson json = new Gson();
 
@@ -51,6 +53,7 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 		User user;
 		String sender = msg.getSender();
 		Set<String> recipientDomains = new HashSet<>();
+		Set<String> recipients = new HashSet<>();
 
 		System.out.println("postMessage: Received request to register a new message (Sender: " + sender + "; Subject: "+msg.getSubject()+")");
 		
@@ -88,10 +91,12 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 		for(String recipient: msg.getDestination()){
 			String[] tokens = recipient.split("@");
 			if(tokens[1].equals(this.domain))
-				saveMessage(senderName,recipient, false, msg);
+				recipients.add(tokens[0]);
 			else
 				recipientDomains.add(tokens[1]);
 		}	
+
+		this.saveMessages(recipients, msg, false);
 
 		this.forwardMessage(recipientDomains, msg, ServerTypes.PROXY);
 
@@ -103,26 +108,31 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 	@Override
 	public Message getMessage(String user, long mid, String pwd) {
 		System.out.println("getMessage: Received request for message with id: " + mid +".");
+
+		String userName = getSenderCanonicalName(user); 
 		
-		UserProxy u = this.getUserProxy(user);
+		User u = this.getUserRest(user, pwd);
 		
 		if(u == null){
 			System.out.println("getMessage: User does not exist");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
-		if(!u.getUser().getPwd().equals(pwd)){
+		if(!u.getPwd().equals(pwd)){
 			System.out.println("getMessage: Invalid Password");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
+		String path = String.format(UserResourceProxy.USER_INBOX_FOLDER, ProxyMailServer.hostname, userName);
+
+		List<String> mids = ListDirectory.run(path);
 		
-		if(!u.getMids().contains(mid)){
+		if(mids.contains(Long.toString(mid))){
 			System.out.println("getMessage: Requested message does not exist.");
 			throw new WebApplicationException( Status.NOT_FOUND );
 		}
 
-		String path = String.format(MESSAGE_FORMAT, ProxyMailServer.hostname, Long.toString(mid));
+		path = String.format(MESSAGE_FORMAT, ProxyMailServer.hostname, Long.toString(mid));
 
 		String messageString = DownloadFile.run(path);
 
@@ -136,20 +146,26 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 		System.out.println("getMessages: Received request for messages to '" + user + "'");
 
 		
-		UserProxy u = this.getUserProxy(user);
+		String userName = getSenderCanonicalName(user);
+
+		User u = this.getUserRest(userName, pwd);
 		
 		if(u == null){
 			System.out.println("getMessages: User does not exist");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
-		if(!u.getUser().getPwd().equals(pwd)){
-			System.out.println("getMessages: Invalid Password");
-			throw new WebApplicationException(Status.FORBIDDEN);
-		}
+		String path = String.format(UserResourceProxy.USER_INBOX_FOLDER, ProxyMailServer.hostname, userName);
 
-		System.out.println("getMessages: Returning message list to user with " + u.getMids().size() + " messages.");
-		return new ArrayList<>(u.getMids());
+		List<String> mids = ListDirectory.run(path);
+
+		List<Long> messages = new LinkedList<>();
+
+		for(String mid : mids)
+			messages.add(Long.valueOf(mid));
+
+		System.out.println("getMessages: Returning message list to user with " + mids.size() + " messages.");
+		return messages;
 	}
 
 	@Override
@@ -158,26 +174,16 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 		
 		String senderName = getSenderCanonicalName(user);
 		
-		UserProxy sender = this.getUserProxy(senderName);
+		User sender = this.getUserRest(senderName, pwd);
 				
 		if(sender == null){
 			System.out.println("getMessage: User does not exist");
-			throw new WebApplicationException(Status.FORBIDDEN);
-		}
-
-		if(!sender.getUser().getPwd().equals(pwd)){
-			System.out.println("getMessage: Invalid Password");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 		
 		String path = String.format(UserResourceProxy.USER_DATA_FORMAT, 
 					ProxyMailServer.hostname, Long.toString(mid));
 
-		sender.getMids().remove(mid);
-
-		CreateFile.run(path, sender);
-	
-		removeMessageFromInbox(senderName, mid);
 
 		path = String.format(MESSAGE_FORMAT, ProxyMailServer.hostname, Long.toString(mid));
 

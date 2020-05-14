@@ -17,8 +17,6 @@ import sd1920.trab2.server.dropbox.requests.CreateDirectory;
 import sd1920.trab2.server.dropbox.requests.Delete;
 import sd1920.trab2.server.dropbox.resources.MessageResourceProxy;
 import sd1920.trab2.server.dropbox.resources.UserResourceProxy;
-import sd1920.trab2.server.rest.resources.MessageResourceRest;
-import sd1920.trab2.server.rest.resources.UserResourceRest;
 
 public class ProxyMailServer {
     static {

@@ -58,7 +58,13 @@ public class Delete{
         
         for(int i = 0; i < DropboxRequest.RETRIES; i++){
             if(success = execute(directoryPath))
-                break;
+				break;
+				
+			try {
+				Thread.sleep(DropboxRequest.SLEEP_TIME);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
         }
 
 		if(success){

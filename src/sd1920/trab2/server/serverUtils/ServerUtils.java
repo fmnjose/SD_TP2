@@ -261,26 +261,4 @@ public abstract class ServerUtils {
             }           
         }	
     }
-
-       /**
-     * Inserts an error message into the sender inbox
-     * 
-     * @param senderName name of the message sender. No domain anotation
-     * @param recipientName name of one of the recipients
-     * @param msg message in question
-     */
-    protected abstract void saveErrorMessages(String senderName, String recipientName, Message msg);
-
-     /**
-     * Saves a message in the domain. If the recipient does not exist, adds an error
-     * message
-     * 
-     * @param senderName    message sender
-     * @param recipient name of a recipient in this domain. Always in this
-     *                      domain.
-     * @param forwarded     was the message forwarded?
-     * @param mid           id to be assigned
-     * @return was it not forwarded and succesful?
-     */
-    protected abstract boolean saveMessage(String senderName, String recipient, boolean forwarded, Message msg);
 }
