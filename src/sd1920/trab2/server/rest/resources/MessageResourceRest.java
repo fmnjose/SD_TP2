@@ -80,7 +80,7 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 				recipientDomains.add(tokens[1]);
 		}	
 
-		this.forwardMessage(recipientDomains, msg, true);
+		this.forwardMessage(recipientDomains, msg, ServerTypes.REST);
 
 		return msg.getId();
 	}
@@ -172,7 +172,7 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 				recipientDomains.add(tokens[1]);
 		}
 
-		forwardDelete(recipientDomains, String.valueOf(mid), true);
+		forwardDelete(recipientDomains, String.valueOf(mid), ServerTypes.REST);
 	}
 
 	@Override

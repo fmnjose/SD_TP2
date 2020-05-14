@@ -26,6 +26,7 @@ import sd1920.trab2.api.User;
 import sd1920.trab2.api.Discovery.DomainInfo;
 import sd1920.trab2.api.rest.UserServiceRest;
 import sd1920.trab2.api.soap.UserServiceSoap;
+import sd1920.trab2.server.dropbox.ProxyMailServer;
 import sd1920.trab2.server.rest.RESTMailServer;
 
 import java.net.UnknownHostException;
@@ -62,6 +63,10 @@ public abstract class ServerUtils {
     public static final int TIMEOUT = 10000;
 	public static final int SLEEP_TIME = 1000;
     public static final int N_TRIES = 5;
+
+    public enum ServerTypes{
+        REST, SOAP, PROXY;
+    }
 
     public ServerUtils(String secret){
         this.secret = secret;
@@ -166,11 +171,25 @@ public abstract class ServerUtils {
      * @param msg message to be forwarded
      * @param isRest is the calling server REST?
      */
-    protected void forwardMessage(Set<String> recipientDomains, Message msg, boolean isRest) {
+    protected void forwardMessage(Set<String> recipientDomains, Message msg, ServerTypes type) {
+        DomainInfo uri;
+        
         for (String domain : recipientDomains) {
-            DomainInfo uri = isRest ? RESTMailServer.serverRecord.knownUrisOf(domain)
-                                    : SOAPMailServer.serverRecord.knownUrisOf(domain);
 
+            switch(type){
+                case REST:
+                    uri = RESTMailServer.serverRecord.knownUrisOf(domain);
+                    break;
+                case SOAP:
+                    uri = SOAPMailServer.serverRecord.knownUrisOf(domain);
+                    break;
+                case PROXY:
+                    uri = ProxyMailServer.serverRecord.knownUrisOf(domain);
+                    break;
+                default:
+                    uri = null;
+                    System.out.println("WEIRD SERVER");
+            }
 
             if (uri == null){
 				System.out.println("forwardMessage: " + domain + " does not exist or is offline.");
@@ -202,10 +221,24 @@ public abstract class ServerUtils {
 	 * @param mid mid of the message to be deleted
      * @param isRest is the calling server REST?
 	 */
-	protected void forwardDelete(Set<String> recipientDomains, String mid, boolean isRest) {
-		for(String domain: recipientDomains){
-			DomainInfo uri = isRest ? RESTMailServer.serverRecord.knownUrisOf(domain)
-                                    : SOAPMailServer.serverRecord.knownUrisOf(domain);
+	protected void forwardDelete(Set<String> recipientDomains, String mid, ServerTypes type) {
+        DomainInfo uri;
+        
+        for(String domain: recipientDomains){
+            switch(type){
+                case REST:
+                    uri = RESTMailServer.serverRecord.knownUrisOf(domain);
+                    break;
+                case SOAP:
+                    uri = SOAPMailServer.serverRecord.knownUrisOf(domain);
+                    break;
+                case PROXY:
+                    uri = ProxyMailServer.serverRecord.knownUrisOf(domain);
+                    break;
+                default:
+                    uri = null;
+                    System.out.println("WEIRD SERVER");
+            }
 			
 			if(uri == null){
 				System.out.println("forwardDelete: " + domain + " does not exist or is offline.");

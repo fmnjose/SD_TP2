@@ -63,18 +63,22 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 
 
 		long curr = System.currentTimeMillis();
+
+		//User treatment
 		user = this.getUserRest(senderName, pwd);
 
 		if(user == null)
 			throw new WebApplicationException(Status.FORBIDDEN);
 
+		//Message Treatment
 		long newID = Math.abs(randomNumberGenerator.nextLong());
 
 		newID = Math.abs(randomNumberGenerator.nextLong());
 		
 		msg.setSender(String.format(SENDER_FORMAT, user.getDisplayName(), user.getName(), user.getDomain()));
 		msg.setId(newID);	
-		
+
+		//Upload the msg
 		String path = String.format(MESSAGE_FORMAT, ProxyMailServer.hostname, Long.toString(newID));
 
 		CreateFile.run(path, msg);
@@ -89,7 +93,7 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 				recipientDomains.add(tokens[1]);
 		}	
 
-		this.forwardMessage(recipientDomains, msg, true);
+		this.forwardMessage(recipientDomains, msg, ServerTypes.PROXY);
 
 		System.out.println("Time elapsed PostMessage: " + (System.currentTimeMillis() - curr));
 
@@ -202,7 +206,7 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 				recipientDomains.add(tokens[1]);
 		}
 
-		forwardDelete(recipientDomains, String.valueOf(mid), true);
+		forwardDelete(recipientDomains, String.valueOf(mid), ServerTypes.PROXY);
 	}
 
 	@Override

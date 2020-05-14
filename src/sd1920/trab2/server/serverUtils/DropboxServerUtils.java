@@ -80,7 +80,7 @@ public class DropboxServerUtils extends ServerUtils {
     }
 
     @Override
-    protected boolean saveMessage(String senderName, String recipient, boolean forwarded, Message msg) {
+    synchronized protected boolean saveMessage(String senderName, String recipient, boolean forwarded, Message msg) {
         System.out.println("Saving message " + msg.getId() + " from " + senderName + " to " + recipient);
 
         String recipientCanonicalName = getSenderCanonicalName(recipient);
@@ -88,7 +88,6 @@ public class DropboxServerUtils extends ServerUtils {
         UserProxy recipientUser = this.getUserProxy(recipientCanonicalName);
 
         if (recipientUser == null) {
-            System.out.println("MUDA MUDA");
             if (forwarded){
                 System.out.println("saveMessage: user does not exist for forwarded message " + msg.getId());
                 return false;
@@ -96,17 +95,12 @@ public class DropboxServerUtils extends ServerUtils {
                 this.saveErrorMessages(senderName, recipientCanonicalName, msg);
             }
         } else {
-            System.out.println("Beans1");
             String path = String.format(UserResourceProxy.USER_DATA_FORMAT, 
                                         ProxyMailServer.hostname, recipientCanonicalName);
-            System.out.println("Beans2");
+
             recipientUser.getMids().add(msg.getId());
 
-            System.out.println("Beans3");
-
             CreateFile.run(path, recipientUser);
-
-            System.out.println("Beans4");
         }
 
         System.out.println("saveMessage: Sucessfuly saved message " + msg.getId() + " to user " + recipientCanonicalName);

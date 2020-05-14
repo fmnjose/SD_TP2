@@ -80,7 +80,7 @@ public class MessageResourceSoap extends LocalServerUtils implements MessageServ
 				recipientDomains.add(tokens[1]);
 		}
 		
-		this.forwardMessage(recipientDomains,msg,false);
+		this.forwardMessage(recipientDomains,msg, ServerTypes.SOAP);
 		
 
 		System.out.println("postMessage: Recorded message with identifier: " + msg.getId());
@@ -176,7 +176,7 @@ public class MessageResourceSoap extends LocalServerUtils implements MessageServ
 			}else
 				recipientDomains.add(tokens[1]);
 		}
-		forwardDelete(recipientDomains, String.valueOf(mid),false);
+		forwardDelete(recipientDomains, String.valueOf(mid),ServerTypes.SOAP);
 	}
 
 	@Override
