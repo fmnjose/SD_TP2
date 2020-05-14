@@ -176,7 +176,7 @@ public class MessageResourceSoap extends LocalServerUtils implements MessageServ
 			}else
 				recipientDomains.add(tokens[1]);
 		}
-		forwardDelete(recipientDomains, String.valueOf(mid),ServerTypes.SOAP);
+		forwardDelete(recipientDomains, mid,ServerTypes.SOAP);
 	}
 
 	@Override

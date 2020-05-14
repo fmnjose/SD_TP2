@@ -172,7 +172,7 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 				recipientDomains.add(tokens[1]);
 		}
 
-		forwardDelete(recipientDomains, String.valueOf(mid), ServerTypes.REST);
+		forwardDelete(recipientDomains, mid, ServerTypes.REST);
 	}
 
 	@Override

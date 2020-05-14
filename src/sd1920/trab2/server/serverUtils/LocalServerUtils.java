@@ -54,9 +54,11 @@ public abstract class LocalServerUtils extends ServerUtils{
                         System.out.println("saveMessage: user does not exist for forwarded message " + msg.getId());
                         return false;
                     }else {
+                        System.out.println("saveMessage: Void User");
                         this.saveErrorMessages(senderName, recipient, msg);
                     }
                 } else {
+                    System.out.println("saveMessage: SAVE TIME");
                     this.allMessages.put(msg.getId(), msg);
                     this.userInboxs.get(recipientCanonicalName).add(msg.getId());
                 }

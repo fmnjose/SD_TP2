@@ -30,6 +30,7 @@ public class DropboxServerUtils extends ServerUtils {
         super(secret);
     }
 
+    @Override
     protected void saveErrorMessages(String senderName, String recipientName, Message msg) {
         System.out.println("Saving error message: From " + senderName + " to " + recipientName);
         Long errorMessageId = Math.abs(randomNumberGenerator.nextLong());

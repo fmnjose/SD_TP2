@@ -174,22 +174,23 @@ public abstract class ServerUtils {
     protected void forwardMessage(Set<String> recipientDomains, Message msg, ServerTypes type) {
         DomainInfo uri;
         
+        switch(type){
+            case REST:
+                uri = RESTMailServer.serverRecord.knownUrisOf(domain);
+                break;
+            case SOAP:
+                uri = SOAPMailServer.serverRecord.knownUrisOf(domain);
+                break;
+            case PROXY:
+                uri = ProxyMailServer.serverRecord.knownUrisOf(domain);
+                break;
+            default:
+                uri = null;
+                System.out.println("WEIRD SERVER");
+        }
+        
         for (String domain : recipientDomains) {
 
-            switch(type){
-                case REST:
-                    uri = RESTMailServer.serverRecord.knownUrisOf(domain);
-                    break;
-                case SOAP:
-                    uri = SOAPMailServer.serverRecord.knownUrisOf(domain);
-                    break;
-                case PROXY:
-                    uri = ProxyMailServer.serverRecord.knownUrisOf(domain);
-                    break;
-                default:
-                    uri = null;
-                    System.out.println("WEIRD SERVER");
-            }
 
             if (uri == null){
 				System.out.println("forwardMessage: " + domain + " does not exist or is offline.");
@@ -224,21 +225,22 @@ public abstract class ServerUtils {
 	protected void forwardDelete(Set<String> recipientDomains, long mid, ServerTypes type) {
         DomainInfo uri;
         
+        switch(type){
+            case REST:
+                uri = RESTMailServer.serverRecord.knownUrisOf(domain);
+                break;
+            case SOAP:
+                uri = SOAPMailServer.serverRecord.knownUrisOf(domain);
+                break;
+            case PROXY:
+                uri = ProxyMailServer.serverRecord.knownUrisOf(domain);
+                break;
+            default:
+                uri = null;
+                System.out.println("WEIRD SERVER");
+        }
+
         for(String domain: recipientDomains){
-            switch(type){
-                case REST:
-                    uri = RESTMailServer.serverRecord.knownUrisOf(domain);
-                    break;
-                case SOAP:
-                    uri = SOAPMailServer.serverRecord.knownUrisOf(domain);
-                    break;
-                case PROXY:
-                    uri = ProxyMailServer.serverRecord.knownUrisOf(domain);
-                    break;
-                default:
-                    uri = null;
-                    System.out.println("WEIRD SERVER");
-            }
 			
 			if(uri == null){
 				System.out.println("forwardDelete: " + domain + " does not exist or is offline.");
@@ -261,4 +263,6 @@ public abstract class ServerUtils {
             }           
         }	
     }
+    
+    abstract void saveErrorMessages(String senderName, String recipientName, Message msg);
 }

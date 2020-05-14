@@ -16,7 +16,6 @@ import sd1920.trab2.server.dropbox.requests.Create;
 import sd1920.trab2.server.dropbox.requests.Delete;
 import sd1920.trab2.server.dropbox.requests.DownloadFile;
 import sd1920.trab2.server.dropbox.requests.GetMeta;
-import sd1920.trab2.server.dropbox.requests.SearchFile;
 
 public class UserResourceProxy implements UserServiceRest {
 

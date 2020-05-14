@@ -2,7 +2,6 @@ package sd1920.trab2.server.dropbox.resources;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,12 +16,9 @@ import com.google.gson.Gson;
 
 import sd1920.trab2.api.Message;
 import sd1920.trab2.api.User;
-import sd1920.trab2.api.proxy.UserProxy;
 import sd1920.trab2.api.rest.MessageServiceRest;
-import sd1920.trab2.server.dropbox.ListDirectory;
 import sd1920.trab2.server.dropbox.ProxyMailServer;
 import sd1920.trab2.server.dropbox.requests.Create;
-import sd1920.trab2.server.dropbox.requests.CreateFile;
 import sd1920.trab2.server.dropbox.requests.Delete;
 import sd1920.trab2.server.dropbox.requests.DownloadFile;
 import sd1920.trab2.server.dropbox.requests.GetMeta;

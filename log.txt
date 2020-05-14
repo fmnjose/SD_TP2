@@ -1,9 +1,9 @@
 latest: Pulling from nunopreguica/sd1920-tester-tp2
-Digest: sha256:b1f40e492ed7a515a256c262429a87da1fe2c7f65135c848b2e1834de74f6d1d
+Digest: sha256:0693505ec4c8e2e4e6d9383f92e6574e17bf3dd0a963f16455b35ccb2846ba53
 Status: Image is up to date for nunopreguica/sd1920-tester-tp2:latest
 docker.io/nunopreguica/sd1920-tester-tp2:latest
 SD1920 +++ TP2 +++ Testing image: sd1920-trab2-52890-53277
-Version 2 - 7/05/2020
+Version 3 - 14/05/2020
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 1a )	 Testing Docker environment [executing: docker info]
 ---------------------------------------------------------------
@@ -17,27 +17,31 @@ Docker ID: GMWY:II6E:EPXM:5WCV:Z3GU:D5BQ:NCUY:KHDX:36S6:JSF7:QTSA:JKZQ
 1c )	Checking messages.props [executing: docker run sd1920-trab2-52890-53277 /bin/cat messages.props and nunopreguica/sd1920tpbase]
 ---------------------------------------------------------------
 ; Read properties from: ./messages.props
-;	MESSAGES_SOAP_SERVER_MAINCLASS=sd1920.trab2.server.soap.SOAPMailServer
-;	CLIENT_TRUSTSTORE=truststore.ks
-;	DISCOVERY_MULTICAST_PORT=2266
-;	DISCOVERY_MULTICAST_IP=226.226.226.226
-;	SERVER_KEYSTORE_PWD=password
-;	SERVER_EXTRA_ARGS=lemonke
-;	SERVER_KEYSTORE=server.ks
-;	MESSAGES_SOAP_PORT=8080
 ;	MESSAGES_PROXY_PORT=8080
+;	SERVER_KEYSTORE_PWD=password
+;	CLIENT_TRUSTSTORE=truststore.ks
 ;	PROXY_EXTRA_ARGS=lemonke
-;	MESSAGES_REST_PORT=8080
+;	MESSAGES_SOAP_SERVER_MAINCLASS=sd1920.trab2.server.soap.SOAPMailServer
+;	MESSAGES_SOAP_PORT=8080
+;	SERVER_EXTRA_ARGS=lemonke
+;	DISCOVERY_MULTICAST_PORT=2266
 ;	MESSAGES_PROXY_SERVER_MAINCLASS=sd1920.trab2.server.dropbox.ProxyMailServer
 ;	CLIENT_TRUSTSTORE_PWD=changeit
+;	MESSAGES_REP_SERVER_MAINCLASS=asd
+;	DISCOVERY_MULTICAST_IP=226.226.226.226
 ;	MESSAGES_REST_SERVER_MAINCLASS=sd1920.trab2.server.rest.RESTMailServer
+;	MESSAGES_REST_PORT=8080
+;	REP_SERVER_EXTRA_ARGS_OTHER=asd
+;	REP_SERVER_EXTRA_ARGS_FIRST=asd 
+;	MESSAGES_REP_PORT=8080 
+;	SERVER_KEYSTORE=server.ks
 OK                                                                                                                   
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 1d )	Checking TLS keys in client truststore
 ---------------------------------------------------------------
 OK                                                                                                                   
-killByImage(sd1920-trab2-52890-53277): Removing container: [/unruffled_golick]
-killByImage(sd1920-trab2-52890-53277): Removing container: [/dazzling_turing]
+killByImage(sd1920-trab2-52890-53277): Removing container: [/pedantic_almeida]
+killByImage(sd1920-trab2-52890-53277): Removing container: [/naughty_euclid]
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 101a )	  Skipped...
 ---------------------------------------------------------------
@@ -60,140 +64,126 @@ killByImage(sd1920-trab2-52890-53277): Removing container: [/dazzling_turing]
 103c )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-104a )	  Skipped...
+104a )	 Testing PostMessage across multiple domains : [1,1,1] REST servers ; [] SOAP servers; [] PROXY servers
 ---------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-104b )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-105a )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-105b )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-105c )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-106a )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-106b )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-106c )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-107a )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-107b )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-108a )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-108b )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-109a )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-109b )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-109c )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-110a )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-110b )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-110c )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-111a )	 Testing PostMessage across multiple domains : 2 REST servers ; 0 SOAP servers; 1 PROXY servers
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-111a )	 IMPORTANT : this configuration may require larger sleep value -- if it fails, try to increase the sleep time to a value between 30 and 60
----------------------------------------------------------------
-Starting 2 REST services instances <sd1920.trab2.server.rest.RESTMailServer> ; TLS : true
-INFO: Starting 2 REST services instances <sd1920.trab2.server.rest.RESTMailServer> ; TLS : true
-CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-1 -h msgserver-1 sd1920-trab2-52890-53277 java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.rest.RESTMailServer lemonke
-Started: msgserver-1 : java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.rest.RESTMailServer lemonke
-e49763f3cebb5a0c01699677d2f7f6e44e378f6ffd3a5a3861d830900b03673c
-CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-2 -h msgserver-2 sd1920-trab2-52890-53277 java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.rest.RESTMailServer lemonke
-Started: msgserver-2 : java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.rest.RESTMailServer lemonke
-04259f5ac1ce358b258ae3fb55fee54ae84e849ee17aedb6294ec4996425c46a
-Starting 1 PROXY services instances <sd1920.trab2.server.dropbox.ProxyMailServer> ; TLS : true
-INFO: Starting 1 PROXY services instances <sd1920.trab2.server.dropbox.ProxyMailServer> ; TLS : true
-CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-3 -h msgserver-3 sd1920-trab2-52890-53277 java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.dropbox.ProxyMailServer true lemonke
-Started: msgserver-3 : java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.dropbox.ProxyMailServer true lemonke
-c420600a02abbc9be8a624a8f79ad62d2546252e709cc965fc4921f7fdc692bb
-sleeping: 44 s                                                                                sleeping: 43 s                                                                                sleeping: 42 s                                                                                sleeping: 41 s                                                                                sleeping: 40 s                                                                                sleeping: 39 s                                                                                sleeping: 38 s                                                                                sleeping: 37 s                                                                                sleeping: 36 s                                                                                sleeping: 35 s                                                                                sleeping: 34 s                                                                                sleeping: 33 s                                                                                sleeping: 32 s                                                                                sleeping: 31 s                                                                                sleeping: 30 s                                                                                sleeping: 29 s                                                                                sleeping: 28 s                                                                                sleeping: 27 s                                                                                sleeping: 26 s                                                                                sleeping: 25 s                                                                                sleeping: 24 s                                                                                sleeping: 23 s                                                                                sleeping: 22 s                                                                                sleeping: 21 s                                                                                sleeping: 20 s                                                                                sleeping: 19 s                                                                                sleeping: 18 s                                                                                sleeping: 17 s                                                                                sleeping: 16 s                                                                                sleeping: 15 s                                                                                sleeping: 14 s                                                                                sleeping: 13 s                                                                                sleeping: 12 s                                                                                sleeping: 11 s                                                                                sleeping: 10 s                                                                                sleeping: 9 s                                                                                sleeping: 8 s                                                                                sleeping: 7 s                                                                                sleeping: 6 s                                                                                sleeping: 5 s                                                                                sleeping: 4 s                                                                                sleeping: 3 s                                                                                sleeping: 2 s                                                                                sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Creating 2 users in each domain
-1/2                                                                                [PostUser] User{chantel.rath, cfr3k96epfu5, msgserver-1, Miss Lavina Waelchi} -> 200:chantel.rath@msgserver-1
-2/2                                                                                [PostUser] User{aubrey.blick, 33floc73, msgserver-1, Dr. Temple Green} -> 200:aubrey.blick@msgserver-1
-1/2                                                                                [PostUser] User{perry.hessel, kq2g5v64pqqrdh9, msgserver-2, Herb Hansen} -> 200:perry.hessel@msgserver-2
-2/2                                                                                [PostUser] User{corrie.bailey, scerl0yfs52, msgserver-2, Dannie Armstrong} -> 200:corrie.bailey@msgserver-2
-1/2                                                                                [PostUser] User{catherin.gutmann, zdqm4u574, msgserver-3, Alton Koelpin DDS} -> 200:catherin.gutmann@msgserver-3
-2/2                                                                                [PostUser] User{duane.bradtke, p7a5w3kzbzgb4p, msgserver-3, Gerry Frami} -> 200:duane.bradtke@msgserver-3
+Starting REST services: <1> replicas : mainClass = <sd1920.trab2.server.rest.RESTMailServer> ; TLS : true
+INFO: Starting REST services: <1> replicas : mainClass = <sd1920.trab2.server.rest.RESTMailServer> ; TLS : true
+CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-1-1 -h msgserver-1 sd1920-trab2-52890-53277 java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.rest.RESTMailServer lemonke
+Started: msgserver-1-1 : java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.rest.RESTMailServer lemonke
+bfb98e0d2741fe1915cbf2d5234a5638212bf43aba99d063b7e7c472b591865e
+Starting REST services: <1> replicas : mainClass = <sd1920.trab2.server.rest.RESTMailServer> ; TLS : true
+INFO: Starting REST services: <1> replicas : mainClass = <sd1920.trab2.server.rest.RESTMailServer> ; TLS : true
+CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-2-1 -h msgserver-2 sd1920-trab2-52890-53277 java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.rest.RESTMailServer lemonke
+Started: msgserver-2-1 : java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.rest.RESTMailServer lemonke
+631ddc2177b1a29c9c76ae8c7dbcf8a2e4a2ade6fe183b1ebff38832cd06ca57
+Starting REST services: <1> replicas : mainClass = <sd1920.trab2.server.rest.RESTMailServer> ; TLS : true
+INFO: Starting REST services: <1> replicas : mainClass = <sd1920.trab2.server.rest.RESTMailServer> ; TLS : true
+CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-3-1 -h msgserver-3 sd1920-trab2-52890-53277 java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.rest.RESTMailServer lemonke
+Started: msgserver-3-1 : java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.rest.RESTMailServer lemonke
+3e5f8669183f88e558bfdd791007bae11e80199cf92aa16ec7903d513b360b86
+sleeping: 9 s                                                                                sleeping: 8 s                                                                                sleeping: 7 s                                                                                sleeping: 6 s                                                                                sleeping: 5 s                                                                                sleeping: 4 s                                                                                sleeping: 3 s                                                                                sleeping: 2 s                                                                                sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Creating 5 users in each domain
+1/5                                                                                [PostUser https://172.20.0.3:8080/rest] User{chantel.rath, cfr3k96epfu5, msgserver-1, Miss Lavina Waelchi} -> 200:chantel.rath@msgserver-1
+2/5                                                                                [PostUser https://172.20.0.3:8080/rest] User{aubrey.blick, 33floc73, msgserver-1, Dr. Temple Green} -> 200:aubrey.blick@msgserver-1
+3/5                                                                                [PostUser https://172.20.0.3:8080/rest] User{perry.hessel, kq2g5v64pqqrdh9, msgserver-1, Herb Hansen} -> 200:perry.hessel@msgserver-1
+4/5                                                                                [PostUser https://172.20.0.3:8080/rest] User{corrie.bailey, scerl0yfs52, msgserver-1, Dannie Armstrong} -> 200:corrie.bailey@msgserver-1
+5/5                                                                                [PostUser https://172.20.0.3:8080/rest] User{catherin.gutmann, zdqm4u574, msgserver-1, Alton Koelpin DDS} -> 200:catherin.gutmann@msgserver-1
+1/5                                                                                [PostUser https://172.20.0.4:8080/rest] User{duane.bradtke, p7a5w3kzbzgb4p, msgserver-2, Gerry Frami} -> 200:duane.bradtke@msgserver-2
+2/5                                                                                [PostUser https://172.20.0.4:8080/rest] User{bradley.huel, e4afjfbwrow1z, msgserver-2, Kristi Harris} -> 200:bradley.huel@msgserver-2
+3/5                                                                                [PostUser https://172.20.0.4:8080/rest] User{adelia.connelly, 38brfogec6p, msgserver-2, Thu Walsh} -> 200:adelia.connelly@msgserver-2
+4/5                                                                                [PostUser https://172.20.0.4:8080/rest] User{tanja.will, f84e0jhb1, msgserver-2, Thaddeus Moen} -> 200:tanja.will@msgserver-2
+5/5                                                                                [PostUser https://172.20.0.4:8080/rest] User{marhta.baumbach, zuuby5zxz0ikgw, msgserver-2, Emanuel Cartwright PhD} -> 200:marhta.baumbach@msgserver-2
+1/5                                                                                [PostUser https://172.20.0.5:8080/rest] User{lauri.lakin, 8scsyjod, msgserver-3, Janette Weissnat PhD} -> 200:lauri.lakin@msgserver-3
+2/5                                                                                [PostUser https://172.20.0.5:8080/rest] User{klara.cartwright, a8p8o6wy, msgserver-3, Odell Zemlak} -> 200:klara.cartwright@msgserver-3
+3/5                                                                                [PostUser https://172.20.0.5:8080/rest] User{jean.pagac, cfopd23olkm06, msgserver-3, Lou Ritchie} -> 200:jean.pagac@msgserver-3
+4/5                                                                                [PostUser https://172.20.0.5:8080/rest] User{jill.feil, e71zhm4s56lch, msgserver-3, Georgine Legros} -> 200:jill.feil@msgserver-3
+5/5                                                                                [PostUser https://172.20.0.5:8080/rest] User{myrle.haley, wjel2ogp9g, msgserver-3, Nanette Bernier} -> 200:myrle.haley@msgserver-3
 ---------- Getting users
-[GetUser] catherin.gutmann, zdqm4u574 -> 200:User{catherin.gutmann, zdqm4u574, msgserver-3, Alton Koelpin DDS}
-[GetUser] duane.bradtke, p7a5w3kzbzgb4p -> 200:User{duane.bradtke, p7a5w3kzbzgb4p, msgserver-3, Gerry Frami}
-[GetUser] chantel.rath, cfr3k96epfu5 -> 200:User{chantel.rath, cfr3k96epfu5, msgserver-1, Miss Lavina Waelchi}
-[GetUser] aubrey.blick, 33floc73 -> 200:User{aubrey.blick, 33floc73, msgserver-1, Dr. Temple Green}
-[GetUser] perry.hessel, kq2g5v64pqqrdh9 -> 200:User{perry.hessel, kq2g5v64pqqrdh9, msgserver-2, Herb Hansen}
-[GetUser] corrie.bailey, scerl0yfs52 -> 200:User{corrie.bailey, scerl0yfs52, msgserver-2, Dannie Armstrong}
+[GetUser https://172.20.0.5:8080/rest] lauri.lakin, 8scsyjod -> 200:User{lauri.lakin, 8scsyjod, msgserver-3, Janette Weissnat PhD}
+[GetUser https://172.20.0.5:8080/rest] klara.cartwright, a8p8o6wy -> 200:User{klara.cartwright, a8p8o6wy, msgserver-3, Odell Zemlak}
+[GetUser https://172.20.0.5:8080/rest] jean.pagac, cfopd23olkm06 -> 200:User{jean.pagac, cfopd23olkm06, msgserver-3, Lou Ritchie}
+[GetUser https://172.20.0.5:8080/rest] jill.feil, e71zhm4s56lch -> 200:User{jill.feil, e71zhm4s56lch, msgserver-3, Georgine Legros}
+[GetUser https://172.20.0.5:8080/rest] myrle.haley, wjel2ogp9g -> 200:User{myrle.haley, wjel2ogp9g, msgserver-3, Nanette Bernier}
+[GetUser https://172.20.0.3:8080/rest] chantel.rath, cfr3k96epfu5 -> 200:User{chantel.rath, cfr3k96epfu5, msgserver-1, Miss Lavina Waelchi}
+[GetUser https://172.20.0.3:8080/rest] aubrey.blick, 33floc73 -> 200:User{aubrey.blick, 33floc73, msgserver-1, Dr. Temple Green}
+[GetUser https://172.20.0.3:8080/rest] perry.hessel, kq2g5v64pqqrdh9 -> 200:User{perry.hessel, kq2g5v64pqqrdh9, msgserver-1, Herb Hansen}
+[GetUser https://172.20.0.3:8080/rest] corrie.bailey, scerl0yfs52 -> 200:User{corrie.bailey, scerl0yfs52, msgserver-1, Dannie Armstrong}
+[GetUser https://172.20.0.3:8080/rest] catherin.gutmann, zdqm4u574 -> 200:User{catherin.gutmann, zdqm4u574, msgserver-1, Alton Koelpin DDS}
+[GetUser https://172.20.0.4:8080/rest] duane.bradtke, p7a5w3kzbzgb4p -> 200:User{duane.bradtke, p7a5w3kzbzgb4p, msgserver-2, Gerry Frami}
+[GetUser https://172.20.0.4:8080/rest] bradley.huel, e4afjfbwrow1z -> 200:User{bradley.huel, e4afjfbwrow1z, msgserver-2, Kristi Harris}
+[GetUser https://172.20.0.4:8080/rest] adelia.connelly, 38brfogec6p -> 200:User{adelia.connelly, 38brfogec6p, msgserver-2, Thu Walsh}
+[GetUser https://172.20.0.4:8080/rest] tanja.will, f84e0jhb1 -> 200:User{tanja.will, f84e0jhb1, msgserver-2, Thaddeus Moen}
+[GetUser https://172.20.0.4:8080/rest] marhta.baumbach, zuuby5zxz0ikgw -> 200:User{marhta.baumbach, zuuby5zxz0ikgw, msgserver-2, Emanuel Cartwright PhD}
 ---------- Getting users in random domain
-[GetUser] catherin.gutmann, zdqm4u574 -> 403:null
-[GetUser] duane.bradtke, p7a5w3kzbzgb4p -> 403:null
-[GetUser] chantel.rath, cfr3k96epfu5 -> 403:null
-[GetUser] aubrey.blick, 33floc73 -> 200:User{aubrey.blick, 33floc73, msgserver-1, Dr. Temple Green}
-[GetUser] perry.hessel, kq2g5v64pqqrdh9 -> 403:null
-[GetUser] corrie.bailey, scerl0yfs52 -> 200:User{corrie.bailey, scerl0yfs52, msgserver-2, Dannie Armstrong}
----------- Creating 6 messages
-[PostMessage] cfr3k96epfu5, Msg{-1,chantel.rath@msgserver-1,Maiores blanditiis odio consequuntur.,[catherin.gutmann@msgserver-3,perry.hessel@msgserver-2],1589458412935} -> 200:16757388130291189
-[PostMessage] 33floc73, Msg{-1,aubrey.blick@msgserver-1,Provident debitis perferendis.,[duane.bradtke@msgserver-3,catherin.gutmann@msgserver-3,perry.hessel@msgserver-2,corrie.bailey@msgserver-2],1589458413511} -> 200:346875258226675146
-[PostMessage] kq2g5v64pqqrdh9, Msg{-1,perry.hessel@msgserver-2,Necessitatibus velit officia rerum et.,[catherin.gutmann@msgserver-3,chantel.rath@msgserver-1],1589458413574} -> 200:1191208375841751113
-[PostMessage] scerl0yfs52, Msg{-1,corrie.bailey@msgserver-2,Vel a itaque.,[duane.bradtke@msgserver-3,catherin.gutmann@msgserver-3,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1589458414115} -> 200:816124092504882665
-[PostMessage] zdqm4u574, Msg{-1,catherin.gutmann@msgserver-3,Odit nobis dolorem iure et distinctio.,[perry.hessel@msgserver-2,chantel.rath@msgserver-1],1589458414191} -> 200:1391576573211689879
-[PostMessage] p7a5w3kzbzgb4p, Msg{-1,duane.bradtke@msgserver-3,Recusandae dolor qui illum.,[perry.hessel@msgserver-2,chantel.rath@msgserver-1,corrie.bailey@msgserver-2,aubrey.blick@msgserver-1],1589458417240} -> 200:1107914888548163873
----------- Creating more 6 messages
-[PostMessage] cfr3k96epfu5, Msg{-1,chantel.rath@msgserver-1,Itaque.,[catherin.gutmann@msgserver-3],1589458420858} -> 200:2802621069085225296
-[PostMessage] 33floc73, Msg{-1,aubrey.blick@msgserver-1,Quia molestiae quia et.,[perry.hessel@msgserver-2,corrie.bailey@msgserver-2],1589458420929} -> 200:8882943669308704197
-[PostMessage] kq2g5v64pqqrdh9, Msg{-1,perry.hessel@msgserver-2,Ipsa.,[perry.hessel@msgserver-2],1589458421018} -> 200:4879445871179370659
-[PostMessage] scerl0yfs52, Msg{-1,corrie.bailey@msgserver-2,Voluptas.,[perry.hessel@msgserver-2,corrie.bailey@msgserver-2],1589458421091} -> 200:6736065070392822221
-[PostMessage] zdqm4u574, Msg{-1,catherin.gutmann@msgserver-3,In quia sed eveniet.,[perry.hessel@msgserver-2],1589458421161} -> 200:6870160696341736307
-[PostMessage] p7a5w3kzbzgb4p, Msg{-1,duane.bradtke@msgserver-3,Dignissimos sint veniam harum vel.,[perry.hessel@msgserver-2,corrie.bailey@msgserver-2],1589458423052} -> 200:1830057379957676176
-sleeping: 44 s                                                                                sleeping: 43 s                                                                                sleeping: 42 s                                                                                sleeping: 41 s                                                                                sleeping: 40 s                                                                                sleeping: 39 s                                                                                sleeping: 38 s                                                                                sleeping: 37 s                                                                                sleeping: 36 s                                                                                sleeping: 35 s                                                                                sleeping: 34 s                                                                                sleeping: 33 s                                                                                sleeping: 32 s                                                                                sleeping: 31 s                                                                                sleeping: 30 s                                                                                sleeping: 29 s                                                                                sleeping: 28 s                                                                                sleeping: 27 s                                                                                sleeping: 26 s                                                                                sleeping: 25 s                                                                                sleeping: 24 s                                                                                sleeping: 23 s                                                                                sleeping: 22 s                                                                                sleeping: 21 s                                                                                sleeping: 20 s                                                                                sleeping: 19 s                                                                                sleeping: 18 s                                                                                sleeping: 17 s                                                                                sleeping: 16 s                                                                                sleeping: 15 s                                                                                sleeping: 14 s                                                                                sleeping: 13 s                                                                                sleeping: 12 s                                                                                sleeping: 11 s                                                                                sleeping: 10 s                                                                                sleeping: 9 s                                                                                sleeping: 8 s                                                                                sleeping: 7 s                                                                                sleeping: 6 s                                                                                sleeping: 5 s                                                                                sleeping: 4 s                                                                                sleeping: 3 s                                                                                sleeping: 2 s                                                                                sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Checking inboxes
-[GetMessageS] chantel.rath, pwd=cfr3k96epfu5 -> 200:[1191208375841751113, 1391576573211689879, 816124092504882665, 1107914888548163873]
-[GetMessageS] aubrey.blick, pwd=33floc73 -> 200:[816124092504882665, 1107914888548163873]
-[GetMessageS] perry.hessel, pwd=kq2g5v64pqqrdh9 -> 200:[16757388130291189, 1391576573211689879, 8882943669308704197, 346875258226675146, 6736065070392822221, 6870160696341736307, 4879445871179370659, 1830057379957676176, 1107914888548163873]
-[GetMessageS] corrie.bailey, pwd=scerl0yfs52 -> 200:[8882943669308704197, 346875258226675146, 6736065070392822221, 1830057379957676176, 1107914888548163873]
-[GetMessageS] catherin.gutmann, pwd=zdqm4u574 -> 200:[1191208375841751113, 346875258226675146, 2802621069085225296]
-TestFailedException: GetMsgs user = catherin.gutmann ; pwd = zdqm4u574
-Expected : [16757388130291189, 1191208375841751113, 346875258226675146, 816124092504882665, 2802621069085225296]; received : [1191208375841751113, 346875258226675146, 2802621069085225296]
-	at sd1920.trab1.ServerState.execGetMessages(ServerState.java:200)
-	at tests.MessagesTest.execGetMessages(MessagesTest.java:208)
-	at tests.MessagesTest.execGetMessages(MessagesTest.java:202)
-	at tests.workloads.MultiDomainSendMessage.lambda$null$5(MultiDomainSendMessage.java:86)
+[GetUser https://172.20.0.3:8080/rest] lauri.lakin, 8scsyjod -> 403:null
+[GetUser https://172.20.0.4:8080/rest] klara.cartwright, a8p8o6wy -> 403:null
+[GetUser https://172.20.0.4:8080/rest] jean.pagac, cfopd23olkm06 -> 403:null
+[GetUser https://172.20.0.3:8080/rest] jill.feil, e71zhm4s56lch -> 403:null
+[GetUser https://172.20.0.5:8080/rest] myrle.haley, wjel2ogp9g -> 200:User{myrle.haley, wjel2ogp9g, msgserver-3, Nanette Bernier}
+[GetUser https://172.20.0.4:8080/rest] chantel.rath, cfr3k96epfu5 -> 403:null
+[GetUser https://172.20.0.5:8080/rest] aubrey.blick, 33floc73 -> 403:null
+[GetUser https://172.20.0.4:8080/rest] perry.hessel, kq2g5v64pqqrdh9 -> 403:null
+[GetUser https://172.20.0.4:8080/rest] corrie.bailey, scerl0yfs52 -> 403:null
+[GetUser https://172.20.0.4:8080/rest] catherin.gutmann, zdqm4u574 -> 403:null
+[GetUser https://172.20.0.4:8080/rest] duane.bradtke, p7a5w3kzbzgb4p -> 200:User{duane.bradtke, p7a5w3kzbzgb4p, msgserver-2, Gerry Frami}
+[GetUser https://172.20.0.4:8080/rest] bradley.huel, e4afjfbwrow1z -> 200:User{bradley.huel, e4afjfbwrow1z, msgserver-2, Kristi Harris}
+[GetUser https://172.20.0.4:8080/rest] adelia.connelly, 38brfogec6p -> 200:User{adelia.connelly, 38brfogec6p, msgserver-2, Thu Walsh}
+[GetUser https://172.20.0.3:8080/rest] tanja.will, f84e0jhb1 -> 403:null
+[GetUser https://172.20.0.3:8080/rest] marhta.baumbach, zuuby5zxz0ikgw -> 403:null
+---------- Creating 15 messages
+[PostMessage https://172.20.0.3:8080/rest] cfr3k96epfu5, Msg{-1,chantel.rath@msgserver-1,Velit.,[duane.bradtke@msgserver-2,lauri.lakin@msgserver-3],1589488219383} -> 200:4605181727924459772
+[PostMessage https://172.20.0.3:8080/rest] 33floc73, Msg{-1,aubrey.blick@msgserver-1,Incidunt voluptas quia.,[duane.bradtke@msgserver-2,klara.cartwright@msgserver-3,lauri.lakin@msgserver-3,bradley.huel@msgserver-2],1589488219765} -> 200:1731758180810895589
+[PostMessage https://172.20.0.3:8080/rest] kq2g5v64pqqrdh9, Msg{-1,perry.hessel@msgserver-1,Accusamus autem.,[jean.pagac@msgserver-3,adelia.connelly@msgserver-2,duane.bradtke@msgserver-2,klara.cartwright@msgserver-3,lauri.lakin@msgserver-3,bradley.huel@msgserver-2],1589488219831} -> 200:7728266762954065349
+[PostMessage https://172.20.0.3:8080/rest] scerl0yfs52, Msg{-1,corrie.bailey@msgserver-1,Libero omnis neque similique.,[jean.pagac@msgserver-3,jill.feil@msgserver-3,adelia.connelly@msgserver-2,duane.bradtke@msgserver-2,klara.cartwright@msgserver-3,lauri.lakin@msgserver-3,bradley.huel@msgserver-2,tanja.will@msgserver-2],1589488219847} -> 200:7143427090228057497
+[PostMessage https://172.20.0.3:8080/rest] zdqm4u574, Msg{-1,catherin.gutmann@msgserver-1,Et consequatur.,[jean.pagac@msgserver-3,jill.feil@msgserver-3,adelia.connelly@msgserver-2,myrle.haley@msgserver-3,duane.bradtke@msgserver-2,klara.cartwright@msgserver-3,lauri.lakin@msgserver-3,bradley.huel@msgserver-2,tanja.will@msgserver-2,marhta.baumbach@msgserver-2],1589488219909} -> 200:7911569819828383401
+[PostMessage https://172.20.0.4:8080/rest] p7a5w3kzbzgb4p, Msg{-1,duane.bradtke@msgserver-2,Et debitis.,[lauri.lakin@msgserver-3,chantel.rath@msgserver-1],1589488219989} -> 200:776376431240155070
+[PostMessage https://172.20.0.4:8080/rest] e4afjfbwrow1z, Msg{-1,bradley.huel@msgserver-2,Sint et dolorum quia et possimus.,[klara.cartwright@msgserver-3,lauri.lakin@msgserver-3,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1589488220354} -> 200:4787162962156703101
+[PostMessage https://172.20.0.4:8080/rest] 38brfogec6p, Msg{-1,adelia.connelly@msgserver-2,Omnis quo iste.,[jean.pagac@msgserver-3,klara.cartwright@msgserver-3,perry.hessel@msgserver-1,lauri.lakin@msgserver-3,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1589488220448} -> 200:3724844972101967840
+[PostMessage https://172.20.0.4:8080/rest] f84e0jhb1, Msg{-1,tanja.will@msgserver-2,Exercitationem commodi.,[jean.pagac@msgserver-3,jill.feil@msgserver-3,klara.cartwright@msgserver-3,perry.hessel@msgserver-1,lauri.lakin@msgserver-3,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1589488220459} -> 200:1289515660331078120
+[PostMessage https://172.20.0.4:8080/rest] zuuby5zxz0ikgw, Msg{-1,marhta.baumbach@msgserver-2,Reprehenderit provident repudiandae architecto.,[jean.pagac@msgserver-3,jill.feil@msgserver-3,myrle.haley@msgserver-3,klara.cartwright@msgserver-3,perry.hessel@msgserver-1,catherin.gutmann@msgserver-1,lauri.lakin@msgserver-3,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1589488220470} -> 200:6440257686758706188
+[PostMessage https://172.20.0.5:8080/rest] 8scsyjod, Msg{-1,lauri.lakin@msgserver-3,Optio quaerat fugiat maiores.,[duane.bradtke@msgserver-2,chantel.rath@msgserver-1],1589488220527} -> 200:4726395098384578953
+[PostMessage https://172.20.0.5:8080/rest] a8p8o6wy, Msg{-1,klara.cartwright@msgserver-3,Exercitationem aut dolor consequatur ipsa.,[duane.bradtke@msgserver-2,bradley.huel@msgserver-2,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1589488220889} -> 200:5964330043061175126
+[PostMessage https://172.20.0.5:8080/rest] cfopd23olkm06, Msg{-1,jean.pagac@msgserver-3,Omnis enim.,[adelia.connelly@msgserver-2,duane.bradtke@msgserver-2,perry.hessel@msgserver-1,bradley.huel@msgserver-2,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1589488220951} -> 200:2057009757495413755
+[PostMessage https://172.20.0.5:8080/rest] e71zhm4s56lch, Msg{-1,jill.feil@msgserver-3,Minus rerum.,[adelia.connelly@msgserver-2,duane.bradtke@msgserver-2,perry.hessel@msgserver-1,bradley.huel@msgserver-2,tanja.will@msgserver-2,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1589488220965} -> 200:1427344543593560392
+[PostMessage https://172.20.0.5:8080/rest] wjel2ogp9g, Msg{-1,myrle.haley@msgserver-3,A numquam quam est.,[adelia.connelly@msgserver-2,duane.bradtke@msgserver-2,perry.hessel@msgserver-1,catherin.gutmann@msgserver-1,bradley.huel@msgserver-2,tanja.will@msgserver-2,marhta.baumbach@msgserver-2,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1589488221032} -> 200:2776282467003844036
+---------- Creating more 15 messages
+[PostMessage https://172.20.0.3:8080/rest] cfr3k96epfu5, Msg{-1,chantel.rath@msgserver-1,Distinctio omnis distinctio.,[duane.bradtke@msgserver-2],1589488221088} -> 200:3292894580257080132
+[PostMessage https://172.20.0.3:8080/rest] 33floc73, Msg{-1,aubrey.blick@msgserver-1,Nemo praesentium qui sapiente.,[klara.cartwright@msgserver-3,lauri.lakin@msgserver-3],1589488221121} -> 200:2407073144385770451
+[PostMessage https://172.20.0.3:8080/rest] kq2g5v64pqqrdh9, Msg{-1,perry.hessel@msgserver-1,Doloremque aspernatur.,[perry.hessel@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1589488221201} -> 200:2092890662776043799
+[PostMessage https://172.20.0.3:8080/rest] scerl0yfs52, Msg{-1,corrie.bailey@msgserver-1,Doloremque voluptatibus quidem.,[perry.hessel@msgserver-1,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1589488221216} -> 200:2034617244840797303
+[PostMessage https://172.20.0.3:8080/rest] zdqm4u574, Msg{-1,catherin.gutmann@msgserver-1,Eaque.,[jean.pagac@msgserver-3,jill.feil@msgserver-3,myrle.haley@msgserver-3,klara.cartwright@msgserver-3,lauri.lakin@msgserver-3],1589488221312} -> 200:2585764936528426784
+[PostMessage https://172.20.0.4:8080/rest] p7a5w3kzbzgb4p, Msg{-1,duane.bradtke@msgserver-2,Voluptatibus voluptatibus quia.,[lauri.lakin@msgserver-3],1589488221321} -> 200:1328554783613721976
+[PostMessage https://172.20.0.4:8080/rest] e4afjfbwrow1z, Msg{-1,bradley.huel@msgserver-2,Voluptates voluptate officiis laboriosam vel ad.,[klara.cartwright@msgserver-3,lauri.lakin@msgserver-3],1589488221345} -> 200:8279090612307274099
+[PostMessage https://172.20.0.4:8080/rest] 38brfogec6p, Msg{-1,adelia.connelly@msgserver-2,Officia blanditiis et et aut.,[adelia.connelly@msgserver-2,duane.bradtke@msgserver-2,bradley.huel@msgserver-2],1589488221360} -> 200:1775856067771859169
+[PostMessage https://172.20.0.4:8080/rest] f84e0jhb1, Msg{-1,tanja.will@msgserver-2,Autem sed hic ducimus.,[jean.pagac@msgserver-3,jill.feil@msgserver-3,klara.cartwright@msgserver-3,lauri.lakin@msgserver-3],1589488221416} -> 200:5625917385900955466
+[PostMessage https://172.20.0.4:8080/rest] zuuby5zxz0ikgw, Msg{-1,marhta.baumbach@msgserver-2,Est quia.,[jean.pagac@msgserver-3,jill.feil@msgserver-3,myrle.haley@msgserver-3,klara.cartwright@msgserver-3,lauri.lakin@msgserver-3],1589488221464} -> 200:8949418331078381422
+[PostMessage https://172.20.0.5:8080/rest] 8scsyjod, Msg{-1,lauri.lakin@msgserver-3,Ratione esse expedita nihil tenetur.,[lauri.lakin@msgserver-3],1589488221475} -> 200:5885689091546443900
+[PostMessage https://172.20.0.5:8080/rest] a8p8o6wy, Msg{-1,klara.cartwright@msgserver-3,In.,[duane.bradtke@msgserver-2,bradley.huel@msgserver-2],1589488221494} -> 200:151615458771481592
+[PostMessage https://172.20.0.5:8080/rest] cfopd23olkm06, Msg{-1,jean.pagac@msgserver-3,Reiciendis.,[jean.pagac@msgserver-3,klara.cartwright@msgserver-3,lauri.lakin@msgserver-3],1589488221508} -> 200:2456586143472409113
+[PostMessage https://172.20.0.5:8080/rest] e71zhm4s56lch, Msg{-1,jill.feil@msgserver-3,Voluptatem esse.,[perry.hessel@msgserver-1,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1589488221521} -> 200:3252108672711527320
+[PostMessage https://172.20.0.5:8080/rest] wjel2ogp9g, Msg{-1,myrle.haley@msgserver-3,Repellat ea recusandae explicabo dolor illo.,[jean.pagac@msgserver-3,jill.feil@msgserver-3,myrle.haley@msgserver-3,klara.cartwright@msgserver-3,lauri.lakin@msgserver-3],1589488221618} -> 200:7214256084547637123
+sleeping: 9 s                                                                                sleeping: 8 s                                                                                sleeping: 7 s                                                                                sleeping: 6 s                                                                                sleeping: 5 s                                                                                sleeping: 4 s                                                                                sleeping: 3 s                                                                                sleeping: 2 s                                                                                sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Checking inboxes
+[GetMessageS https://172.20.0.3:8080/rest] chantel.rath, pwd=cfr3k96epfu5 -> 200:[2092890662776043799, 2034617244840797303]
+TestFailedException: GetMsgs user = chantel.rath ; pwd = cfr3k96epfu5
+Expected : [6440257686758706188, 4787162962156703101, 4726395098384578953, 2057009757495413755, 2034617244840797303, 1289515660331078120, 3252108672711527320, 776376431240155070, 1427344543593560392, 2776282467003844036, 5964330043061175126, 2092890662776043799, 3724844972101967840]; received : [2092890662776043799, 2034617244840797303]
+	at sd1920.trab1.ServerState.execGetMessages(ServerState.java:264)
+	at sd1920.trab1.ServerState.execGetMessages(ServerState.java:251)
+	at tests.MessagesTest.execGetMessages(MessagesTest.java:280)
+	at tests.MessagesTest.execGetMessages(MessagesTest.java:273)
+	at tests.workloads.MultiDomainSendMessage.lambda$null$5(MultiDomainSendMessage.java:93)
 	at java.util.ArrayList.forEach(ArrayList.java:1249)
-	at tests.workloads.MultiDomainSendMessage.lambda$execute$6(MultiDomainSendMessage.java:86)
+	at tests.workloads.MultiDomainSendMessage.lambda$execute$6(MultiDomainSendMessage.java:93)
 	at java.util.ArrayList.forEach(ArrayList.java:1249)
-	at tests.workloads.MultiDomainSendMessage.execute(MultiDomainSendMessage.java:86)
-	at tests.BaseTest.test(BaseTest.java:152)
-	at tests.Tester.main(Tester.java:214)
-FAILED: GetMsgs user = catherin.gutmann ; pwd = zdqm4u574
-Expected : [16757388130291189, 1191208375841751113, 346875258226675146, 816124092504882665, 2802621069085225296]; received : [1191208375841751113, 346875258226675146, 2802621069085225296]
+	at tests.workloads.MultiDomainSendMessage.execute(MultiDomainSendMessage.java:93)
+	at tests.BaseTest.test(BaseTest.java:156)
+	at tests.Tester.main(Tester.java:185)
+FAILED: GetMsgs user = chantel.rath ; pwd = cfr3k96epfu5
+Expected : [6440257686758706188, 4787162962156703101, 4726395098384578953, 2057009757495413755, 2034617244840797303, 1289515660331078120, 3252108672711527320, 776376431240155070, 1427344543593560392, 2776282467003844036, 5964330043061175126, 2092890662776043799, 3724844972101967840]; received : [2092890662776043799, 2034617244840797303]
 
 
-Removing: msgserver-1
-Removing: msgserver-2
-Removing: msgserver-3
+Removing: msgserver-1-1
+Removing: msgserver-2-1
 -----------------------------------------------------------------------------------
-msgserver-1
+msgserver-1-1
 -----------------------------------------------------------------------------------
 createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
@@ -201,313 +191,321 @@ postUser: Created new user with name: chantel.rath
 createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 postUser: Created new user with name: aubrey.blick
-getUser: User fetch was rejected due to missing user
-postMessage: Received request to register a new message (Sender: chantel.rath@msgserver-1; Subject: Maiores blanditiis odio consequuntur.)
-postMessage: Created new message with id: 16757388130291189
-forwardMessage: Trying to forward message 16757388130291189 to msgserver-3
-forwardMessage: Trying to forward message 16757388130291189 to msgserver-2
-postMessage: Received request to register a new message (Sender: aubrey.blick@msgserver-1; Subject: Provident debitis perferendis.)
-postMessage: Created new message with id: 346875258226675146
-forwardMessage: Trying to forward message 346875258226675146 to msgserver-3
-forwardMessage: Trying to forward message 346875258226675146 to msgserver-2
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-postForwardedMessage: Received request to save the message 1191208375841751113
-saveMessage: Sucessfuly saved message 1191208375841751113
-postForwardedMessage: Couldn't deliver the message to 0 people
-postForwardedMessage: Received request to save the message 816124092504882665
-saveMessage: Sucessfuly saved message 816124092504882665
-saveMessage: Sucessfuly saved message 816124092504882665
-postForwardedMessage: Couldn't deliver the message to 0 people
-RequestHandler: Successfully completed request to domain msgserver-3. More successful than i'll ever be!
-postForwardedMessage: Received request to save the message 1391576573211689879
-saveMessage: Sucessfuly saved message 1391576573211689879
-postForwardedMessage: Couldn't deliver the message to 0 people
-postMessage: Received request to register a new message (Sender: chantel.rath@msgserver-1; Subject: Itaque.)
-postMessage: Created new message with id: 2802621069085225296
-forwardMessage: Trying to forward message 2802621069085225296 to msgserver-3
-postMessage: Received request to register a new message (Sender: aubrey.blick@msgserver-1; Subject: Quia molestiae quia et.)
-postMessage: Created new message with id: 8882943669308704197
-forwardMessage: Trying to forward message 8882943669308704197 to msgserver-2
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-postForwardedMessage: Received request to save the message 1107914888548163873
-saveMessage: Sucessfuly saved message 1107914888548163873
-saveMessage: Sucessfuly saved message 1107914888548163873
-postForwardedMessage: Couldn't deliver the message to 0 people
-RequestHandler: Successfully completed request to domain msgserver-3. More successful than i'll ever be!
-RequestHandler: Successfully completed request to domain msgserver-3. More successful than i'll ever be!
-getMessages: Received request for messages to 'chantel.rath'
-getMessages: Returning message list to user with 4 messages.
-getMessages: Received request for messages to 'aubrey.blick'
-getMessages: Returning message list to user with 2 messages.
-
------------------------------------------------------------------------------------
-msgserver-2
------------------------------------------------------------------------------------
 createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 postUser: Created new user with name: perry.hessel
 createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 postUser: Created new user with name: corrie.bailey
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+postUser: Created new user with name: catherin.gutmann
 getUser: User fetch was rejected due to missing user
 getUser: User fetch was rejected due to missing user
-postMessage: Received request to register a new message (Sender: perry.hessel@msgserver-2; Subject: Necessitatibus velit officia rerum et.)
-postForwardedMessage: Received request to save the message 16757388130291189
-saveMessage: Sucessfuly saved message 16757388130291189
-postForwardedMessage: Couldn't deliver the message to 0 people
-postForwardedMessage: Received request to save the message 346875258226675146
-saveMessage: Sucessfuly saved message 346875258226675146
-saveMessage: Sucessfuly saved message 346875258226675146
-postForwardedMessage: Couldn't deliver the message to 0 people
-postMessage: Created new message with id: 1191208375841751113
-forwardMessage: Trying to forward message 1191208375841751113 to msgserver-3
-forwardMessage: Trying to forward message 1191208375841751113 to msgserver-1
-postMessage: Received request to register a new message (Sender: corrie.bailey@msgserver-2; Subject: Vel a itaque.)
-postMessage: Created new message with id: 816124092504882665
-forwardMessage: Trying to forward message 816124092504882665 to msgserver-3
-forwardMessage: Trying to forward message 816124092504882665 to msgserver-1
-RequestHandler: Successfully completed request to domain msgserver-1. More successful than i'll ever be!
-RequestHandler: Successfully completed request to domain msgserver-1. More successful than i'll ever be!
-RequestHandler: Successfully completed request to domain msgserver-3. More successful than i'll ever be!
-postForwardedMessage: Received request to save the message 1391576573211689879
-saveMessage: Sucessfuly saved message 1391576573211689879
-postForwardedMessage: Couldn't deliver the message to 0 people
-postForwardedMessage: Received request to save the message 8882943669308704197
-saveMessage: Sucessfuly saved message 8882943669308704197
-saveMessage: Sucessfuly saved message 8882943669308704197
-postForwardedMessage: Couldn't deliver the message to 0 people
-postMessage: Received request to register a new message (Sender: perry.hessel@msgserver-2; Subject: Ipsa.)
-postMessage: Created new message with id: 4879445871179370659
-saveMessage: Sucessfuly saved message 4879445871179370659
-postMessage: Received request to register a new message (Sender: corrie.bailey@msgserver-2; Subject: Voluptas.)
-postMessage: Created new message with id: 6736065070392822221
-saveMessage: Sucessfuly saved message 6736065070392822221
-saveMessage: Sucessfuly saved message 6736065070392822221
-postForwardedMessage: Received request to save the message 1107914888548163873
-saveMessage: Sucessfuly saved message 1107914888548163873
-saveMessage: Sucessfuly saved message 1107914888548163873
+getUser: User fetch was rejected due to missing user
+getUser: User fetch was rejected due to missing user
+postMessage: Received request to register a new message (Sender: chantel.rath@msgserver-1; Subject: Velit.)
+postMessage: Created new message with id: 4605181727924459772
+forwardMessage: Trying to forward message 4605181727924459772 to msgserver-3
+forwardMessage: Trying to forward message 4605181727924459772 to msgserver-2
+postMessage: Received request to register a new message (Sender: aubrey.blick@msgserver-1; Subject: Incidunt voluptas quia.)
+postMessage: Created new message with id: 1731758180810895589
+forwardMessage: Trying to forward message 1731758180810895589 to msgserver-3
+forwardMessage: Trying to forward message 1731758180810895589 to msgserver-2
+postMessage: Received request to register a new message (Sender: perry.hessel@msgserver-1; Subject: Accusamus autem.)
+postMessage: Created new message with id: 7728266762954065349
+forwardMessage: Trying to forward message 7728266762954065349 to msgserver-3
+forwardMessage: Trying to forward message 7728266762954065349 to msgserver-2
+postMessage: Received request to register a new message (Sender: corrie.bailey@msgserver-1; Subject: Libero omnis neque similique.)
+postMessage: Created new message with id: 7143427090228057497
+forwardMessage: Trying to forward message 7143427090228057497 to msgserver-3
+forwardMessage: Trying to forward message 7143427090228057497 to msgserver-2
+postMessage: Received request to register a new message (Sender: catherin.gutmann@msgserver-1; Subject: Et consequatur.)
+postMessage: Created new message with id: 7911569819828383401
+forwardMessage: Trying to forward message 7911569819828383401 to msgserver-3
+forwardMessage: Trying to forward message 7911569819828383401 to msgserver-2
+postForwardedMessage: Received request to save the message 4605181727924459772
 postForwardedMessage: Couldn't deliver the message to 0 people
 RequestHandler: Successfully completed request to domain msgserver-3. More successful than i'll ever be!
-postForwardedMessage: Received request to save the message 6870160696341736307
-saveMessage: Sucessfuly saved message 6870160696341736307
+postForwardedMessage: Received request to save the message 4605181727924459772
 postForwardedMessage: Couldn't deliver the message to 0 people
-postForwardedMessage: Received request to save the message 1830057379957676176
-saveMessage: Sucessfuly saved message 1830057379957676176
-saveMessage: Sucessfuly saved message 1830057379957676176
+postForwardedMessage: Received request to save the message 1731758180810895589
 postForwardedMessage: Couldn't deliver the message to 0 people
-getMessages: Received request for messages to 'perry.hessel'
-getMessages: Returning message list to user with 9 messages.
-getMessages: Received request for messages to 'corrie.bailey'
-getMessages: Returning message list to user with 5 messages.
+RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
+RequestHandler: Successfully completed request to domain msgserver-3. More successful than i'll ever be!
+postForwardedMessage: Received request to save the message 7728266762954065349
+postForwardedMessage: Couldn't deliver the message to 0 people
+postForwardedMessage: Received request to save the message 1731758180810895589
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-3. More successful than i'll ever be!
+postForwardedMessage: Received request to save the message 7143427090228057497
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
+RequestHandler: Successfully completed request to domain msgserver-3. More successful than i'll ever be!
+postForwardedMessage: Received request to save the message 7728266762954065349
+postForwardedMessage: Received request to save the message 7911569819828383401
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-3. More successful than i'll ever be!
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
+postForwardedMessage: Received request to save the message 7143427090228057497
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
+postForwardedMessage: Received request to save the message 7911569819828383401
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
+postMessage: Received request to register a new message (Sender: chantel.rath@msgserver-1; Subject: Distinctio omnis distinctio.)
+postMessage: Created new message with id: 3292894580257080132
+forwardMessage: Trying to forward message 3292894580257080132 to msgserver-2
+postForwardedMessage: Received request to save the message 3292894580257080132
+postForwardedMessage: Couldn't deliver the message to 0 people
+postMessage: Received request to register a new message (Sender: aubrey.blick@msgserver-1; Subject: Nemo praesentium qui sapiente.)
+RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
+postMessage: Created new message with id: 2407073144385770451
+forwardMessage: Trying to forward message 2407073144385770451 to msgserver-3
+postForwardedMessage: Received request to save the message 2407073144385770451
+postMessage: Received request to register a new message (Sender: perry.hessel@msgserver-1; Subject: Doloremque aspernatur.)
+postForwardedMessage: Couldn't deliver the message to 0 people
+postMessage: Created new message with id: 2092890662776043799
+saveMessage: SAVE TIME
+RequestHandler: Successfully completed request to domain msgserver-3. More successful than i'll ever be!
+saveMessage: Sucessfuly saved message 2092890662776043799
+saveMessage: SAVE TIME
+saveMessage: Sucessfuly saved message 2092890662776043799
+saveMessage: SAVE TIME
+saveMessage: Sucessfuly saved message 2092890662776043799
+postMessage: Received request to register a new message (Sender: corrie.bailey@msgserver-1; Subject: Doloremque voluptatibus quidem.)
+postMessage: Created new message with id: 2034617244840797303
+saveMessage: SAVE TIME
+saveMessage: Sucessfuly saved message 2034617244840797303
+saveMessage: SAVE TIME
+saveMessage: Sucessfuly saved message 2034617244840797303
+saveMessage: SAVE TIME
+saveMessage: Sucessfuly saved message 2034617244840797303
+saveMessage: SAVE TIME
+saveMessage: Sucessfuly saved message 2034617244840797303
+postMessage: Received request to register a new message (Sender: catherin.gutmann@msgserver-1; Subject: Eaque.)
+postMessage: Created new message with id: 2585764936528426784
+forwardMessage: Trying to forward message 2585764936528426784 to msgserver-3
+postForwardedMessage: Received request to save the message 2585764936528426784
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-3. More successful than i'll ever be!
+getMessages: Received request for messRemoving: msgserver-3-1
+ages to 'chantel.rath'
+getMessages: Returning message list to user with 2 messages.
 
 -----------------------------------------------------------------------------------
-msgserver-3
+msgserver-2-1
 -----------------------------------------------------------------------------------
-HTTP Error Code: 409: Conflict
-{"error_summary": "path_lookup/not_found/...", "error": {".tag": "path_lookup", "path_lookup": {".tag": "not_found"}}}
-HTTP Error Code: 409: Conflict
-{"error_summary": "path_lookup/not_found/...", "error": {".tag": "path_lookup", "path_lookup": {".tag": "not_found"}}}
-HTTP Error Code: 409: Conflict
-{"error_summary": "path_lookup/not_found/.", "error": {".tag": "path_lookup", "path_lookup": {".tag": "not_found"}}}
-HTTP Error Code: 409: Conflict
-{"error_summary": "path_lookup/not_found/..", "error": {".tag": "path_lookup", "path_lookup": {".tag": "not_found"}}}
-HTTP Error Code: 409: Conflict
-{"error_summary": "path_lookup/not_found/...", "error": {".tag": "path_lookup", "path_lookup": {".tag": "not_found"}}}
-Failed to delete directory '/msgserver-3'
-Time Elapsed newDir: 477
-Directory '/msgserver-3' created successfuly.
-Time Elapsed newDir: 702
-Directory '/msgserver-3/messages' created successfuly.
-Time Elapsed newDir: 736
-Directory '/msgserver-3/users' created successfuly.
-postUser: request to post catherin.gutmann
-SearchFile: /msgserver-3/users
-{"query":"catherin.gutmann"}
-{"matches": [], "has_more": false}
-Time Elapsed Search: 552
-Couldn't find user with name catherin.gutmann.
-Creating file on /msgserver-3/users/catherin.gutmann
-Time Elapsed Upload: 1032
-Succesfully created file: /msgserver-3/users/catherin.gutmann
-postUser: Created new user with name: catherin.gutmann
-postUser: request to post duane.bradtke
-SearchFile: /msgserver-3/users
-{"query":"duane.bradtke"}
-{"matches": [], "has_more": false}
-Time Elapsed Search: 336
-Couldn't find user with name duane.bradtke.
-Creating file on /msgserver-3/users/duane.bradtke
-Time Elapsed Upload: 1266
-Succesfully created file: /msgserver-3/users/duane.bradtke
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 postUser: Created new user with name: duane.bradtke
-downloadUser: Downloading user catherin.gutmann
-Downloading /msgserver-3/users/catherin.gutmann
-Time Elapsed Download: 665
-File: /msgserver-3/users/catherin.gutmann was downloaded
-{"user":{"name":"catherin.gutmann","pwd":"zdqm4u574","displayName":"Alton Koelpin DDS","domain":"msgserver-3"},"mids":[]}
-downloadUser: Downloading user duane.bradtke
-Downloading /msgserver-3/users/duane.bradtke
-Time Elapsed Download: 542
-File: /msgserver-3/users/duane.bradtke was downloaded
-{"user":{"name":"duane.bradtke","pwd":"p7a5w3kzbzgb4p","displayName":"Gerry Frami","domain":"msgserver-3"},"mids":[]}
-downloadUser: Downloading user perry.hessel
-Downloading /msgserver-3/users/perry.hessel
-Time Elapsed Download: 555
-DownloadFile: File does not exist
-File: /msgserver-3/users/perry.hessel was NOT found
-downloadUser: Missing user
-postForwardedMessage: Received request to save the message 16757388130291189
-Saving message 16757388130291189 from Miss Lavina Waelchi <chantel.rath@msgserver-1> to catherin.gutmann
-Calling UserResourceProxy for a UserProxy catherin.gutmann
-postMessage: Received request to register a new message (Sender: catherin.gutmann@msgserver-3; Subject: Odit nobis dolorem iure et distinctio.)
-getUserProxy: Request for user catherin.gutmann
-Downloading /msgserver-3/users/catherin.gutmann
-postForwardedMessage: Received request to save the message 1191208375841751113
-Saving message 1191208375841751113 from Herb Hansen <perry.hessel@msgserver-2> to catherin.gutmann
-Calling UserResourceProxy for a UserProxy catherin.gutmann
-downloadUser: Downloading user catherin.gutmann
-Downloading /msgserver-3/users/catherin.gutmann
-getUserProxy: Request for user catherin.gutmann
-Downloading /msgserver-3/users/catherin.gutmann
-Time Elapsed Download: 908
-File: /msgserver-3/users/catherin.gutmann was downloaded
-It answered. Returning sd1920.trab2.api.proxy.UserProxy@75f35a76
-Creating file on /msgserver-3/users/catherin.gutmann
-Time Elapsed Download: 746
-File: /msgserver-3/users/catherin.gutmann was downloaded
-It answered. Returning sd1920.trab2.api.proxy.UserProxy@7750f787
-Creating file on /msgserver-3/users/catherin.gutmann
-Time Elapsed Download: 1087
-File: /msgserver-3/users/catherin.gutmann was downloaded
-{"user":{"name":"catherin.gutmann","pwd":"zdqm4u574","displayName":"Alton Koelpin DDS","domain":"msgserver-3"},"mids":[]}
-Creating file on /msgserver-3/messages/1391576573211689879
-Time Elapsed Upload: 1124
-Succesfully created file: /msgserver-3/users/catherin.gutmann
-saveMessage: Sucessfuly saved message 16757388130291189 to user catherin.gutmann
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+postUser: Created new user with name: bradley.huel
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+postUser: Created new user with name: adelia.connelly
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+postUser: Created new user with name: tanja.will
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+postUser: Created new user with name: marhta.baumbach
+getUser: User fetch was rejected due to missing user
+getUser: User fetch was rejected due to missing user
+getUser: User fetch was rejected due to missing user
+getUser: User fetch was rejected due to missing user
+getUser: User fetch was rejected due to missing user
+getUser: User fetch was rejected due to missing user
+postMessage: Received request to register a new message (Sender: duane.bradtke@msgserver-2; Subject: Et debitis.)
+postMessage: Created new message with id: 776376431240155070
+forwardMessage: Trying to forward message 776376431240155070 to msgserver-3
+forwardMessage: Trying to forward message 776376431240155070 to msgserver-1
+postMessage: Received request to register a new message (Sender: bradley.huel@msgserver-2; Subject: Sint et dolorum quia et possimus.)
+postMessage: Created new message with id: 4787162962156703101
+forwardMessage: Trying to forward message 4787162962156703101 to msgserver-3
+forwardMessage: Trying to forward message 4787162962156703101 to msgserver-1
+postMessage: Received request to register a new message (Sender: adelia.connelly@msgserver-2; Subject: Omnis quo iste.)
+postMessage: Created new message with id: 3724844972101967840
+forwardMessage: Trying to forward message 3724844972101967840 to msgserver-3
+forwardMessage: Trying to forward message 3724844972101967840 to msgserver-1
+postMessage: Received request to register a new message (Sender: tanja.will@msgserver-2; Subject: Exercitationem commodi.)
+postMessage: Created new message with id: 1289515660331078120
+forwardMessage: Trying to forward message 1289515660331078120 to msgserver-3
+forwardMessage: Trying to forward message 1289515660331078120 to msgserver-1
+postMessage: Received request to register a new message (Sender: marhta.baumbach@msgserver-2; Subject: Reprehenderit provident repudiandae architecto.)
+postMessage: Created new message with id: 6440257686758706188
+forwardMessage: Trying to forward message 6440257686758706188 to msgserver-3
+forwardMessage: Trying to forward message 6440257686758706188 to msgserver-1
+postForwardedMessage: Received request to save the message 776376431240155070
 postForwardedMessage: Couldn't deliver the message to 0 people
-postForwardedMessage: Received request to save the message 346875258226675146
-Saving message 346875258226675146 from Dr. Temple Green <aubrey.blick@msgserver-1> to duane.bradtke
-Calling UserResourceProxy for a UserProxy duane.bradtke
-getUserProxy: Request for user duane.bradtke
-Downloading /msgserver-3/users/duane.bradtke
-Time Elapsed Upload: 1314
-Succesfully created file: /msgserver-3/users/catherin.gutmann
-saveMessage: Sucessfuly saved message 1191208375841751113 to user catherin.gutmann
+postForwardedMessage: Received request to save the message 776376431240155070
 postForwardedMessage: Couldn't deliver the message to 0 people
-postForwardedMessage: Received request to save the message 816124092504882665
-Saving message 816124092504882665 from Dannie Armstrong <corrie.bailey@msgserver-2> to duane.bradtke
-Calling UserResourceProxy for a UserProxy duane.bradtke
-getUserProxy: Request for user duane.bradtke
-Downloading /msgserver-3/users/duane.bradtke
-Time Elapsed Upload: 1341
-Succesfully created file: /msgserver-3/messages/1391576573211689879
-postMessage: Created new message with id: 1391576573211689879
-forwardMessage: Trying to forward message 1391576573211689879 to msgserver-1
-forwardMessage: Trying to forward message 1391576573211689879 to msgserver-2
-Time elapsed PostMessage: 2916
-postMessage: Received request to register a new message (Sender: duane.bradtke@msgserver-3; Subject: Recusandae dolor qui illum.)
-downloadUser: Downloading user duane.bradtke
-Downloading /msgserver-3/users/duane.bradtke
+RequestHandler: Successfully completed request to domain msgserver-3. More successful than i'll ever be!
+RequestHandler: Successfully completed request to domain msgserver-1. More successful than i'll ever be!
+postForwardedMessage: Received request to save the message 4787162962156703101
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-3. More successful than i'll ever be!
+postForwardedMessage: Received request to save the message 3724844972101967840
+postForwardedMessage: Couldn't deliver the message to 0 people
+postForwardedMessage: Received request to save the message 4787162962156703101
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-1. More successful than i'll ever be!
+postForwardedMessage: Received request to save the message 3724844972101967840
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-1. More successful than i'll ever be!
+postForwardedMessage: Received request to save the message 1289515660331078120
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-3. More successful than i'll ever be!
+postForwardedMessage: Received request to save the message 1289515660331078120
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-3. More successful than i'll ever be!
+postForwardedMessage: Received request to save the message 6440257686758706188
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-3. More successful than i'll ever be!
+RequestHandler: Successfully completed request to domain msgserver-1. More successful than i'll ever be!
+postForwardedMessage: Received request to save the message 6440257686758706188
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-1. More successful than i'll ever be!
+postMessage: Received request to register a new message (Sender: duane.bradtke@msgserver-2; Subject: Voluptatibus voluptatibus quia.)
+postMessage: Created new message with id: 1328554783613721976
+forwardMessage: Trying to forward message 1328554783613721976 to msgserver-3
+postForwardedMessage: Received request to save the message 1328554783613721976
+postMessage: Received request to register a new message (Sender: bradley.huel@msgserver-2; Subject: Voluptates voluptate officiis laboriosam vel ad.)
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-3. More successful than i'll ever be!
+postMessage: Created new message with id: 8279090612307274099
+forwardMessage: Trying to forward message 8279090612307274099 to msgserver-3
+postMessage: Received request to register a new message (Sender: adelia.connelly@msgserver-2; Subject: Officia blanditiis et et aut.)
+postForwardedMessage: Received request to save the message 8279090612307274099
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-3. More successful than i'll ever be!
+postMessage: Created new message with id: 1775856067771859169
+saveMessage: SAVE TIME
+saveMessage: Sucessfuly saved message 1775856067771859169
+saveMessage: SAVE TIME
+saveMessage: Sucessfuly saved message 1775856067771859169
+saveMessage: SAVE TIME
+saveMessage: Sucessfuly saved message 1775856067771859169
+postMessage: Received request to register a new message (Sender: tanja.will@msgserver-2; Subject: Autem sed hic ducimus.)
+postMessage: Created new message with id: 5625917385900955466
+forwardMessage: Trying to forward message 5625917385900955466 to msgserver-3
+postForwardedMessage: Received request to save the message 5625917385900955466
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-3. More successful than i'll ever be!
+postMessage: Received request to register a new message (Sender: marhta.baumbach@msgserver-2; Subject: Est quia.)
+postMessage: Created new message with id: 8949418331078381422
+forwardMessage: Trying to forward message 8949418331078381422 to msgserver-3
+postForwardedMessage: Received request to save the message 8949418331078381422
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-3. More successful than i'll ever be!
+
+-----------------------------------------------------------------------------------
+msgserver-3-1
+-----------------------------------------------------------------------------------
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+postUser: Created new user with name: lauri.lakin
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+postUser: Created new user with name: klara.cartwright
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+postUser: Created new user with name: jean.pagac
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+postUser: Created new user with name: jill.feil
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+postUser: Created new user with name: myrle.haley
+getUser: User fetch was rejected due to missing user
+postMessage: Received request to register a new message (Sender: lauri.lakin@msgserver-3; Subject: Optio quaerat fugiat maiores.)
+postMessage: Created new message with id: 4726395098384578953
+forwardMessage: Trying to forward message 4726395098384578953 to msgserver-1
+forwardMessage: Trying to forward message 4726395098384578953 to msgserver-2
+postMessage: Received request to register a new message (Sender: klara.cartwright@msgserver-3; Subject: Exercitationem aut dolor consequatur ipsa.)
+postMessage: Created new message with id: 5964330043061175126
+forwardMessage: Trying to forward message 5964330043061175126 to msgserver-1
+forwardMessage: Trying to forward message 5964330043061175126 to msgserver-2
+postMessage: Received request to register a new message (Sender: jean.pagac@msgserver-3; Subject: Omnis enim.)
+postMessage: Created new message with id: 2057009757495413755
+forwardMessage: Trying to forward message 2057009757495413755 to msgserver-1
+forwardMessage: Trying to forward message 2057009757495413755 to msgserver-2
+postMessage: Received request to register a new message (Sender: jill.feil@msgserver-3; Subject: Minus rerum.)
+postMessage: Created new message with id: 1427344543593560392
+forwardMessage: Trying to forward message 1427344543593560392 to msgserver-1
+forwardMessage: Trying to forward message 1427344543593560392 to msgserver-2
+postMessage: Received request to register a new message (Sender: myrle.haley@msgserver-3; Subject: A numquam quam est.)
+postMessage: Created new message with id: 2776282467003844036
+forwardMessage: Trying to forward message 2776282467003844036 to msgserver-1
+forwardMessage: Trying to forward message 2776282467003844036 to msgserver-2
+postForwardedMessage: Received request to save the message 4726395098384578953
+postForwardedMessage: Couldn't deliver the message to 0 people
+postForwardedMessage: Received request to save the message 4726395098384578953
+postForwardedMessage: Couldn't deliver the message to 0 people
 RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
 RequestHandler: Successfully completed request to domain msgserver-1. More successful than i'll ever be!
-Time Elapsed Download: 1026
-File: /msgserver-3/users/duane.bradtke was downloaded
-It answered. Returning sd1920.trab2.api.proxy.UserProxy@4cc0a14e
-Creating file on /msgserver-3/users/duane.bradtke
-Time Elapsed Download: 746
-File: /msgserver-3/users/duane.bradtke was downloaded
-It answered. Returning sd1920.trab2.api.proxy.UserProxy@1ea15458
-Creating file on /msgserver-3/users/duane.bradtke
-Time Elapsed Download: 1181
-File: /msgserver-3/users/duane.bradtke was downloaded
-{"user":{"name":"duane.bradtke","pwd":"p7a5w3kzbzgb4p","displayName":"Gerry Frami","domain":"msgserver-3"},"mids":[]}
-Creating file on /msgserver-3/messages/1107914888548163873
-Time Elapsed Upload: 1727
-Succesfully created file: /msgserver-3/users/duane.bradtke
-saveMessage: Sucessfuly saved message 816124092504882665 to user duane.bradtke
-Saving message 816124092504882665 from Dannie Armstrong <corrie.bailey@msgserver-2> to catherin.gutmann
-Calling UserResourceProxy for a UserProxy catherin.gutmann
-getUserProxy: Request for user catherin.gutmann
-Downloading /msgserver-3/users/catherin.gutmann
-Time Elapsed Download: 838
-File: /msgserver-3/users/catherin.gutmann was downloaded
-It answered. Returning sd1920.trab2.api.proxy.UserProxy@5730a0a4
-Creating file on /msgserver-3/users/catherin.gutmann
-Time Elapsed Upload: 2672
-Succesfully created file: /msgserver-3/users/duane.bradtke
-saveMessage: Sucessfuly saved message 346875258226675146 to user duane.bradtke
-Saving message 346875258226675146 from Dr. Temple Green <aubrey.blick@msgserver-1> to catherin.gutmann
-Calling UserResourceProxy for a UserProxy catherin.gutmann
-getUserProxy: Request for user catherin.gutmann
-Downloading /msgserver-3/users/catherin.gutmann
-Time Elapsed Upload: 2053
-Succesfully created file: /msgserver-3/messages/1107914888548163873
-postMessage: Created new message with id: 1107914888548163873
-forwardMessage: Trying to forward message 1107914888548163873 to msgserver-1
-forwardMessage: Trying to forward message 1107914888548163873 to msgserver-2
-Time elapsed PostMessage: 3567
-postMessage: Received request to register a new message (Sender: catherin.gutmann@msgserver-3; Subject: In quia sed eveniet.)
-Time Elapsed Download: 659
-File: /msgserver-3/users/catherin.gutmann was downloaded
-It answered. Returning sd1920.trab2.api.proxy.UserProxy@5baca549
-Creating file on /msgserver-3/users/catherin.gutmann
+postForwardedMessage: Received request to save the message 5964330043061175126
+postForwardedMessage: Couldn't deliver the message to 0 people
+postForwardedMessage: Received request to save the message 5964330043061175126
+postForwardedMessage: Couldn't deliver the message to 0 people
 RequestHandler: Successfully completed request to domain msgserver-1. More successful than i'll ever be!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-downloadUser: Downloading user catherin.gutmann
-Downloading /msgserver-3/users/catherin.gutmann
-Time Elapsed Upload: 1144
-Succesfully created file: /msgserver-3/users/catherin.gutmann
-saveMessage: Sucessfuly saved message 816124092504882665 to user catherin.gutmann
+postForwardedMessage: Received request to save the message 2057009757495413755
 postForwardedMessage: Couldn't deliver the message to 0 people
-Time Elapsed Download: 648
-File: /msgserver-3/users/catherin.gutmann was downloaded
-{"user":{"name":"catherin.gutmann","pwd":"zdqm4u574","displayName":"Alton Koelpin DDS","domain":"msgserver-3"},"mids":[1191208375841751113,816124092504882665]}
-Creating file on /msgserver-3/messages/6870160696341736307
-Time Elapsed Upload: 1075
-Succesfully created file: /msgserver-3/users/catherin.gutmann
-saveMessage: Sucessfuly saved message 346875258226675146 to user catherin.gutmann
+RequestHandler: Successfully completed request to domain msgserver-1. More successful than i'll ever be!
+postForwardedMessage: Received request to save the message 1427344543593560392
 postForwardedMessage: Couldn't deliver the message to 0 people
-postForwardedMessage: Received request to save the message 2802621069085225296
-Saving message 2802621069085225296 from Miss Lavina Waelchi <chantel.rath@msgserver-1> to catherin.gutmann
-Calling UserResourceProxy for a UserProxy catherin.gutmann
-getUserProxy: Request for user catherin.gutmann
-Downloading /msgserver-3/users/catherin.gutmann
-Time Elapsed Upload: 988
-Succesfully created file: /msgserver-3/messages/6870160696341736307
-postMessage: Created new message with id: 6870160696341736307
-forwardMessage: Trying to forward message 6870160696341736307 to msgserver-2
-Time elapsed PostMessage: 1883
-postMessage: Received request to register a new message (Sender: duane.bradtke@msgserver-3; Subject: Dignissimos sint veniam harum vel.)
-Time Elapsed Download: 643
-File: /msgserver-3/users/catherin.gutmann was downloaded
-It answered. Returning sd1920.trab2.api.proxy.UserProxy@245c3fb2
-Creating file on /msgserver-3/users/catherin.gutmann
-downloadUser: Downloading user duane.bradtke
-Downloading /msgserver-3/users/duane.bradtke
 RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-Time Elapsed Upload: 1106
-Succesfully created file: /msgserver-3/users/catherin.gutmann
-saveMessage: Sucessfuly saved message 2802621069085225296 to user catherin.gutmann
+postForwardedMessage: Received request to save the message 2057009757495413755
 postForwardedMessage: Couldn't deliver the message to 0 people
-Time Elapsed Download: 1052
-File: /msgserver-3/users/duane.bradtke was downloaded
-{"user":{"name":"duane.bradtke","pwd":"p7a5w3kzbzgb4p","displayName":"Gerry Frami","domain":"msgserver-3"},"mids":[346875258226675146]}
-Creating file on /msgserver-3/messages/1830057379957676176
-Time Elapsed Upload: 944
-Succesfully created file: /msgserver-3/messages/1830057379957676176
-postMessage: Created new message with id: 1830057379957676176
-forwardMessage: Trying to forward message 1830057379957676176 to msgserver-2
-Time elapsed PostMessage: 2277
 RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-getMessages: Received request for messages to 'catherin.gutmann'
-Calling UserResourceProxy for a UserProxy catherin.gutmann
-getUserProxy: Request for user catherin.gutmann
-Downloading /msgserver-3/users/catherin.gutmann
-Time Elapsed Download: 886
-File: /msgserver-3/users/catherin.gutmann was downloaded
-It answered. Returning sd1920.trab2.api.proxy.UserProxy@4a725ef3
-getMessages: Returning message list to user with 3 messages.
+RequestHandler: Successfully completed request to domain msgserver-1. More successful than i'll ever be!
+postForwardedMessage: Received request to save the message 1427344543593560392
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
+postForwardedMessage: Received request to save the message 2776282467003844036
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-1. More successful than i'll ever be!
+postForwardedMessage: Received request to save the message 2776282467003844036
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
+postMessage: Received request to register a new message (Sender: lauri.lakin@msgserver-3; Subject: Ratione esse expedita nihil tenetur.)
+postMessage: Created new message with id: 5885689091546443900
+saveMessage: SAVE TIME
+saveMessage: Sucessfuly saved message 5885689091546443900
+postMessage: Received request to register a new message (Sender: klara.cartwright@msgserver-3; Subject: In.)
+postMessage: Created new message with id: 151615458771481592
+forwardMessage: Trying to forward message 151615458771481592 to msgserver-2
+postForwardedMessage: Received request to save the message 151615458771481592
+postForwardedMessage: Couldn't deliver the message to 0 people
+postMessage: Received request to register a new message (Sender: jean.pagac@msgserver-3; Subject: Reiciendis.)
+RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
+postMessage: Created new message with id: 2456586143472409113
+saveMessage: SAVE TIME
+saveMessage: Sucessfuly saved message 2456586143472409113
+saveMessage: SAVE TIME
+saveMessage: Sucessfuly saved message 2456586143472409113
+saveMessage: SAVE TIME
+saveMessage: Sucessfuly saved message 2456586143472409113
+postMessage: Received request to register a new message (Sender: jill.feil@msgserver-3; Subject: Voluptatem esse.)
+postMessage: Created new message with id: 3252108672711527320
+forwardMessage: Trying to forward message 3252108672711527320 to msgserver-1
+postForwardedMessage: Received request to save the message 3252108672711527320
+postForwardedMessage: Couldn't deliver the message to 0 people
+RequestHandler: Successfully completed request to domain msgserver-1. More successful than i'll ever be!
+postMessage: Received request to register a new message (Sender: myrle.haley@msgserver-3; Subject: Repellat ea recusandae explicabo dolor illo.)
+postMessage: Created new message with id: 7214256084547637123
+saveMessage: SAVE TIME
+saveMessage: Sucessfuly saved message 7214256084547637123
+saveMessage: SAVE TIME
+saveMessage: Sucessfuly saved message 7214256084547637123
+saveMessage: SAVE TIME
+saveMessage: Sucessfuly saved message 7214256084547637123
+saveMessage: SAVE TIME
+saveMessage: Sucessfuly saved message 7214256084547637123
+saveMessage: SAVE TIME
+saveMessage: Sucessfuly saved message 7214256084547637123
 
 
 

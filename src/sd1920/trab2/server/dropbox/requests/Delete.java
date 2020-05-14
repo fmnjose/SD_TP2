@@ -58,6 +58,7 @@ public class Delete{
     }
 
     public static boolean run(List<String> paths){
+		System.out.println("Deleting " + paths.size() + " files");
 		boolean success = false;
 
 		List<DeleteArgs> args = new LinkedList<>();
@@ -70,6 +71,7 @@ public class Delete{
 				break;
 				
 			try {
+				System.out.println("I sleep");
 				Thread.sleep(DropboxRequest.SLEEP_TIME);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
