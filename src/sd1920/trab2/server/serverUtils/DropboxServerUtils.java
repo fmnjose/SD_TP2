@@ -55,7 +55,7 @@ public class DropboxServerUtils extends ServerUtils {
 
         String senderName = getSenderCanonicalName(msg.getSender());
 
-        String fromPath = String.format(MessageResourceProxy.MESSAGE_FORMAT, ProxyMailServer.hostname, msg.getId());
+        String fromPath = String.format(MessageResourceProxy.MESSAGE_FORMAT, ProxyMailServer.hostname, Long.toString(msg.getId()));
 
         for(String recipient : recipients){
 

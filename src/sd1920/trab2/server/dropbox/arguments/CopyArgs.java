@@ -8,5 +8,13 @@ public class CopyArgs {
         this.from_path = from_path;
         this.to_path = to_path;
     }
+
+    public String getToPath(){
+        return this.to_path;
+    }
+
+    public String getFromPath(){
+        return this.from_path;
+    }
     
 }

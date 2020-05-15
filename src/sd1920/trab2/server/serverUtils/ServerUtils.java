@@ -193,6 +193,12 @@ public abstract class ServerUtils {
         
         for (String domain : recipientDomains) {
 
+            System.out.println("KNOWN DOMAINS");
+
+            for(String boy: domains.record.keySet()){
+                System.out.println(boy + ": " + domains.record.get(boy).getUri());
+            }
+
             uri = domains.knownUrisOf(domain);
 
             if (uri == null){

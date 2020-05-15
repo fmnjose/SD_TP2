@@ -49,7 +49,9 @@ public class GetMeta {
 		
 		if(r.getCode() == 200) {
 			return true;
-		} else {
+		} else if(r.getCode() == Status.CONFLICT.getStatusCode()){
+			return false;
+		}else{
 			System.err.println("HTTP Error Code: " + r.getCode() + ": " + r.getMessage());
 			System.err.println(r.getBody());
 

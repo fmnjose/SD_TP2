@@ -45,6 +45,16 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 		this.serverUri = String.format(DOMAIN_FORMAT_REST, InetAddress.getLocalHost().getHostAddress(), RESTMailServer.PORT);
 	}
 
+	private List<Long> listPathsToIds(List<String> list){
+		List<Long> mids = new LinkedList<>();
+
+		//Deus me perdoe pelo que estou prestes a fazer
+		for(String path: list)
+			mids.add(Long.valueOf(path.substring(path.lastIndexOf('/') + 1)));
+
+		return mids;
+	}
+
 	
 
 	@Override
@@ -95,7 +105,8 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 				recipientDomains.add(tokens[1]);
 		}	
 
-		this.saveMessage(recipients, msg, false);
+		if(recipients.size() != 0)
+			this.saveMessage(recipients, msg, false);
 
 		this.forwardMessage(recipientDomains, msg, ServerTypes.PROXY);
 
@@ -124,9 +135,9 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 
 		String path = String.format(UserResourceProxy.USER_INBOX_FOLDER, ProxyMailServer.hostname, userName);
 
-		List<String> mids = ListDirectory.run(path);
+		List<Long> mids = this.listPathsToIds(ListDirectory.run(path));
 		
-		if(mids.contains(Long.toString(mid))){
+		if(!mids.contains(mid)){
 			System.out.println("getMessage: Requested message does not exist.");
 			throw new WebApplicationException( Status.NOT_FOUND );
 		}
@@ -158,13 +169,10 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 
 		List<String> mids = ListDirectory.run(path);
 
-		List<Long> messages = new LinkedList<>();
-
-		for(String mid : mids)
-			messages.add(Long.valueOf(mid));
+		System.out.println(mids);
 
 		System.out.println("getMessages: Returning message list to user with " + mids.size() + " messages.");
-		return messages;
+		return this.listPathsToIds(mids);
 	}
 
 	@Override
@@ -191,7 +199,7 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 
 		Message msg = json.fromJson(messageString, Message.class);
 
-		if(getSenderCanonicalName(msg.getSender()).equals(senderName)){
+		if(!getSenderCanonicalName(msg.getSender()).equals(senderName)){
 			System.out.println("deleteMessage: Sender mismatch");
 			return;
 		}
@@ -231,14 +239,16 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
-		String path = String.format(UserResourceProxy.USER_MESSAGE_FORMAT, ProxyMailServer.hostname, name, mid);
+		String messagePath = String.format(MESSAGE_FORMAT, ProxyMailServer.hostname, mid);
 
-		if(!GetMeta.run(path)){
+		String inboxPath = String.format(UserResourceProxy.USER_MESSAGE_FORMAT, ProxyMailServer.hostname, name, mid);
+
+		if(!GetMeta.run(inboxPath) || !GetMeta.run(messagePath)){
 			System.out.println("removeFromUserInbox: Message not found");
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
 
-		Delete.run(path);
+		Delete.run(inboxPath);
 		System.out.println("removeFromUserInbox: Successful");
 	}
 

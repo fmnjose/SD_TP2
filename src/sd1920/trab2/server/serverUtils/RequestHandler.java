@@ -69,6 +69,8 @@ public class RequestHandler implements Runnable {
         DomainInfo uri = request.getUri();
         Message msg = request.getMessage();
 
+        System.out.println("ProcessRequest: Executing Post Request to " + uri.getUri() + " message is " + msg.getId());
+
         if (uri.isRest()) {            
             WebTarget target = client.target(uri.getUri());
             target = target.path(MessageServiceRest.PATH).path("mbox");

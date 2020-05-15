@@ -25,9 +25,14 @@ public class Copy {
 		OAuth20Service service = new ServiceBuilder(DropboxRequest.apiKey)
 						.apiSecret(DropboxRequest.apiSecret).build(DropboxApi20.INSTANCE);
 		OAuth2AccessToken accessToken = new OAuth2AccessToken(DropboxRequest.accessTokenStr);
+
+		copy.addHeader("Content-Type", DropboxRequest.JSON_CONTENT_TYPE);
+
 		Gson json = new Gson();
 
 		String s = json.toJson(args);
+
+		System.out.println(s);
 
 		copy.setPayload(s.getBytes());   
         
@@ -45,6 +50,12 @@ public class Copy {
 		}
 		
 		if(r.getCode() == 200) {
+			try {
+				System.out.println(r.getBody());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return true;
 		} else {
 			System.err.println("HTTP Error Code: " + r.getCode() + ": " + r.getMessage());
@@ -59,7 +70,16 @@ public class Copy {
     
     public static boolean run(List<CopyArgs> copies){
 		System.out.println("Copying " + copies.size() +" copies");
-        boolean success = false;
+		boolean success = false;
+
+		if(copies.size() == 0)
+			return true;
+		
+		for(CopyArgs copy : copies){
+			System.out.println("From " + copy.getFromPath() + " ; To " + copy.getToPath());
+		}
+
+		System.out.println("FEIJOADA");
         
         CopyBatchArgs args = new CopyBatchArgs(copies);
 
@@ -83,7 +103,7 @@ public class Copy {
 		}
     }
 
-    public static boolean run(CopyArgs copy){		
+    public static boolean run(CopyArgs copy){	
 		List<CopyArgs> copies = new LinkedList<>();
 
 		copies.add(copy);

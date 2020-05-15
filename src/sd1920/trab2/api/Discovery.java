@@ -59,7 +59,7 @@ public class Discovery {
 		this.addr = DISCOVERY_ADDR;
 		this.serviceURI = serviceURI;
 		this.record = new HashMap<String, DomainInfo>();
-		this.domainName = InetAddress.getLocalHost().getCanonicalHostName();
+		this.domainName = InetAddress.getLocalHost().getHostName();
 	}
 
 	public class DomainInfo {
@@ -133,7 +133,7 @@ public class Discovery {
 						String msg = new String(pkt.getData(), 0, pkt.getLength());
 						String[] msgElems = msg.split(DELIMITER);
 						if (msgElems.length == 2) { // periodic announcement
-							String domainName = pkt.getAddress().getHostName().split("\\.")[0];
+							String domainName = msgElems[0];
 
 							uri = msgElems[1];
 							info = record.get(domainName);
