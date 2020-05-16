@@ -14,7 +14,6 @@ import sd1920.trab2.server.dropbox.ProxyMailServer;
 import sd1920.trab2.server.dropbox.arguments.CopyArgs;
 import sd1920.trab2.server.dropbox.requests.Copy;
 import sd1920.trab2.server.dropbox.requests.Create;
-import sd1920.trab2.server.dropbox.requests.GetMeta;
 import sd1920.trab2.server.dropbox.resources.MessageResourceProxy;
 import sd1920.trab2.server.dropbox.resources.UserResourceProxy;
 
@@ -48,39 +47,16 @@ public class DropboxServerUtils extends ServerUtils {
         Copy.run(new CopyArgs(path, toPath));
     }
 
-    protected boolean saveMessage(Set<String> recipients, Message msg, boolean forwarded) {
+    protected void saveMessage(Set<String> recipients, Message msg, boolean forwarded) {
         System.out.println("Saving message " + msg.getId() + " from " + msg.getSender() + " to " + recipients.size() + " recipients");
 
-        List<CopyArgs> copies = new LinkedList<>();
+        List<CopyRequest> copies = new LinkedList<>();
 
         String senderName = getSenderCanonicalName(msg.getSender());
 
-        String fromPath = String.format(MessageResourceProxy.MESSAGE_FORMAT, ProxyMailServer.hostname, Long.toString(msg.getId()));
+        for(String recipient : recipients)
+            copies.add(new CopyRequest(senderName, recipient, msg));
 
-        for(String recipient : recipients){
-
-            String recipientName = getSenderCanonicalName(recipient);
-            
-            String userPath = String.format(UserResourceProxy.USER_FOLDER_FORMAT, ProxyMailServer.hostname, recipient);
-
-            if (!GetMeta.run(userPath)) {
-                if (forwarded){
-                    System.out.println("saveMessages: user does not exist for forwarded message " + msg.getId());
-                }else {
-                    this.saveErrorMessages(senderName, recipientName, msg);
-                }
-            } else {
-                String toPath = String.format(UserResourceProxy.USER_MESSAGE_FORMAT, ProxyMailServer.hostname, recipientName, Long.toString(msg.getId()));
-
-                copies.add(new CopyArgs(fromPath, toPath));                               
-            }
-        }
-
-        if(Copy.run(copies))
-            System.out.println("saveMessages: Sucessfuly saved messages");
-        else 
-            System.out.println("saveMessages: Unsuccessful");
-
-        return true;
+        new Thread(new CopyHandler(copies, this, forwarded)).run();
     }
 }
