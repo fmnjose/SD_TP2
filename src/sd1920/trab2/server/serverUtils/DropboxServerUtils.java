@@ -50,13 +50,19 @@ public class DropboxServerUtils extends ServerUtils {
     protected void saveMessage(Set<String> recipients, Message msg, boolean forwarded) {
         System.out.println("Saving message " + msg.getId() + " from " + msg.getSender() + " to " + recipients.size() + " recipients");
 
-        List<CopyRequest> copies = new LinkedList<>();
-
         String senderName = getSenderCanonicalName(msg.getSender());
 
-        for(String recipient : recipients)
-            copies.add(new CopyRequest(senderName, recipient, msg));
+        synchronized(this.requests){
+            RequestHandler rh = this.requests.get(domain);
+            if(rh == null){
+                rh = new RequestHandler(config, this);
+                this.requests.put(domain, rh);
 
-        new Thread(new CopyHandler(copies, this, forwarded)).run();
+                new Thread(rh).start();
+            }
+
+            for(String recipient : recipients)
+                rh.addRequest(new CopyRequest(senderName, recipient, msg, forwarded));
+        }   
     }
 }

@@ -154,7 +154,7 @@ public class Copy {
 		
 		System.out.println("FEIJOADA");
         
-        for(int i = 0; i < DropboxRequest.RETRIES; i++){
+        while(true){
             if(success = execute(copy))
 				break;
 				

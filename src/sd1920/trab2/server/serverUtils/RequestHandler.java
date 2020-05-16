@@ -28,6 +28,7 @@ import sd1920.trab2.api.Discovery.DomainInfo;
 import sd1920.trab2.api.rest.MessageServiceRest;
 import sd1920.trab2.api.soap.MessageServiceSoap;
 import sd1920.trab2.api.soap.MessagesException;
+import sd1920.trab2.server.dropbox.requests.Copy;
 import sd1920.trab2.server.rest.resources.MessageResourceRest;
 
 /**
@@ -156,14 +157,14 @@ public class RequestHandler implements Runnable {
             msgService = service.getPort(MessageServiceSoap.class);
             
             ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.CONNECT_TIMEOUT,
-                    LocalServerUtils.TIMEOUT);
+            LocalServerUtils.TIMEOUT);
             ((BindingProvider) msgService).getRequestContext().put(BindingProviderProperties.REQUEST_TIMEOUT,
-                    LocalServerUtils.TIMEOUT);
+            LocalServerUtils.TIMEOUT);
             
             msgService.deleteForwardedMessage(mid, request.getSecret());
         }
     }
-
+    
     /**
      * Wrapper for procesDeleteRequest. Catches the errors
      * @param request deleteRequest to execute
@@ -189,7 +190,34 @@ public class RequestHandler implements Runnable {
         return true;
     }
 
-    @Override
+    private void processCopyRequest(CopyRequest request){
+            if(Copy.run(request.getCopy()))
+                System.out.println("execCopyRequest: Sucessfully saved");
+            else{ 
+                System.out.println("execCopyRequest: Couldn't copy");
+                if(!request.isForwarded())
+                    this.utils.saveErrorMessages(request.getSender(), request.getRecipient(), request.getMessage());
+            }
+    }
+    
+    private boolean execCopyRequest(CopyRequest r) {
+        this.processCopyRequest(r);
+        return true;
+    }
+    
+    private boolean processRequest(Request r) {
+        if(r instanceof PostRequest)
+            return this.execPostRequest((PostRequest)r);
+        else if(r instanceof DeleteRequest)
+            return this.execDeleteRequest((DeleteRequest)r);
+        else if(r instanceof CopyRequest)
+            return this.execCopyRequest((CopyRequest)r);
+        else
+            return false;
+    }
+
+
+        @Override
     public void run() {
         for (;;) {
             Request r = null;
@@ -202,8 +230,7 @@ public class RequestHandler implements Runnable {
             }
 
             while (true) {
-                if (r instanceof PostRequest ? this.execPostRequest((PostRequest) r)
-                        : this.execDeleteRequest((DeleteRequest) r)) {     
+                    if(this.processRequest(r)){     
                     System.out.println("RequestHandler: Successfully completed request to domain " + r.getDomain()
                             + ". More successful than i'll ever be!");
                     break;
