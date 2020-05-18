@@ -12,6 +12,7 @@ import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import sd1920.trab2.api.Discovery;
+import sd1920.trab2.replication.VersionControl;
 import sd1920.trab2.server.InsecureHostnameVerifier;
 import sd1920.trab2.server.rest.resources.MessageResourceRest;
 import sd1920.trab2.server.rest.resources.UserResourceRest;
@@ -29,7 +30,10 @@ public class RESTMailServer {
 	public static Discovery serverRecord;
 
 	public static String secret;
-	public static void main(String[] args) throws UnknownHostException {
+
+	public static VersionControl vc;
+
+	public static void main(String[] args) throws Exception {
 		String ip = InetAddress.getLocalHost().getHostAddress();
 
 		secret = args[0];
@@ -42,11 +46,15 @@ public class RESTMailServer {
 
 		String serverURI = String.format("https://%s:%s/rest", ip, PORT);
 
+		vc = new VersionControl(InetAddress.getLocalHost().getHostName(), serverURI);
+		vc.startListening();
+		
 		try {
 			JdkHttpServerFactory.createHttpServer(URI.create(serverURI), config, SSLContext.getDefault());
 		} catch (NoSuchAlgorithmException e) {
 			System.exit(1);
 		}
+
 
 		serverRecord = new Discovery(SERVICE, serverURI);
 

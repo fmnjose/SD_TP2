@@ -1,6 +1,7 @@
 package sd1920.trab2.server.rest.resources;
 
 import java.net.InetAddress;
+import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,9 +14,11 @@ import java.util.logging.Logger;
 
 import javax.inject.Singleton;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import sd1920.trab2.api.rest.MessageServiceRest;
+import sd1920.trab2.replication.VersionControl;
 import sd1920.trab2.server.serverUtils.LocalServerUtils;
 import sd1920.trab2.server.rest.RESTMailServer;
 import sd1920.trab2.api.Message;
@@ -23,6 +26,8 @@ import sd1920.trab2.api.User;
 
 @Singleton
 public class MessageResourceRest extends LocalServerUtils implements MessageServiceRest {
+
+	private VersionControl vc;
 
 	public MessageResourceRest() throws UnknownHostException {
 		super(true);
@@ -34,12 +39,12 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 		this.domain = InetAddress.getLocalHost().getHostName();
 
 		this.serverUri = String.format(DOMAIN_FORMAT_REST, InetAddress.getLocalHost().getHostAddress(), RESTMailServer.PORT);
+		
+		vc = RESTMailServer.vc;
 	}
 
 	
-
-	@Override
-	public long postMessage(String pwd, Message msg) {
+	private long execPostMessage(String pwd, Message msg){
 		User user;
 		String sender = msg.getSender();
 		Set<String> recipientDomains = new HashSet<>();
@@ -80,9 +85,21 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 				recipientDomains.add(tokens[1]);
 		}	
 
+
 		this.forwardMessage(recipientDomains, msg, ServerTypes.REST);
 
 		return msg.getId();
+	}
+
+	@Override
+	public long postMessage(Long version, String pwd, Message msg, String secret) {
+		
+		if(version == null)
+			if(!vc.isPrimary())
+				throw new WebApplicationException(Response.temporaryRedirect(URI.create(vc.getPrimaryUri())).build());
+			execPostMessage(pwd, msg);
+		
+		
 	}
 
 	@Override

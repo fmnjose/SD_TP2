@@ -1,12 +1,9 @@
-Using default tag: latest
-latest: Pulling from nunopreguica/sd1920-tester-tp1
-Digest: sha256:2f76f8aae0032abb294b47ce4e23dddd927cf1395416538d79746236ed4642cd
-Status: Image is up to date for nunopreguica/sd1920-tester-tp1:latest
-docker.io/nunopreguica/sd1920-tester-tp1:latest
-true
-SD1920 +++ TP1 +++ Testing image: sd1920-trab1-52890-53277
-Version 4 - 08/04/2020 V4
-killByImage(sd1920-trab1-52890-53277): Removing container: [/msgserver-1]
+latest: Pulling from nunopreguica/sd1920-tester-tp2
+Digest: sha256:dbb80d6c59e9644994c7fdc39460639bc9205a29947511ad6c2e132faa6c0b36
+Status: Image is up to date for nunopreguica/sd1920-tester-tp2:latest
+docker.io/nunopreguica/sd1920-tester-tp2:latest
+SD1920 +++ TP2 +++ Testing image: sd1920-trab2-52890-53277
+Version 4 - 15/05/2020
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 1a )	 Testing Docker environment [executing: docker info]
 ---------------------------------------------------------------
@@ -17,720 +14,322 @@ Docker ID: IHDA:GYRV:F3AZ:3P6E:SCFI:TZ2E:2LID:RKI6:3MWU:Y4H6:26BF:HCJM
 ---------------------------------------------------------------
 OK                                                                                                                   
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-1c )	Checking messages.props [executing: docker run sd1920-trab1-52890-53277 /bin/cat messages.props and nunopreguica/sd1920tpbase]
+1c )	Checking messages.props [executing: docker run sd1920-trab2-52890-53277 /bin/cat messages.props and nunopreguica/sd1920tpbase]
 ---------------------------------------------------------------
 ; Read properties from: ./messages.props
-;	DISCOVERY_MULTICAST_IP=226.226.226.226
+;	MESSAGES_PROXY_PORT=8080
+;	SERVER_KEYSTORE_PWD=password
+;	CLIENT_TRUSTSTORE=truststore.ks
+;	PROXY_EXTRA_ARGS=lemonke
+;	MESSAGES_SOAP_SERVER_MAINCLASS=sd1920.trab2.server.soap.SOAPMailServer
 ;	MESSAGES_SOAP_PORT=8080
-;	MESSAGES_REST_PORT=8080
-;	MESSAGES_REST_SERVER_MAINCLASS=sd1920.trab1.server.rest.RESTMailServer
+;	SERVER_EXTRA_ARGS=lemonke
 ;	DISCOVERY_MULTICAST_PORT=2266
-;	MESSAGES_SOAP_SERVER_MAINCLASS=sd1920.trab1.server.soap.SOAPMailServer
+;	MESSAGES_PROXY_SERVER_MAINCLASS=sd1920.trab2.server.dropbox.ProxyMailServer
+;	CLIENT_TRUSTSTORE_PWD=changeit
+;	MESSAGES_REP_SERVER_MAINCLASS=asd
+;	DISCOVERY_MULTICAST_IP=226.226.226.226
+;	MESSAGES_REST_SERVER_MAINCLASS=sd1920.trab2.server.rest.RESTMailServer
+;	MESSAGES_REST_PORT=8080
+;	REP_SERVER_EXTRA_ARGS_OTHER=asd
+;	REP_SERVER_EXTRA_ARGS_FIRST=asd 
+;	MESSAGES_REP_PORT=8080 
+;	SERVER_KEYSTORE=server.ks
 OK                                                                                                                   
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-2a )	  Skipped...
+1d )	Checking TLS keys in client truststore
+---------------------------------------------------------------
+OK                                                                                                                   
+killByImage(sd1920-trab2-52890-53277): Removing container: [/laughing_noyce]
+killByImage(sd1920-trab2-52890-53277): Removing container: [/nostalgic_montalcini]
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+101a )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-2b )	  Skipped...
+102a )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-2c )	  Skipped...
+102b )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-3a )	  Skipped...
+102c )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-3b )	  Skipped...
+103a )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-3c )	  Skipped...
+103b )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-4a )	  Skipped...
+103c )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-4b )	  Skipped...
+104a )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-5a )	  Skipped...
+104b )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-5b )	  Skipped...
+105a )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-5c )	  Skipped...
+105b )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-6a )	  Skipped...
+105c )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-6b )	  Skipped...
+106a )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-6c )	  Skipped...
+106b )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-7a )	  Skipped...
+106c )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-7b )	  Skipped...
+107a )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-7c )	  Skipped...
+107b )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-8a )	  Skipped...
+108a )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-8b )	  Skipped...
+108b )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-9a )	  Skipped...
+109a )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-9b )	  Skipped...
+109b )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-10a )	  Skipped...
+109c )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-11a )	  Skipped...
+110a )	 Testing PostMessage and GetMessage(s) : [] REST servers ; [] SOAP servers; [1] PROXY servers
 ---------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-11b )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-11c )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-11d )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-11e )	  Skipped...
----------------------------------------------------------------
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-12a )	 Testing PostMessage with faults across multiple domains : 0 REST servers ; 3 SOAP servers; ; fault period (ms) :20000
----------------------------------------------------------------
-Starting 3 SOAP services instances <sd1920.trab1.server.soap.SOAPMailServer>
-INFO: Starting 3 SOAP services instances <sd1920.trab1.server.soap.SOAPMailServer>
-CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-1 -h msgserver-1 sd1920-trab1-52890-53277 java -cp /home/sd/sd1920.jar sd1920.trab1.server.soap.SOAPMailServer
-Started: msgserver-1 : java -cp /home/sd/sd1920.jar sd1920.trab1.server.soap.SOAPMailServer 
-5d65defd9787b59ac11e4b1610b82689d9378a6329d16517b44f8236c15ed066
-CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-2 -h msgserver-2 sd1920-trab1-52890-53277 java -cp /home/sd/sd1920.jar sd1920.trab1.server.soap.SOAPMailServer
-Started: msgserver-2 : java -cp /home/sd/sd1920.jar sd1920.trab1.server.soap.SOAPMailServer 
-410dc62cfa4e252f9e1e227f9b65b163d2ff938d4dbcd7012b9e98a75931c8b6
-CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-3 -h msgserver-3 sd1920-trab1-52890-53277 java -cp /home/sd/sd1920.jar sd1920.trab1.server.soap.SOAPMailServer
-Started: msgserver-3 : java -cp /home/sd/sd1920.jar sd1920.trab1.server.soap.SOAPMailServer 
-99758cfe14893e88e9f9a7423bceaf724b511a006c7e44090b1b4aff6c4ff818
-sleeping: 9 s                                                                                sleeping: 8 s                                                                                sleeping: 7 s                                                                                sleeping: 6 s                                                                                sleeping: 5 s                                                                                sleeping: 4 s                                                                                sleeping: 3 s                                                                                sleeping: 2 s                                                                                sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Creating 5 users in each domain
-1/5                                                                                [PostUser SOAP] User{chantel.rath, cfr3k96epfu5, msgserver-1, Miss Lavina Waelchi} -> OK:chantel.rath@msgserver-1
-2/5                                                                                [PostUser SOAP] User{aubrey.blick, 33floc73, msgserver-1, Dr. Temple Green} -> OK:aubrey.blick@msgserver-1
-3/5                                                                                [PostUser SOAP] User{perry.hessel, kq2g5v64pqqrdh9, msgserver-1, Herb Hansen} -> OK:perry.hessel@msgserver-1
-4/5                                                                                [PostUser SOAP] User{corrie.bailey, scerl0yfs52, msgserver-1, Dannie Armstrong} -> OK:corrie.bailey@msgserver-1
-5/5                                                                                [PostUser SOAP] User{catherin.gutmann, zdqm4u574, msgserver-1, Alton Koelpin DDS} -> OK:catherin.gutmann@msgserver-1
-1/5                                                                                [PostUser SOAP] User{duane.bradtke, p7a5w3kzbzgb4p, msgserver-2, Gerry Frami} -> OK:duane.bradtke@msgserver-2
-2/5                                                                                [PostUser SOAP] User{bradley.huel, e4afjfbwrow1z, msgserver-2, Kristi Harris} -> OK:bradley.huel@msgserver-2
-3/5                                                                                [PostUser SOAP] User{adelia.connelly, 38brfogec6p, msgserver-2, Thu Walsh} -> OK:adelia.connelly@msgserver-2
-4/5                                                                                [PostUser SOAP] User{tanja.will, f84e0jhb1, msgserver-2, Thaddeus Moen} -> OK:tanja.will@msgserver-2
-5/5                                                                                [PostUser SOAP] User{marhta.baumbach, zuuby5zxz0ikgw, msgserver-2, Emanuel Cartwright PhD} -> OK:marhta.baumbach@msgserver-2
-1/5                                                                                [PostUser SOAP] User{lauri.lakin, 8scsyjod, msgserver-3, Janette Weissnat PhD} -> OK:lauri.lakin@msgserver-3
-2/5                                                                                [PostUser SOAP] User{klara.cartwright, a8p8o6wy, msgserver-3, Odell Zemlak} -> OK:klara.cartwright@msgserver-3
-3/5                                                                                [PostUser SOAP] User{jean.pagac, cfopd23olkm06, msgserver-3, Lou Ritchie} -> OK:jean.pagac@msgserver-3
-4/5                                                                                [PostUser SOAP] User{jill.feil, e71zhm4s56lch, msgserver-3, Georgine Legros} -> OK:jill.feil@msgserver-3
-5/5                                                                                [PostUser SOAP] User{myrle.haley, wjel2ogp9g, msgserver-3, Nanette Bernier} -> OK:myrle.haley@msgserver-3
-sleeping: 9 s                                                                                sleeping: 8 s                                                                                sleeping: 7 s                                                                                sleeping: 6 s                                                                                sleeping: 5 s                                                                                sleeping: 4 s                                                                                sleeping: 3 s                                                                                sleeping: 2 s                                                                                sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Creating message to faulty domain: 1 dst
-Starting failures for 20000 ms
-exec [/sbin/iptables -A INPUT -p tcp --destination-port 8080 -j DROP] in msgserver-2
-Executing op and waiting for failure to expire
-[PostMessage SOAP] scerl0yfs52, Msg{-1,corrie.bailey@msgserver-1,Velit.,[adelia.connelly@msgserver-2],1586446880636} -> OK:6560859766932669280
-exec [/sbin/iptables --flush] in msgserver-2
-sleeping: 9 s                                                                                sleeping: 8 s                                                                                sleeping: 7 s                                                                                sleeping: 6 s                                                                                sleeping: 5 s                                                                                sleeping: 4 s                                                                                sleeping: 3 s                                                                                sleeping: 2 s                                                                                sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Checking if message was sent
-[GetMessage SOAP] adelia.connelly, mid=6560859766932669280, pwd=38brfogec6p -> -1 getMessage: Requested message does not exists. URI:http://172.18.0.4:8080/soap/messages/?wsdl
-sd1920.trab1.api.soap.MessagesException: getMessage: Requested message does not exists.
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createUserDefinedException(SOAPFaultBuilder.java:302)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createException(SOAPFaultBuilder.java:111)
-	at com.sun.xml.ws.client.sei.StubHandler.readResponse(StubHandler.java:223)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:176)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:263)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:89)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:62)
-	at com.sun.xml.ws.client.sei.SEIStub.invoke(SEIStub.java:131)
-	at com.sun.proxy.$Proxy76.getMessage(Unknown Source)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:108)
-	at sd1920.trab1.ServerState.lambda$execGetMessage$5(ServerState.java:169)
-	at sd1920.trab1.ServerState.runOp(ServerState.java:283)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:169)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:181)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:175)
-	at tests.workloads.FaultsMessagesWorkload.lambda$execute$2(FaultsMessagesWorkload.java:69)
-	at java.lang.Iterable.forEach(Iterable.java:75)
-	at tests.workloads.FaultsMessagesWorkload.lambda$execute$3(FaultsMessagesWorkload.java:69)
-	at java.lang.Iterable.forEach(Iterable.java:75)
-	at tests.workloads.FaultsMessagesWorkload.execute(FaultsMessagesWorkload.java:67)
-	at tests.BaseTest.test(BaseTest.java:150)
-	at tests.Tester.main(Tester.java:137)
-
-TestFailedException: GetMsg = 6560859766932669280 ; user = adelia.connelly ; pwd = 38brfogec6p
-Expected : 200; received : 400
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:176)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:181)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:175)
-	at tests.workloads.FaultsMessagesWorkload.lambda$execute$2(FaultsMessagesWorkload.java:69)
-	at java.lang.Iterable.forEach(Iterable.java:75)
-	at tests.workloads.FaultsMessagesWorkload.lambda$execute$3(FaultsMessagesWorkload.java:69)
-	at java.lang.Iterable.forEach(Iterable.java:75)
-	at tests.workloads.FaultsMessagesWorkload.execute(FaultsMessagesWorkload.java:67)
-	at tests.BaseTest.test(BaseTest.java:150)
-	at tests.Tester.main(Tester.java:137)
-FAILED: GetMsg = 6560859766932669280 ; user = adelia.connelly ; pwd = 38brfogec6p
-Expected : 200; received : 400
+Starting PROXY services: <1> replicas : mainClass = <sd1920.trab2.server.dropbox.ProxyMailServer> ; TLS : true
+INFO: Starting PROXY services: <1> replicas : mainClass = <sd1920.trab2.server.dropbox.ProxyMailServer> ; TLS : true
+CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-1-1 -h msgserver-1 sd1920-trab2-52890-53277 java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.dropbox.ProxyMailServer true lemonke
+Started: msgserver-1-1 : java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.dropbox.ProxyMailServer true lemonke
+855e68d63d6f20f943d44e021773be051524f8f2da358cb5faec40c4cc2f6fb0
+sleeping: 59 s                                                                                sleeping: 58 s                                                                                sleeping: 57 s                                                                                sleeping: 56 s                                                                                sleeping: 55 s                                                                                sleeping: 54 s                                                                                sleeping: 53 s                                                                                sleeping: 52 s                                                                                sleeping: 51 s                                                                                sleeping: 50 s                                                                                sleeping: 49 s                                                                                sleeping: 48 s                                                                                sleeping: 47 s                                                                                sleeping: 46 s                                                                                sleeping: 45 s                                                                                sleeping: 44 s                                                                                sleeping: 43 s                                                                                sleeping: 42 s                                                                                sleeping: 41 s                                                                                sleeping: 40 s                                                                                sleeping: 39 s                                                                                sleeping: 38 s                                                                                sleeping: 37 s                                                                                sleeping: 36 s                                                                                sleeping: 35 s                                                                                sleeping: 34 s                                                                                sleeping: 33 s                                                                                sleeping: 32 s                                                                                sleeping: 31 s                                                                                sleeping: 30 s                                                                                sleeping: 29 s                                                                                sleeping: 28 s                                                                                sleeping: 27 s                                                                                sleeping: 26 s                                                                                sleeping: 25 s                                                                                sleeping: 24 s                                                                                sleeping: 23 s                                                                                sleeping: 22 s                                                                                sleeping: 21 s                                                                                sleeping: 20 s                                                                                sleeping: 19 s                                                                                sleeping: 18 s                                                                                sleeping: 17 s                                                                                sleeping: 16 s                                                                                sleeping: 15 s                                                                                sleeping: 14 s                                                                                sleeping: 13 s                                                                                sleeping: 12 s                                                                                sleeping: 11 s                                                                                sleeping: 10 s                                                                                sleeping: 9 s                                                                                sleeping: 8 s                                                                                sleeping: 7 s                                                                                sleeping: 6 s                                                                                sleeping: 5 s                                                                                sleeping: 4 s                                                                                sleeping: 3 s                                                                                sleeping: 2 s                                                                                sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Creating 4 users
+1/4                                                                                [PostUser https://172.18.0.3:8080/rest] User{chantel.rath, cfr3k96epfu5, msgserver-1, Miss Lavina Waelchi} -> 200:chantel.rath@msgserver-1
+2/4                                                                                [PostUser https://172.18.0.3:8080/rest] User{aubrey.blick, 33floc73, msgserver-1, Dr. Temple Green} -> 200:aubrey.blick@msgserver-1
+3/4                                                                                [PostUser https://172.18.0.3:8080/rest] User{perry.hessel, kq2g5v64pqqrdh9, msgserver-1, Herb Hansen} -> 200:perry.hessel@msgserver-1
+4/4                                                                                [PostUser https://172.18.0.3:8080/rest] User{corrie.bailey, scerl0yfs52, msgserver-1, Dannie Armstrong} -> 200:corrie.bailey@msgserver-1
+---------- Creating 4 correct messages
+[PostMessage https://172.18.0.3:8080/rest] cfr3k96epfu5, Msg{-1,chantel.rath,Et id.,[aubrey.blick@msgserver-1],1589588658529} -> 200:106377989126891158
+[PostMessage https://172.18.0.3:8080/rest] 33floc73, Msg{-1,aubrey.blick@msgserver-1,Porro quo.,[perry.hessel@msgserver-1],1589588661134} -> 200:3619283852080853057
+[PostMessage https://172.18.0.3:8080/rest] kq2g5v64pqqrdh9, Msg{-1,perry.hessel,Maxime temporibus laboriosam molestiae error magnam.,[corrie.bailey@msgserver-1],1589588663511} -> 200:8058544719150479498
+[PostMessage https://172.18.0.3:8080/rest] scerl0yfs52, Msg{-1,corrie.bailey@msgserver-1,Vero doloremque necessitatibus velit officia rerum.,[chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1589588665881} -> 200:1505578977665190963
+sleeping: 59 s                                                                                sleeping: 58 s                                                                                sleeping: 57 s                                                                                sleeping: 56 s                                                                                sleeping: 55 s                                                                                sleeping: 54 s                                                                                sleeping: 53 s                                                                                sleeping: 52 s                                                                                sleeping: 51 s                                                                                sleeping: 50 s                                                                                sleeping: 49 s                                                                                sleeping: 48 s                                                                                sleeping: 47 s                                                                                sleeping: 46 s                                                                                sleeping: 45 s                                                                                sleeping: 44 s                                                                                sleeping: 43 s                                                                                sleeping: 42 s                                                                                sleeping: 41 s                                                                                sleeping: 40 s                                                                                sleeping: 39 s                                                                                sleeping: 38 s                                                                                sleeping: 37 s                                                                                sleeping: 36 s                                                                                sleeping: 35 s                                                                                sleeping: 34 s                                                                                sleeping: 33 s                                                                                sleeping: 32 s                                                                                sleeping: 31 s                                                                                sleeping: 30 s                                                                                sleeping: 29 s                                                                                sleeping: 28 s                                                                                sleeping: 27 s                                                                                sleeping: 26 s                                                                                sleeping: 25 s                                                                                sleeping: 24 s                                                                                sleeping: 23 s                                                                                sleeping: 22 s                                                                                sleeping: 21 s                                                                                sleeping: 20 s                                                                                sleeping: 19 s                                                                                sleeping: 18 s                                                                                sleeping: 17 s                                                                                sleeping: 16 s                                                                                sleeping: 15 s                                                                                sleeping: 14 s                                                                                sleeping: 13 s                                                                                sleeping: 12 s                                                                                sleeping: 11 s                                                                                sleeping: 10 s                                                                                sleeping: 9 s                                                                                sleeping: 8 s                                                                                sleeping: 7 s                                                                                sleeping: 6 s                                                                                sleeping: 5 s                                                                                sleeping: 4 s                                                                                sleeping: 3 s                                                                                sleeping: 2 s                                                                                sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Getting inboxes correctly
+[GetMessageS https://172.18.0.3:8080/rest] chantel.rath, pwd=cfr3k96epfu5 -> 200:[1505578977665190963]
+[GetMessageS https://172.18.0.3:8080/rest] aubrey.blick, pwd=33floc73 -> 200:[1505578977665190963]
+TestFailedException: GetMsgs user = aubrey.blick ; pwd = 33floc73
+Expected : [1505578977665190963, 106377989126891158]; received : [1505578977665190963]
+	at sd1920.trab1.ServerState.execGetMessages(ServerState.java:264)
+	at sd1920.trab1.ServerState.execGetMessages(ServerState.java:251)
+	at tests.MessagesTest.execGetMessages(MessagesTest.java:283)
+	at tests.MessagesTest.execGetMessages(MessagesTest.java:276)
+	at tests.workloads.MessagesPostGetWorkload.execute(MessagesPostGetWorkload.java:64)
+	at tests.BaseTest.test(BaseTest.java:156)
+	at tests.Tester.main(Tester.java:219)
+FAILED: GetMsgs user = aubrey.blick ; pwd = 33floc73
+Expected : [1505578977665190963, 106377989126891158]; received : [1505578977665190963]
 
 
-Removing: msgserver-1
-Removing: msgserver-2
-Removing: msgserver-3
+Removing: msgserver-1-1
 -----------------------------------------------------------------------------------
-msgserver-1
+msgserver-1-1
 -----------------------------------------------------------------------------------
-BEANS
-
-MessageService Server ready @ http://172.18.0.3:8080/soap
-
-INFO: Metro monitoring rootname successfully set to: com.sun.metro:pp=/,type=WSEndpoint,name=messages-MessageResourceSoapPort
-INFO: Metro monitoring rootname successfully set to: com.sun.metro:pp=/,type=WSEndpoint,name=users-UserResourceSoapPort
-INFO: 
-MessageService Server ready @ http://172.18.0.3:8080/soap
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-INFO: Sending request to create a new inbox in MessageResource.
-
-
-INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-INFO: Created new user with name: chantel.rath
-INFO: Sending request to create a new inbox in MessageResource.
-INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-INFO: Created new user with name: aubrey.blick
-INFO: Sending request to create a new inbox in MessageResource.
-INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-INFO: Created new user with name: perry.hessel
-INFO: Sending request to create a new inbox in MessageResource.
-INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-INFO: Created new user with name: corrie.bailey
-
-INFO: Sending request to create a new inbox in MessageResource.
-INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-INFO: Created new user with name: catherin.gutmann
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-INFO: Received request to register a new message (Sender: corrie.bailey@msgserver-1; Subject: Velit.)
-JORNADA DE BOMBONS
-Created new message with id: 6560859766932669280
-INFO: Created new message with id: 6560859766932669280
-INFO: TOKEN: msgserver-2.
-forwardMessage: Trying to forward message 6560859766932669280 to msgserver-2
-INFO: forwardMessage: Trying to forward message 6560859766932669280 to msgserver-2
-REQUEST HANDLER COMEÇOU
-CRIAR SERVIÇO
-INFO: Recorded message with identifier: 6560859766932669280
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
------------------------------------------------------------------------------------
-msgserver-2
------------------------------------------------------------------------------------
-BEANS
-
-MessageService Server ready @ http://172.18.0.4:8080/soap
-
-INFO: Metro monitoring rootname successfully set to: com.sun.metro:pp=/,type=WSEndpoint,name=messages-MessageResourceSoapPort
-INFO: Metro monitoring rootname successfully set to: com.sun.metro:pp=/,type=WSEndpoint,name=users-UserResourceSoapPort
-INFO: 
-MessageService Server ready @ http://172.18.0.4:8080/soap
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-INFO: Sending request to create a new inbox in MessageResource.
-
-
-INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-INFO: Created new user with name: duane.bradtke
-INFO: Sending request to create a new inbox in MessageResource.
-INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-INFO: Created new user with name: bradley.huel
-INFO: Sending request to create a new inbox in MessageResource.
-INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-INFO: Created new user with name: adelia.connelly
-INFO: Sending request to create a new inbox in MessageResource.
-INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-INFO: Created new user with name: tanja.will
-INFO: Sending request to create a new inbox in MessageResource.
-INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-INFO: Created new user with name: marhta.baumbach
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-false
-false
-INFO: Received request for message with id: 6560859766932669280.
-INFO: Requested message does not exists.
-
-
-
------------------------------------------------------------------------------------
-msgserver-3
------------------------------------------------------------------------------------
-BEANS
-
-MessageService Server ready @ http://172.18.0.5:8080/soap
-
-INFO: Metro monitoring rootname successfully set to: com.sun.metro:pp=/,type=WSEndpoint,name=messages-MessageResourceSoapPort
-INFO: Metro monitoring rootname successfully set to: com.sun.metro:pp=/,type=WSEndpoint,name=users-UserResourceSoapPort
-INFO: 
-MessageService Server ready @ http://172.18.0.5:8080/soap
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-INFO: Sending request to create a new inbox in MessageResource.
-INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-INFO: Created new user with name: lauri.lakin
-INFO: Sending request to create a new inbox in MessageResource.
-INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-INFO: Created new user with name: klara.cartwright
-INFO: Sending request to create a new inbox in MessageResource.
-INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-INFO: Created new user with name: jean.pagac
-INFO: Sending request to create a new inbox in MessageResource.
-
-
-INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-INFO: Created new user with name: jill.feil
-INFO: Sending request to create a new inbox in MessageResource.
-INFO: createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-INFO: Created new user with name: myrle.haley
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Deleting 1 files
+Deletion for 1 files successful
+Time Elapsed newDir: 388
+HTTP Error Code: 409: Conflict
+{"error_summary": "path/conflict/folder/...", "error": {".tag": "path", "path": {".tag": "conflict", "conflict": {".tag": "folder"}}}}
+Time Elapsed newDir: 440
+Directory '/msgserver-1' created successfuly.
+Time Elapsed newDir: 611
+Directory '/msgserver-1/messages' created successfuly.
+Time Elapsed newDir: 855
+Directory '/msgserver-1/users' created successfuly.
+postUser: request to post chantel.rath
+getMeta: /msgserver-1/users/chantel.rath
+{"error_summary": "path/not_found/...", "error": {".tag": "path", "path": {".tag": "not_found"}}}
+Time Elapsed GetMeta: 418
+Couldn't find file with name /msgserver-1/users/chantel.rath.
+Time Elapsed newDir: 484
+Directory '/msgserver-1/users/chantel.rath' created successfuly.
+Time Elapsed newDir: 590
+Directory '/msgserver-1/users/chantel.rath/inbox' created successfuly.
+Creating file on /msgserver-1/users/chantel.rath/data
+Time Elapsed Upload: 1123
+Succesfully created file: /msgserver-1/users/chantel.rath/data
+postUser: Created new user with name: chantel.rath
+postUser: request to post aubrey.blick
+getMeta: /msgserver-1/users/aubrey.blick
+{"error_summary": "path/not_found/...", "error": {".tag": "path", "path": {".tag": "not_found"}}}
+Time Elapsed GetMeta: 399
+Couldn't find file with name /msgserver-1/users/aubrey.blick.
+Time Elapsed newDir: 500
+Directory '/msgserver-1/users/aubrey.blick' created successfuly.
+Time Elapsed newDir: 607
+Directory '/msgserver-1/users/aubrey.blick/inbox' created successfuly.
+Creating file on /msgserver-1/users/aubrey.blick/data
+Time Elapsed Upload: 1028
+Succesfully created file: /msgserver-1/users/aubrey.blick/data
+postUser: Created new user with name: aubrey.blick
+postUser: request to post perry.hessel
+getMeta: /msgserver-1/users/perry.hessel
+{"error_summary": "path/not_found/.", "error": {".tag": "path", "path": {".tag": "not_found"}}}
+Time Elapsed GetMeta: 380
+Couldn't find file with name /msgserver-1/users/perry.hessel.
+Time Elapsed newDir: 554
+Directory '/msgserver-1/users/perry.hessel' created successfuly.
+Time Elapsed newDir: 602
+Directory '/msgserver-1/users/perry.hessel/inbox' created successfuly.
+Creating file on /msgserver-1/users/perry.hessel/data
+Time Elapsed Upload: 965
+Succesfully created file: /msgserver-1/users/perry.hessel/data
+postUser: Created new user with name: perry.hessel
+postUser: request to post corrie.bailey
+getMeta: /msgserver-1/users/corrie.bailey
+{"error_summary": "path/not_found/..", "error": {".tag": "path", "path": {".tag": "not_found"}}}
+Time Elapsed GetMeta: 377
+Couldn't find file with name /msgserver-1/users/corrie.bailey.
+Time Elapsed newDir: 455
+Directory '/msgserver-1/users/corrie.bailey' created successfuly.
+Time Elapsed newDir: 598
+Directory '/msgserver-1/users/corrie.bailey/inbox' created successfuly.
+Creating file on /msgserver-1/users/corrie.bailey/data
+Time Elapsed Upload: 1013
+Succesfully created file: /msgserver-1/users/corrie.bailey/data
+postUser: Created new user with name: corrie.bailey
+postMessage: Received request to register a new message (Sender: chantel.rath; Subject: Et id.)
+downloadUser: Downloading user chantel.rath
+Downloading /msgserver-1/users/chantel.rath/data
+Time Elapsed Download: 603
+File: /msgserver-1/users/chantel.rath/data was downloaded
+{"name":"chantel.rath","pwd":"cfr3k96epfu5","displayName":"Miss Lavina Waelchi","domain":"msgserver-1"}
+Creating file on /msgserver-1/messages/106377989126891158
+Time Elapsed Upload: 948
+Succesfully created file: /msgserver-1/messages/106377989126891158
+postMessage: Created new message with id: 106377989126891158
+Saving message 106377989126891158 from Miss Lavina Waelchi <chantel.rath@msgserver-1> to 1 recipients
+getMeta: /msgserver-1/users/aubrey.blick
+{".tag": "folder", "name": "aubrey.blick", "path_lower": "/msgserver-1/users/aubrey.blick", "path_display": "/msgserver-1/users/aubrey.blick", "id": "id:y3HU3r5OBIAAAAAAAAAMtA"}
+Time Elapsed GetMeta: 396
+File with name /msgserver-1/users/aubrey.blick was found.
+Copying 1 copies
+From /msgserver-1/messages/106377989126891158 ; To /msgserver-1/users/aubrey.blick/inbox/106377989126891158
+FEIJOADA
+{"entries":[{"from_path":"/msgserver-1/messages/106377989126891158","to_path":"/msgserver-1/users/aubrey.blick/inbox/106377989126891158"}],"autorename":false}
+Time Elapsed Copy: 304
+{".tag": "async_job_id", "async_job_id": "dbjid:AABzk4VFqxnWEZE29AOkeJOKiVymso2xfcTpcVOi7-2uhGNf7-EwiVToYvBi6r88r5QmAKBx7ElJNmis0X-sPBvz"}
+Copy: Succesfully copied all files
+saveMessages: Sucessfuly saved messages
+Time elapsed PostMessage: 2494
+postMessage: Received request to register a new message (Sender: aubrey.blick@msgserver-1; Subject: Porro quo.)
+downloadUser: Downloading user aubrey.blick
+Downloading /msgserver-1/users/aubrey.blick/data
+Time Elapsed Download: 718
+File: /msgserver-1/users/aubrey.blick/data was downloaded
+{"name":"aubrey.blick","pwd":"33floc73","displayName":"Dr. Temple Green","domain":"msgserver-1"}
+Creating file on /msgserver-1/messages/3619283852080853057
+Time Elapsed Upload: 878
+Succesfully created file: /msgserver-1/messages/3619283852080853057
+postMessage: Created new message with id: 3619283852080853057
+Saving message 3619283852080853057 from Dr. Temple Green <aubrey.blick@msgserver-1> to 1 recipients
+getMeta: /msgserver-1/users/perry.hessel
+{".tag": "folder", "name": "perry.hessel", "path_lower": "/msgserver-1/users/perry.hessel", "path_display": "/msgserver-1/users/perry.hessel", "id": "id:y3HU3r5OBIAAAAAAAAAMtw"}
+Time Elapsed GetMeta: 282
+File with name /msgserver-1/users/perry.hessel was found.
+Copying 1 copies
+From /msgserver-1/messages/3619283852080853057 ; To /msgserver-1/users/perry.hessel/inbox/3619283852080853057
+FEIJOADA
+{"entries":[{"from_path":"/msgserver-1/messages/3619283852080853057","to_path":"/msgserver-1/users/perry.hessel/inbox/3619283852080853057"}],"autorename":false}
+Time Elapsed Copy: 301
+{".tag": "async_job_id", "async_job_id": "dbjid:AABFWW6fa8D9UTdYjY4Va8uzPLlXzLUtK4BIMwDnJXgMAc6L8zXNPzaORGpGnn75Kq0yWtQp-vy86O2IbvndkVNq"}
+Copy: Succesfully copied all files
+saveMessages: Sucessfuly saved messages
+Time elapsed PostMessage: 2325
+postMessage: Received request to register a new message (Sender: perry.hessel; Subject: Maxime temporibus laboriosam molestiae error magnam.)
+downloadUser: Downloading user perry.hessel
+Downloading /msgserver-1/users/perry.hessel/data
+Time Elapsed Download: 698
+File: /msgserver-1/users/perry.hessel/data was downloaded
+{"name":"perry.hessel","pwd":"kq2g5v64pqqrdh9","displayName":"Herb Hansen","domain":"msgserver-1"}
+Creating file on /msgserver-1/messages/8058544719150479498
+Time Elapsed Upload: 869
+Succesfully created file: /msgserver-1/messages/8058544719150479498
+postMessage: Created new message with id: 8058544719150479498
+Saving message 8058544719150479498 from Herb Hansen <perry.hessel@msgserver-1> to 1 recipients
+getMeta: /msgserver-1/users/corrie.bailey
+{".tag": "folder", "name": "corrie.bailey", "path_lower": "/msgserver-1/users/corrie.bailey", "path_display": "/msgserver-1/users/corrie.bailey", "id": "id:y3HU3r5OBIAAAAAAAAAMug"}
+Time Elapsed GetMeta: 280
+File with name /msgserver-1/users/corrie.bailey was found.
+Copying 1 copies
+From /msgserver-1/messages/8058544719150479498 ; To /msgserver-1/users/corrie.bailey/inbox/8058544719150479498
+FEIJOADA
+{"entries":[{"from_path":"/msgserver-1/messages/8058544719150479498","to_path":"/msgserver-1/users/corrie.bailey/inbox/8058544719150479498"}],"autorename":false}
+Time Elapsed Copy: 316
+{".tag": "async_job_id", "async_job_id": "dbjid:AAC0fjYf6dHZl6zKyVP-b-MzND--s8eRps92RMrAKHYLGd_PHgx0HHaifmYxIT8BcHzNikJu8Tgw35DZofxUnVHw"}
+Copy: Succesfully copied all files
+saveMessages: Sucessfuly saved messages
+Time elapsed PostMessage: 2336
+postMessage: Received request to register a new message (Sender: corrie.bailey@msgserver-1; Subject: Vero doloremque necessitatibus velit officia rerum.)
+downloadUser: Downloading user corrie.bailey
+Downloading /msgserver-1/users/corrie.bailey/data
+Time Elapsed Download: 722
+File: /msgserver-1/users/corrie.bailey/data was downloaded
+{"name":"corrie.bailey","pwd":"scerl0yfs52","displayName":"Dannie Armstrong","domain":"msgserver-1"}
+Creating file on /msgserver-1/messages/1505578977665190963
+Time Elapsed Upload: 1045
+Succesfully created file: /msgserver-1/messages/1505578977665190963
+postMessage: Created new message with id: 1505578977665190963
+Saving message 1505578977665190963 from Dannie Armstrong <corrie.bailey@msgserver-1> to 2 recipients
+getMeta: /msgserver-1/users/chantel.rath
+{".tag": "folder", "name": "chantel.rath", "path_lower": "/msgserver-1/users/chantel.rath", "path_display": "/msgserver-1/users/chantel.rath", "id": "id:y3HU3r5OBIAAAAAAAAAMsQ"}
+Time Elapsed GetMeta: 289
+File with name /msgserver-1/users/chantel.rath was found.
+getMeta: /msgserver-1/users/aubrey.blick
+{".tag": "folder", "name": "aubrey.blick", "path_lower": "/msgserver-1/users/aubrey.blick", "path_display": "/msgserver-1/users/aubrey.blick", "id": "id:y3HU3r5OBIAAAAAAAAAMtA"}
+Time Elapsed GetMeta: 276
+File with name /msgserver-1/users/aubrey.blick was found.
+Copying 2 copies
+From /msgserver-1/messages/1505578977665190963 ; To /msgserver-1/users/chantel.rath/inbox/1505578977665190963
+From /msgserver-1/messages/1505578977665190963 ; To /msgserver-1/users/aubrey.blick/inbox/1505578977665190963
+FEIJOADA
+{"entries":[{"from_path":"/msgserver-1/messages/1505578977665190963","to_path":"/msgserver-1/users/chantel.rath/inbox/1505578977665190963"},{"from_path":"/msgserver-1/messages/1505578977665190963","to_path":"/msgserver-1/users/aubrey.blick/inbox/1505578977665190963"}],"autorename":false}
+Time Elapsed Copy: 306
+{".tag": "async_job_id", "async_job_id": "dbjid:AAASyjzxyXNbbphbDE56VrHuswPz0expfMeoSK0I8_w4EH6-xCjTIqIblQThistZfy7PjbNpUmUZebcg3dSV0a_p"}
+Copy: Succesfully copied all files
+saveMessages: Sucessfuly saved messages
+Time elapsed PostMessage: 2798
+getMessages: Received request for messages to 'chantel.rath'
+downloadUser: Downloading user chantel.rath
+Downloading /msgserver-1/users/chantel.rath/data
+Time Elapsed Download: 999
+File: /msgserver-1/users/chantel.rath/data was downloaded
+{"name":"chantel.rath","pwd":"cfr3k96epfu5","displayName":"Miss Lavina Waelchi","domain":"msgserver-1"}
+Listing /msgserver-1/users/chantel.rath/inbox
+Folder: /msgserver-1/users/chantel.rath/inbox was listed
+[/msgserver-1/users/chantel.rath/inbox/1505578977665190963]
+getMessages: Returning message list to user with 1 messages.
+getMessages: Received request for messages to 'aubrey.blick'
+downloadUser: Downloading user aubrey.blick
+Downloading /msgserver-1/users/aubrey.blick/data
+Time Elapsed Download: 530
+File: /msgserver-1/users/aubrey.blick/data was downloaded
+{"name":"aubrey.blick","pwd":"33floc73","displayName":"Dr. Temple Green","domain":"msgserver-1"}
+Listing /msgserver-1/users/aubrey.blick/inbox
+Folder: /msgserver-1/users/aubrey.blick/inbox was listed
+[/msgserver-1/users/aubrey.blick/inbox/1505578977665190963]
+getMessages: Returning message list to user with 1 messages.
 
 
 

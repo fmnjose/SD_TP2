@@ -6,6 +6,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -18,6 +19,8 @@ import sd1920.trab2.api.Message;
 @Path(MessageServiceRest.PATH)
 public interface MessageServiceRest {
 	String PATH = "/messages";
+	public static final String HEADER_VERSION = "Msgserver-version";
+
 	/**
 	 * Posts a new message to the server, associating it to the inbox of every individual destination.
 	 * An outgoing message should be modified before delivering it, by assigning an ID, and by changing the
@@ -37,8 +40,9 @@ public interface MessageServiceRest {
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	long postMessage(@QueryParam("pwd") String pwd, Message msg);
-	
+	long postMessage(@HeaderParam(MessageServiceRest.HEADER_VERSION) Long version, 
+				@QueryParam("pwd") String pwd, Message msg, @QueryParam("secret") String secret);
+
 	/**
 	 * Obtains the message identified by mid of user user
 	 * @param user user name for the operation
@@ -117,6 +121,7 @@ public interface MessageServiceRest {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	List<String> postForwardedMessage(Message msg, @QueryParam("secret") String secret);
+
 
 
 	/**

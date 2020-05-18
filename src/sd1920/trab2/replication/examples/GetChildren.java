@@ -1,4 +1,4 @@
-package sd1920.aula11.zookeeper.examples;
+package sd1920.trab2.replication.examples;
 
 import java.util.List;
 import java.util.Scanner;
@@ -6,7 +6,7 @@ import java.util.Scanner;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 
-import sd1920.aula11.zookeeper.ZookeeperProcessor;
+import sd1920.trab2.replication.ZookeeperProcessor;
 
 public class GetChildren {
 	// Main just for testing purposes
