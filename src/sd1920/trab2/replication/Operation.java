@@ -1,5 +1,6 @@
 package sd1920.trab2.replication;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class Operation {
@@ -17,12 +18,19 @@ public class Operation {
     }
 
     private Type opType;
-    private List<String> args;
+    private List<Object> args;
     private long bigbang;
 
-    public Operation(Type opType, List<String> args){
+    public Operation(Type opType, List<Object> args){
         this.opType = opType;
         this.args = args;
+        this.bigbang = System.currentTimeMillis();
+    }
+
+    public Operation(Type opType,  Object arg){
+        this.opType = opType;
+        this.args = new LinkedList<>();
+        this.args.add(arg);
         this.bigbang = System.currentTimeMillis();
     }
 

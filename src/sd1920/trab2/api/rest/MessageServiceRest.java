@@ -40,8 +40,19 @@ public interface MessageServiceRest {
 	@Path("/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	long postMessage(@HeaderParam(MessageServiceRest.HEADER_VERSION) Long version, 
-				@QueryParam("pwd") String pwd, Message msg, @QueryParam("secret") String secret);
+	long postMessage(@QueryParam("pwd") String pwd, Message msg);
+
+
+	/**
+	 * Used by the primary server to replicate a given postMessage request
+	 * @param version current version of the primary server
+	 * @param msg message object to be written, with id and sender set already
+	 * @param secret shhh
+	 */
+	@POST
+	@Path("/replica")
+	@Consumes(MediaType.APPLICATION_JSON)
+	void execPostMessage(@HeaderParam(MessageServiceRest.HEADER_VERSION) Long version, Message msg, @QueryParam("secret") String secret);
 
 	/**
 	 * Obtains the message identified by mid of user user

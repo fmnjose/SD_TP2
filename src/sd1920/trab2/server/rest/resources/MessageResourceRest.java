@@ -44,10 +44,36 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 	}
 
 	
-	private long execPostMessage(String pwd, Message msg){
+	public void execPostMessage(Long version, Message msg, String secret){
+		Set<String> recipientDomains = new HashSet<>();
+
+		String senderName = getSenderCanonicalName(msg.getSender());
+
+		synchronized(this.allMessages){
+			allMessages.put(msg.getId(), msg);
+		}
+
+		System.out.println("postMessage: Created new message with id: " + msg.getId());
+
+		for(String recipient: msg.getDestination()){
+			String[] tokens = recipient.split("@");
+			if(tokens[1].equals(this.domain))
+				saveMessage(senderName,recipient, false, msg);
+			else
+				recipientDomains.add(tokens[1]);
+		}	
+
+		this.forwardMessage(recipientDomains, msg, ServerTypes.REST);
+	}
+
+	@Override
+	public long postMessage(String pwd, Message msg) {
+		
+		if(!vc.isPrimary())
+			throw new WebApplicationException(Response.temporaryRedirect(URI.create(vc.getPrimaryUri())).build());
+
 		User user;
 		String sender = msg.getSender();
-		Set<String> recipientDomains = new HashSet<>();
 
 		System.out.println("postMessage: Received request to register a new message (Sender: " + sender + "; Subject: "+msg.getSubject()+")");
 		
@@ -71,35 +97,11 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 			
 			msg.setSender(String.format(SENDER_FORMAT, user.getDisplayName(), user.getName(), user.getDomain()));
 			msg.setId(newID);
-			allMessages.put(newID, msg);
-							
 		}
 
-		System.out.println("postMessage: Created new message with id: " + newID);
+		vc.postMessage(msg);
 
-		for(String recipient: msg.getDestination()){
-			String[] tokens = recipient.split("@");
-			if(tokens[1].equals(this.domain))
-				saveMessage(senderName,recipient, false, msg);
-			else
-				recipientDomains.add(tokens[1]);
-		}	
-
-
-		this.forwardMessage(recipientDomains, msg, ServerTypes.REST);
-
-		return msg.getId();
-	}
-
-	@Override
-	public long postMessage(Long version, String pwd, Message msg, String secret) {
-		
-		if(version == null)
-			if(!vc.isPrimary())
-				throw new WebApplicationException(Response.temporaryRedirect(URI.create(vc.getPrimaryUri())).build());
-			execPostMessage(pwd, msg);
-		
-		
+		return newID;
 	}
 
 	@Override
