@@ -1,7 +1,6 @@
 package sd1920.trab2.server.dropbox.requests;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.ws.rs.core.Response.Status;
@@ -53,12 +52,6 @@ public class Copy {
 		}
 		
 		if(r.getCode() == 200) {
-			try {
-				System.out.println(r.getBody());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			return true;
 		} else {
 			System.err.println("HTTP Error Code: " + r.getCode() + ": " + r.getMessage());
