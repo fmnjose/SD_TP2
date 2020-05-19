@@ -17,8 +17,8 @@ import sd1920.trab2.server.soap.SOAPMailServer;
 
 public abstract class LocalServerUtils extends ServerUtils{
     
-    protected final Map<Long, Message> allMessages = new HashMap<Long, Message>();
-    protected final Map<String, Set<Long>> userInboxs = new HashMap<String, Set<Long>>();
+    protected Map<Long, Message> allMessages;
+    protected Map<String, Set<Long>> userInboxs;
     protected final Map<String, RequestHandler> requests = new HashMap<>();
 
 
@@ -28,6 +28,9 @@ public abstract class LocalServerUtils extends ServerUtils{
 		this.config.property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT);
         this.config.property(ClientProperties.READ_TIMEOUT, TIMEOUT);
         
+        this.allMessages = new HashMap<Long, Message>();
+        this.userInboxs = new HashMap<String, Set<Long>>();
+
         this.client = ClientBuilder.newClient(config);
     }
     
