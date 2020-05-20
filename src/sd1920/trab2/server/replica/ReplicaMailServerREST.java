@@ -1,8 +1,7 @@
-package sd1920.trab2.server.rest;
+package sd1920.trab2.server.replica;
 
 import java.net.InetAddress;
 import java.net.URI;
-import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -12,11 +11,12 @@ import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import sd1920.trab2.api.Discovery;
+import sd1920.trab2.replication.VersionControl;
 import sd1920.trab2.server.InsecureHostnameVerifier;
-import sd1920.trab2.server.rest.resources.MessageResourceRest;
-import sd1920.trab2.server.rest.resources.UserResourceRest;
+import sd1920.trab2.server.replica.resources.ReplicaMessageResourceREST;
+import sd1920.trab2.server.replica.resources.ReplicaUserResourceREST;
 
-public class RESTMailServer {
+public class ReplicaMailServerREST {
 
 	static {
 		System.setProperty("java.net.preferIPv4Stack", "true");
@@ -29,7 +29,10 @@ public class RESTMailServer {
 	public static Discovery serverRecord;
 
 	public static String secret;
-	public static void main(String[] args) throws UnknownHostException {
+
+	public static VersionControl vc;
+
+	public static void main(String[] args) throws Exception {
 		String ip = InetAddress.getLocalHost().getHostAddress();
 
 		secret = args[0];
@@ -37,16 +40,19 @@ public class RESTMailServer {
 
 		ResourceConfig config = new ResourceConfig();
 
-		config.register(MessageResourceRest.class);
-		config.register(UserResourceRest.class);
+		config.register(ReplicaMessageResourceREST.class);
+		config.register(ReplicaUserResourceREST.class);
 
 		String serverURI = String.format("https://%s:%s/rest", ip, PORT);
 
+		vc = new VersionControl(InetAddress.getLocalHost().getHostName(), serverURI);
+		
 		try {
 			JdkHttpServerFactory.createHttpServer(URI.create(serverURI), config, SSLContext.getDefault());
 		} catch (NoSuchAlgorithmException e) {
 			System.exit(1);
 		}
+
 
 		serverRecord = new Discovery(SERVICE, serverURI);
 

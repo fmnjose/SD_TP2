@@ -18,15 +18,14 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 
 import sd1920.trab2.api.User;
-import sd1920.trab2.api.rest.ReplicaUserServiceRest;
 import sd1920.trab2.api.rest.UserServiceRest;
 import sd1920.trab2.server.serverUtils.LocalServerUtils;
 import sd1920.trab2.server.rest.RESTMailServer;
 
 @Singleton
-public class UserResourceRest implements ReplicaUserServiceRest {
+public class UserResourceRest implements UserServiceRest {
 
-    private Map<String, User> users;
+    private final Map<String, User> users = new HashMap<String, User>();
 
     private ClientConfig config;
 
@@ -42,7 +41,6 @@ public class UserResourceRest implements ReplicaUserServiceRest {
 		this.config.property(ClientProperties.READ_TIMEOUT, LocalServerUtils.TIMEOUT);
 
 		this.client = ClientBuilder.newClient(config);
-        this.users = new HashMap<String, User>();
 
 		this.serverRestUri = String.format("https://%s:%d/rest",InetAddress.getLocalHost().getHostAddress(),RESTMailServer.PORT);
     }
@@ -192,26 +190,6 @@ public class UserResourceRest implements ReplicaUserServiceRest {
             this.users.remove(name);
         }
         return user;
-    }
-
-    @Override
-    public Map<String, User> getUsers(String secret) {
-        if (!secret.equals(RESTMailServer.secret)) {
-			System.out.println("An intruder!");
-			throw new WebApplicationException(Status.FORBIDDEN);
-        }
-        
-        return this.users;
-    }
-
-    @Override
-    public void updateUsers(Map<String, User> users, String secret) {
-        if (!secret.equals(RESTMailServer.secret)) {
-			System.out.println("An intruder!");
-			throw new WebApplicationException(Status.FORBIDDEN);
-        }
-        
-        this.users = users;
     }
 
 }

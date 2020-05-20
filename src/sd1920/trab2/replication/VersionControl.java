@@ -1,5 +1,6 @@
 package sd1920.trab2.replication;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -24,11 +25,14 @@ import sd1920.trab2.api.Message;
 import sd1920.trab2.api.User;
 import sd1920.trab2.api.rest.MessageServiceRest;
 import sd1920.trab2.api.rest.UserServiceRest;
-import sd1920.trab2.server.rest.RESTMailServer;
+import sd1920.trab2.server.replica.ReplicaMailServerREST;
 import sd1920.trab2.server.serverUtils.ServerUtils;
 
 public class VersionControl {
 
+    public static final String HEADER_VERSION = "Msgserver-version";
+
+    private static final String NODE_FORMAT = "%s/%s";
     private static final long TTL = 18000;
     private boolean isPrimary;
 
@@ -47,13 +51,13 @@ public class VersionControl {
     private List<Operation> ops;
 
     public VersionControl(String domain, String uri) throws Exception {
-        this.domain = domain;
+        this.domain = "/" + domain;
         this.uri = uri;
         this.version = 0;
-        this.awaitingVersion = new Long(0);
+        this.awaitingVersion = new Long(-1);
         this.isPrimary = false;
         this.childrenList = new LinkedList<>();
-        this.zk = new ZookeeperProcessor("localhost:2181,kafka:2181");
+        this.zk = new ZookeeperProcessor("kafka:2181");
 
         ClientConfig config = new ClientConfig();
 		config.property(ClientProperties.CONNECT_TIMEOUT, ServerUtils.TIMEOUT);
@@ -61,9 +65,11 @@ public class VersionControl {
 
         client = ClientBuilder.newClient(config);
 
-		String newPath = zk.write(domain, CreateMode.PERSISTENT);
+        String newPath = zk.write(this.domain, CreateMode.PERSISTENT);
+
+        this.startListening();
 		
-		newPath = zk.write(domain + "/server_", uri, CreateMode.EPHEMERAL_SEQUENTIAL);
+		newPath = zk.write(this.domain + "/server_", uri, CreateMode.EPHEMERAL_SEQUENTIAL);
         System.out.println("Created child znode: " + newPath);
         
         sync = SyncPoint.getInstance();
@@ -71,24 +77,29 @@ public class VersionControl {
         ops = new LinkedList<>();
     }
     
-    private synchronized void addOperation(Operation op){
-        purgeList();
+    public synchronized void addOperation(Operation op){
+        if(!this.ops.isEmpty())
+            purgeList();
+        System.out.println("Adding operation " + op.getType().toString());
         ops.add(op);
         this.version++;
         sync.setResult(this.getVersion(), null);
     }
 
-    public void startListening(){
+    private String getReplicaUri(String node){
+       return new String(zk.getData(String.format(NODE_FORMAT, domain, node)));
+    }
+
+    private void startListening(){
         zk.getChildren( this.domain, new Watcher() {
 			@Override
 			public void process(WatchedEvent event) {
                 childrenList = zk.getChildren( domain, this);
-                byte[] b = zk.getData("/" + childrenList.get(0));
+                Collections.sort(childrenList);
+                byte[] b = zk.getData(String.format(NODE_FORMAT, domain, childrenList.get(0)));
                 String puri = new String(b);
                 isPrimary = uri.equals(puri);
-
-                if(!isPrimary)
-                    primaryUri = puri;
+                primaryUri = puri;
 			}
 		});
     }
@@ -98,6 +109,41 @@ public class VersionControl {
     }
 
     private void processOperation(Operation op){
+        String uri = this.uri;
+
+        List<Object> args;
+        
+        switch (op.getType()) {
+            case POST_MESSAGE:
+                this.execPostMessage(uri, (Message)op.getArgs().get(0));
+                break;
+            case DELETE_MESSAGE:
+                args = op.getArgs();
+                this.execDeleteMessage(uri, (String) args.get(0), (Long) args.get(1));
+                break;
+            case REMOVE_FROM_INBOX:
+                args = op.getArgs();
+                this.execRemoveFromUserInbox(uri, (String) args.get(0), (Long) args.get(1));
+                break;
+            case POST_FORWARDED:
+                this.execPostforwardedMessage(uri, (Message) op.getArgs().get(0));
+                break;
+            case DELETE_FORWARDED:
+                this.execDeleteForwardedMessage(uri, (Long) op.getArgs().get(0));
+                break;
+            case POST_USER:
+                this.execPostUser(uri, (User) op.getArgs().get(0));
+                break;
+            case UPDATE_USER:
+                args = op.getArgs();
+                this.execUpdateUSer(uri, (String) args.get(0), (User) args.get(1));
+                break;
+            case DELETE_USER:
+                this.execDeleteUser(uri, (String) op.getArgs().get(0));
+                break;
+            default:
+                break;
+        }
     }
     
     private void updateState(){
@@ -105,7 +151,7 @@ public class VersionControl {
         //GET
         WebTarget target = client.target(this.primaryUri);
             target = target.path(MessageServiceRest.PATH).path("update");
-            target = target.queryParam("secret", RESTMailServer.secret);
+            target = target.queryParam("secret", ReplicaMailServerREST.secret);
             
             Response r = target.request()
             .accept(MediaType.APPLICATION_JSON)
@@ -115,7 +161,7 @@ public class VersionControl {
         //SET
         target = client.target(this.primaryUri);
             target = target.path(MessageServiceRest.PATH).path("update");
-            target = target.queryParam("secret", RESTMailServer.secret);
+            target = target.queryParam("secret", ReplicaMailServerREST.secret);
         
             r = target.request()
             .post(Entity.entity(allMessages, MediaType.APPLICATION_JSON));
@@ -124,7 +170,7 @@ public class VersionControl {
         //GET
         target = client.target(this.primaryUri);
             target = target.path(MessageServiceRest.PATH).path("update").path("mbox");
-            target = target.queryParam("secret", RESTMailServer.secret);
+            target = target.queryParam("secret", ReplicaMailServerREST.secret);
             
             r = target.request()
             .accept(MediaType.APPLICATION_JSON)
@@ -134,7 +180,7 @@ public class VersionControl {
         //SET
         target = client.target(this.primaryUri);
             target = target.path(MessageServiceRest.PATH).path("update").path("mbox");
-            target = target.queryParam("secret", RESTMailServer.secret);
+            target = target.queryParam("secret", ReplicaMailServerREST.secret);
         
             r = target.request()
             .post(Entity.entity(userInboxes, MediaType.APPLICATION_JSON));
@@ -143,7 +189,7 @@ public class VersionControl {
         //GET
         target = client.target(this.primaryUri);
             target = target.path(UserServiceRest.PATH).path("update");
-            target = target.queryParam("secret", RESTMailServer.secret);
+            target = target.queryParam("secret", ReplicaMailServerREST.secret);
             
             r = target.request()
             .accept(MediaType.APPLICATION_JSON)
@@ -153,24 +199,27 @@ public class VersionControl {
         //SET
         target = client.target(this.primaryUri);
             target = target.path(MessageServiceRest.PATH).path("update");
-            target = target.queryParam("secret", RESTMailServer.secret);
+            target = target.queryParam("secret", ReplicaMailServerREST.secret);
         
             r = target.request()
             .post(Entity.entity(users, MediaType.APPLICATION_JSON));   
     }
 
     public void syncVersion(long version){
+        System.out.println("Synching version");
         if (version > this.getVersion() + 1) {
+            System.out.println("Version Mismatch: Got " + Long.toString(version) + ". Local " + Long.toString(this.getVersion()));
             WebTarget target = client.target(primaryUri);
             target = target.path(MessageServiceRest.PATH).path("replica");
-            target = target.queryParam("secret", RESTMailServer.secret);
+            target = target.queryParam("secret", ReplicaMailServerREST.secret);
             
             Response r = target.request()
-            .header(MessageServiceRest.HEADER_VERSION, this.getVersion())
+            .header(HEADER_VERSION, this.getVersion())
             .accept(MediaType.APPLICATION_JSON)
             .get();
 
             if(r.getStatus() == Status.ACCEPTED.getStatusCode()){
+                System.out.println("Got updated ops");
                 List<Operation> updatedOperations = r.readEntity(new GenericType<List<Operation>>() {});
                 
                 for (Operation operation : updatedOperations) {
@@ -179,6 +228,7 @@ public class VersionControl {
                 }
             }
             else if(r.getStatus() == Status.GONE.getStatusCode()){
+                System.out.println("Updating state");
                 this.updateState();
                 this.version = version;
             }
@@ -186,7 +236,8 @@ public class VersionControl {
     }
 
     public void purgeList(){
-        while(System.currentTimeMillis() - ops.get(0).getCreationTime() >= TTL)
+        Long currentTime = System.currentTimeMillis();
+        while(currentTime - ops.get(0).getCreationTime() >= TTL)
             ops.remove(0);
     }  
 
@@ -212,27 +263,191 @@ public class VersionControl {
     }  
 
 
-    public void postMessage(Message msg){
-        int failCounter = 0;
-        
-        for(String child : this.childrenList){
-            String uri = new String(zk.getData("/" + child));
-            
+    //METHODS CALLED BY THE RESOURCES UPON RECEIVING A REQUEST
+        //USER_RESOURCE
+
+        private void execPostUser(String uri, User user){
             WebTarget target = client.target(uri);
-            target = target.path(MessageServiceRest.PATH).path("mbox").path("replica");
-            target = target.queryParam("secret", RESTMailServer.secret);
+            target = target.path(UserServiceRest.PATH).path("replica");
+            target = target.queryParam("secret", ReplicaMailServerREST.secret);
             
             Response r = target.request()
-            .header(MessageServiceRest.HEADER_VERSION, this.getVersion())
-            .accept(MediaType.APPLICATION_JSON)
-            .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
+            .header(HEADER_VERSION, this.getVersion())
+            .post(Entity.entity(user, MediaType.APPLICATION_JSON));
             
-            if(r.getStatus() != Status.ACCEPTED.getStatusCode()){
-                failCounter++;
+            if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
+                System.out.println("execPostUser: FODA SE");
+                System.out.println(r.getStatus());
+            }
+        }
+
+        public void postuser(User user){            
+            for(String child : this.childrenList){
+                String uri = this.getReplicaUri(child);
+               this.execPostUser(uri, user);
+            }
+        }
+
+        private void execUpdateUSer(String uri, String name, User user){
+            WebTarget target = client.target(uri);
+            target = target.path(UserServiceRest.PATH).path(name).path("replica");
+            target = target.queryParam("secret", ReplicaMailServerREST.secret);
+            
+            Response r = target.request()
+            .header(HEADER_VERSION, this.getVersion())
+            .put(Entity.entity(user, MediaType.APPLICATION_JSON));
+            
+            if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
                 System.out.println("FODA SE");
             }
         }
 
-        this.addOperation(new Operation(Operation.Type.POST_MESSAGE, msg));
-    }
+        public void updateUser(String name, User user){            
+            for(String child : this.childrenList){
+                String uri = this.getReplicaUri(child);
+                
+                this.execUpdateUSer(uri, name, user);
+            }
+        }
+
+        private void execDeleteUser(String uri, String name){
+            WebTarget target = client.target(uri);
+            target = target.path(UserServiceRest.PATH).path(name).path("replica");
+            target = target.queryParam("secret", ReplicaMailServerREST.secret);
+            
+            Response r = target.request()
+            .header(HEADER_VERSION, this.getVersion())
+            .delete();
+            
+            if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
+                System.out.println("FODA SE");
+            }
+        }
+
+        public void deleteUser(String name){            
+            for(String child : this.childrenList){
+                String uri = this.getReplicaUri(child);
+                
+               this.execDeleteUser(uri, name);
+            }
+        }
+
+        private void execPostMessage(String uri, Message msg){
+            WebTarget target = client.target(uri);
+            target = target.path(MessageServiceRest.PATH).path("mbox").path("replica");
+            target = target.queryParam("secret", ReplicaMailServerREST.secret);
+            
+            Response r = target.request()
+            .header(HEADER_VERSION, this.getVersion())
+            .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
+            
+            if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
+                System.out.println("FODA SE");
+            }
+        }
+
+        //MESSAGE_RESOURCE
+        public void postMessage(Message msg){            
+            for(String child : this.childrenList){
+                String uri = this.getReplicaUri(child);
+                
+               this.execPostMessage(uri, msg);
+            }
+        }
+
+        private void execDeleteMessage(String uri, String name, long mid){
+            WebTarget target = client.target(uri);
+            target = target.path(MessageServiceRest.PATH).path("msg").path(name).path(Long.toString(mid)).path("replica");
+            target = target.queryParam("secret", ReplicaMailServerREST.secret);
+            
+            Response r = target.request()
+            .header(HEADER_VERSION, this.getVersion())
+            .delete();
+            
+            if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
+                System.out.println("FODA SE");
+            }
+        }
+
+        public void deleteMessage(String name, long mid){            
+            for(String child : this.childrenList){
+                String uri = this.getReplicaUri(child);
+                
+                this.execDeleteMessage(uri, name, mid);
+            }
+        }
+
+        private void execRemoveFromUserInbox(String uri, String name, long mid){
+            WebTarget target = client.target(uri);
+            target = target.path(MessageServiceRest.PATH).path("mbox").path(name).path(Long.toString(mid)).path("replica");
+            target = target.queryParam("secret", ReplicaMailServerREST.secret);
+            
+            Response r = target.request()
+            .header(HEADER_VERSION, this.getVersion())
+            .delete();
+            
+            if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
+                System.out.println("FODA SE");
+            }
+        }
+
+        public void removeFromUserInbox(String name, long mid){            
+            for(String child : this.childrenList){
+                String uri = this.getReplicaUri(child);
+                
+                this.execRemoveFromUserInbox(uri, name, mid);
+            }
+        }
+
+        private List<String> execPostforwardedMessage(String uri, Message msg){
+            WebTarget target = client.target(uri);
+            target = target.path(MessageServiceRest.PATH).path("mbox").path("replica");
+            target = target.queryParam("secret", ReplicaMailServerREST.secret);
+            
+            Response r = target.request()
+            .header(HEADER_VERSION, this.getVersion())
+            .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
+            
+            if(r.getStatus() != Status.ACCEPTED.getStatusCode()){
+                System.out.println("FODA SE");
+            }
+            
+            return r.readEntity(new GenericType<List<String>>(){});
+        }
+
+        public List<String> postForwardedMessage(Message msg){
+            List<String> failedDeliveries = new LinkedList<>();
+            
+            for(String child : this.childrenList){
+                String uri = this.getReplicaUri(child);
+                
+               failedDeliveries = this.execPostforwardedMessage(uri, msg);
+            }
+                        
+            return failedDeliveries;
+        }
+
+        private void execDeleteForwardedMessage(String uri, long mid){
+            WebTarget target = client.target(uri);
+            target = target.path(MessageServiceRest.PATH).path("msg").path(Long.toString(mid)).path("replica");
+            target = target.queryParam("secret", ReplicaMailServerREST.secret);
+            
+            Response r = target.request()
+            .header(HEADER_VERSION, this.getVersion())
+            .delete();
+            
+            if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
+                System.out.println("FODA SE");
+            }
+        }
+
+        public void deleteForwardedMessage(long mid){            
+            for(String child : this.childrenList){
+                String uri = this.getReplicaUri(child);
+                
+               this.execDeleteForwardedMessage(uri, mid);
+            }
+        }
+
+
 }

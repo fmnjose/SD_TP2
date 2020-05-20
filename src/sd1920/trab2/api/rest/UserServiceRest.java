@@ -15,9 +15,7 @@ import sd1920.trab2.api.User;
 
 @Path(UserServiceRest.PATH)
 public interface UserServiceRest {
-
-	String PATH = "/users";
-	
+	String PATH = "/users";	
 	/**
 	 * Creates a new user in the local domain.
 	 * @param user User to be created

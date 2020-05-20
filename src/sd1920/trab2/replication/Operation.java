@@ -14,7 +14,6 @@ public class Operation {
         POST_USER,
         UPDATE_USER,
         DELETE_USER,
-        CREATE_INBOX,
     }
 
     private Type opType;
@@ -36,5 +35,13 @@ public class Operation {
 
     public long getCreationTime(){
         return bigbang;
+    }
+
+    public Type getType(){
+        return this.opType;
+    }
+
+    public List<Object> getArgs(){
+        return this.args;
     }
 }

@@ -6,7 +6,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -15,13 +14,10 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import sd1920.trab2.api.Message;
-import sd1920.trab2.replication.Operation;
 
 @Path(MessageServiceRest.PATH)
 public interface MessageServiceRest{
 	String PATH = "/messages";
-	public static final String HEADER_VERSION = "Msgserver-version";
-
 	/**
 	 * Posts a new message to the server, associating it to the inbox of every individual destination.
 	 * An outgoing message should be modified before delivering it, by assigning an ID, and by changing the

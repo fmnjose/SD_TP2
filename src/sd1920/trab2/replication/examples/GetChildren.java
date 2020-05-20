@@ -16,7 +16,7 @@ public class GetChildren {
 		System.out.println("Provide a path (should start with /) :");
 		String path = sc.nextLine().trim();
 
-		final ZookeeperProcessor zk = new ZookeeperProcessor( "localhost:2181,kafka:2181");
+		final ZookeeperProcessor zk = new ZookeeperProcessor( "kafka:2181");
 		zk.getChildren( path, new Watcher() {
 			@Override
 			public void process(WatchedEvent event) {

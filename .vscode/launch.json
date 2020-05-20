@@ -6,6 +6,14 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - ReplicaMailServerREST",
+            "request": "launch",
+            "mainClass": "sd1920.trab2.server.replica.ReplicaMailServerREST",
+            "projectName": "sd1920-trab2",
+            "args": "peepee"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - ProxyMailServer",
             "request": "launch",
             "mainClass": "sd1920.trab2.server.dropbox.ProxyMailServer",
