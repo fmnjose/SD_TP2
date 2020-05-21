@@ -39,7 +39,7 @@ public class VersionControl {
     private ZookeeperProcessor zk;
     private String domain;
     private String uri;
-    private long version;
+    private Long version;
     private String primaryUri;
     private SyncPoint sync;
     private Long awaitingVersion;
@@ -53,7 +53,7 @@ public class VersionControl {
     public VersionControl(String domain, String uri) throws Exception {
         this.domain = "/" + domain;
         this.uri = uri;
-        this.version = 0;
+        this.version = 0L;
         this.awaitingVersion = new Long(-1);
         this.isPrimary = false;
         this.childrenList = new LinkedList<>();
@@ -77,13 +77,18 @@ public class VersionControl {
         ops = new LinkedList<>();
     }
     
-    public synchronized void addOperation(Operation op){
+    public void addOperation(Operation op){
+        System.out.println("Adding operation " + op.getType().toString());
+
         if(!this.ops.isEmpty())
             purgeList();
-        System.out.println("Adding operation " + op.getType().toString());
+            
         ops.add(op);
-        this.version++;
-        sync.setResult(this.getVersion(), null);
+
+        synchronized(this.version){
+            this.version++;
+            sync.setResult(this.getVersion(), null);
+        }
     }
 
     private String getReplicaUri(String node){
@@ -424,7 +429,6 @@ public class VersionControl {
         public List<String> postForwardedMessage(Message msg){
             List<String> failedDeliveries = new LinkedList<>();
             
-            System.out.println("Child uri is " + this.childrenList.size());
             for(String child : this.childrenList){
                 String uri = this.getReplicaUri(child);
 

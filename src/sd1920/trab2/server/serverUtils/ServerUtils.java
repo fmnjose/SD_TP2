@@ -226,12 +226,6 @@ public abstract class ServerUtils {
         
         for (String domain : recipientDomains) {
 
-            System.out.println("KNOWN DOMAINS");
-
-            for(String boy: domains.record.keySet()){
-                System.out.println(boy + ": " + domains.record.get(boy).getUri());
-            }
-
             uri = domains.knownUrisOf(domain);
 
             if (uri == null){
@@ -250,7 +244,6 @@ public abstract class ServerUtils {
                     new Thread(rh).start();
                 }
                 
-                System.out.println("Creating request: My secret is :" + this.secret);
                 rh.addRequest(new PostRequest(uri, msg, domain, this.secret));
             }
         }
@@ -273,6 +266,9 @@ public abstract class ServerUtils {
             case REST:
                 domains = RESTMailServer.serverRecord;
                 break;
+            case REST_REPLICA:
+                domains = ReplicaMailServerREST.serverRecord;
+                break;
             case SOAP:
                 domains = SOAPMailServer.serverRecord;
                 break;
@@ -285,7 +281,7 @@ public abstract class ServerUtils {
         }
 
         for(String domain: recipientDomains){
-
+            
             uri = domains.knownUrisOf(domain);
 			
 			if(uri == null){

@@ -62,7 +62,6 @@ public abstract class LocalServerUtils extends ServerUtils{
                         this.saveErrorMessages(senderName, recipient, msg);
                     }
                 } else {
-                    System.out.println("saveMessage: SAVE TIME -> " + recipientCanonicalName + " : " + msg.getId());
                     this.allMessages.put(msg.getId(), msg);
                     this.userInboxs.get(recipientCanonicalName).add(msg.getId());
                 }

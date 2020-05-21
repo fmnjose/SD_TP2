@@ -115,7 +115,6 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
         
     @Override
     public String postUser(User user) {
-        System.out.println("PostUser");
         String serverDomain = null;
 
         if (!vc.isPrimary()){
@@ -150,13 +149,10 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
             }
         }
 
-        System.out.println("Waiting for Version");
         vc.waitForVersion();
-        System.out.println("Done waiting");
 
         vc.postuser(user);
         
-       System.out.println("Returning");
         return String.format("%s@%s", name, user.getDomain());
     }
 

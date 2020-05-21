@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import javax.inject.Singleton;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import sd1920.trab2.api.rest.ReplicaMessageServiceRest;
@@ -73,7 +74,6 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 				saveMessage(senderName, recipient, false, msg);
 			else{
 				recipientDomains.add(tokens[1]);
-				System.out.println("postMessage: Adding " + tokens[1]);
 			}
 		}
 		
@@ -87,6 +87,7 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 		if (!vc.isPrimary()){
 			String redirectPath = String.format(POST_MESSAGE_FORMAT, vc.getPrimaryUri());
+			redirectPath = UriBuilder.fromPath(redirectPath).queryParam("pwd",pwd).toString();
 			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR MESSAGE " + msg.getId());
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
@@ -172,6 +173,8 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 	@Override
 	public void execDeleteMessage(long version, String user, long mid, String secret) {
+		System.out.println("execDeleteMessage: " + Long.toString(mid));
+
 		if (!secret.equals(ReplicaMailServerREST.secret)) {
 			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
@@ -203,13 +206,15 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 				recipientDomains.add(tokens[1]);
 		}
 
-		forwardDelete(recipientDomains, mid, ServerTypes.REST);
+		forwardDelete(recipientDomains, mid, ServerTypes.REST_REPLICA);
 
+		
 		List<Object> args = new LinkedList<>();
-
+		
 		args.add(user);
 		args.add(mid);
-
+		
+		System.out.println("pixa");
 		vc.addOperation(new Operation(Operation.Type.DELETE_MESSAGE, args));
 	}
 
@@ -219,6 +224,7 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 		if (!vc.isPrimary()){
 			String redirectPath = String.format(DELETE_MESSAGE_FORMAT, vc.getPrimaryUri(), user, mid);
+			redirectPath = UriBuilder.fromPath(redirectPath).queryParam("pwd", pwd).toString();
 			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR MESSAGE " + mid);
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
@@ -275,6 +281,7 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 		if (!vc.isPrimary()){
 			String redirectPath = String.format(REMOVE_FROM_INBOX_FORMAT, vc.getPrimaryUri(), user, mid);
+			redirectPath = UriBuilder.fromPath(redirectPath).queryParam("pwd", pwd).toString();
 			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR MESSAGE " + mid);
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
@@ -340,7 +347,6 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 	public List<String> postForwardedMessage(Message msg, String secret) {
 		System.out.println("postForwardedMessage: Received request to save the message " + msg.getId());
 
-		System.out.println("postForwardedMessage: SECRET CHECK: " + secret);
 		if (!secret.equals(ReplicaMailServerREST.secret)) {
 			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
@@ -348,6 +354,7 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 		
 		if (!vc.isPrimary()){
 			String redirectPath = String.format(POST_FORWARDED_FORMAT, vc.getPrimaryUri());
+			redirectPath = UriBuilder.fromPath(redirectPath).queryParam("secret", secret).toString();
 			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR MESSAGE " + msg.getId());
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
@@ -363,6 +370,7 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 	@Override
 	public void execDeleteForwardedMessage(long version, long mid, String secret) {
+		System.out.println("execDeleteForwardedMessage: MID: " + Long.toString(mid));
 		if (!secret.equals(ReplicaMailServerREST.secret)) {
 			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
@@ -399,6 +407,7 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 		if (!vc.isPrimary()){
 			String redirectPath = String.format(DELETE_FORWARDED_FORMAT, vc.getPrimaryUri(), mid);
+			redirectPath = UriBuilder.fromPath(redirectPath).queryParam("secret", secret).toString();
 			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR MESSAGE " + mid);
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
