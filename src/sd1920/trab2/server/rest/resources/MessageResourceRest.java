@@ -25,7 +25,7 @@ import sd1920.trab2.api.User;
 public class MessageResourceRest extends LocalServerUtils implements MessageServiceRest {
 
 	public MessageResourceRest() throws UnknownHostException {
-		super(true);
+		super(ServerTypes.REST);
 
 		this.randomNumberGenerator = new Random(System.currentTimeMillis());
 		
@@ -222,6 +222,7 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 
 		List<String> failedDeliveries = new LinkedList<>();
 
+		System.out.println("BOOP");
 		for(String recipient: msg.getDestination()){
 			String[] tokens = recipient.split("@");
 			if(tokens[1].equals(this.domain) && !this.saveMessage(msg.getSender(), tokens[0], true, msg))

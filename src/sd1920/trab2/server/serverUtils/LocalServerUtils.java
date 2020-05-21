@@ -6,11 +6,12 @@ import java.util.Set;
 
 import javax.ws.rs.client.ClientBuilder;
 
-
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 
 import sd1920.trab2.api.Message;
+import sd1920.trab2.server.dropbox.ProxyMailServer;
+import sd1920.trab2.server.replica.ReplicaMailServerREST;
 import sd1920.trab2.server.rest.RESTMailServer;
 import sd1920.trab2.server.soap.SOAPMailServer;
 
@@ -22,8 +23,8 @@ public abstract class LocalServerUtils extends ServerUtils{
     protected final Map<String, RequestHandler> requests = new HashMap<>();
 
 
-    public LocalServerUtils(boolean isRest){
-        super(isRest ? RESTMailServer.secret : SOAPMailServer.secret);
+    public LocalServerUtils(ServerTypes type){
+        super(type);
         this.config = new ClientConfig();
 		this.config.property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT);
         this.config.property(ClientProperties.READ_TIMEOUT, TIMEOUT);

@@ -26,6 +26,7 @@ import sd1920.trab2.api.rest.ReplicaUserServiceRest;
 import sd1920.trab2.replication.Operation;
 import sd1920.trab2.replication.VersionControl;
 import sd1920.trab2.server.serverUtils.LocalServerUtils;
+import sd1920.trab2.server.serverUtils.ServerUtils;
 import sd1920.trab2.server.replica.ReplicaMailServerREST;
 
 @Singleton
@@ -117,10 +118,12 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
         System.out.println("PostUser");
         String serverDomain = null;
 
-        if (!vc.isPrimary())
-            throw new WebApplicationException(Response.temporaryRedirect(URI.create(vc.getPrimaryUri())).build());
+        if (!vc.isPrimary()){
+			String redirectPath = String.format(ServerUtils.POST_USER_FORMAT, vc.getPrimaryUri());
+			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR USER");
+			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
+		}
 
-        System.out.println("Gunga");
         try {
             serverDomain = InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {
@@ -208,8 +211,12 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
 
     @Override
     public User updateUser(String name, String pwd, User user) {
-        if (!vc.isPrimary())
-            throw new WebApplicationException(Response.temporaryRedirect(URI.create(vc.getPrimaryUri())).build());
+
+        if (!vc.isPrimary()){
+			String redirectPath = String.format(ServerUtils.UPDATE_USER_FORMAT, vc.getPrimaryUri(), name);
+			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR NAME");
+			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
+		}
 
         User existingUser;
         
@@ -255,8 +262,12 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
 
     @Override
     public User deleteUser(String name, String pwd) {
-        if (!vc.isPrimary())
-            throw new WebApplicationException(Response.temporaryRedirect(URI.create(vc.getPrimaryUri())).build());
+
+        if (!vc.isPrimary()){
+			String redirectPath = String.format(ServerUtils.DELETE_USER_FORMAT, vc.getPrimaryUri(), name);
+			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR USER");
+			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
+		}
 
         User user;
 

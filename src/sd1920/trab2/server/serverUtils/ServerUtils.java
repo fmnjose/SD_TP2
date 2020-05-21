@@ -28,6 +28,7 @@ import sd1920.trab2.api.Discovery.DomainInfo;
 import sd1920.trab2.api.rest.UserServiceRest;
 import sd1920.trab2.api.soap.UserServiceSoap;
 import sd1920.trab2.server.dropbox.ProxyMailServer;
+import sd1920.trab2.server.replica.ReplicaMailServerREST;
 import sd1920.trab2.server.rest.RESTMailServer;
 
 import java.net.UnknownHostException;
@@ -59,18 +60,47 @@ public abstract class ServerUtils {
     public static final QName MESSAGE_QNAME = new QName(MessageServiceSoap.NAMESPACE, MessageServiceSoap.NAME);
 	public static final QName USER_QNAME = new QName(UserServiceSoap.NAMESPACE, UserServiceSoap.NAME);
 	public static final String MESSAGES_WSDL = String.format("/%s/?wsdl", MessageServiceSoap.NAME);
-	public static final String USERS_WSDL = String.format("/%s/?wsdl", UserServiceSoap.NAME);
+    public static final String USERS_WSDL = String.format("/%s/?wsdl", UserServiceSoap.NAME);
 
+    public static final String POST_USER_FORMAT = "%s/users";
+    public static final String UPDATE_USER_FORMAT = "%s/users/%s";
+    public static final String DELETE_USER_FORMAT = "%s/users/%s";
+
+    
+    public static final String POST_MESSAGE_FORMAT = "%s/messages";
+    public static final String DELETE_MESSAGE_FORMAT = "%s/messages/msg/%s/%ld";
+    public static final String REMOVE_FROM_INBOX_FORMAT = "%s/messages/mbox/%s/%ld";
+    public static final String POST_FORWARDED_FORMAT = "%s/messages/mbox";
+    public static final String DELETE_FORWARDED_FORMAT = "%s/messages/msg/%ld";
+    
+    
     public static final int TIMEOUT = 10000;
 	public static final int SLEEP_TIME = 1000;
     public static final int N_TRIES = 5;
 
     public enum ServerTypes{
-        REST, SOAP, PROXY;
+        REST, REST_REPLICA, SOAP, PROXY;
     }
 
-    public ServerUtils(String secret){
-        this.secret = secret;
+    public ServerUtils(ServerTypes type){
+        switch(type){
+            case REST:
+                this.secret = RESTMailServer.secret;
+                break;
+            case REST_REPLICA:
+                this.secret = ReplicaMailServerREST.secret;
+                break;
+            case SOAP:
+                this.secret = SOAPMailServer.secret;
+                break;
+            case PROXY:
+                this.secret = ProxyMailServer.secret;
+                break;
+            default:
+                this.secret = "";
+                System.out.println("What?");
+        }
+        
         this.config = new ClientConfig();
 		this.config.property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT);
         this.config.property(ClientProperties.READ_TIMEOUT, TIMEOUT);
@@ -180,6 +210,9 @@ public abstract class ServerUtils {
             case REST:
                 domains = RESTMailServer.serverRecord;
                 break;
+            case REST_REPLICA:
+                domains = ReplicaMailServerREST.serverRecord;
+                break;
             case SOAP:
                 domains = SOAPMailServer.serverRecord;
                 break;
@@ -217,6 +250,7 @@ public abstract class ServerUtils {
                     new Thread(rh).start();
                 }
                 
+                System.out.println("Creating request: My secret is :" + this.secret);
                 rh.addRequest(new PostRequest(uri, msg, domain, this.secret));
             }
         }

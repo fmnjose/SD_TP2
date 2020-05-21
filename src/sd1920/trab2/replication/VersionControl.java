@@ -87,7 +87,7 @@ public class VersionControl {
     }
 
     private String getReplicaUri(String node){
-       return new String(zk.getData(String.format(NODE_FORMAT, domain, node)));
+       return new String(zk.getData(String.format(NODE_FORMAT, this.domain, node)));
     }
 
     private void startListening(){
@@ -298,7 +298,8 @@ public class VersionControl {
             .put(Entity.entity(user, MediaType.APPLICATION_JSON));
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                System.out.println("FODA SE");
+                System.out.println("execUpdateUser: FODA SE");
+                System.out.println(r.getStatus());
             }
         }
 
@@ -320,7 +321,8 @@ public class VersionControl {
             .delete();
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                System.out.println("FODA SE");
+                System.out.println("execDeleteUser: FODA SE");
+                System.out.println(r.getStatus());
             }
         }
 
@@ -334,7 +336,7 @@ public class VersionControl {
 
         private void execPostMessage(String uri, Message msg){
             WebTarget target = client.target(uri);
-            target = target.path(MessageServiceRest.PATH).path("mbox").path("replica");
+            target = target.path(MessageServiceRest.PATH).path("replica");
             target = target.queryParam("secret", ReplicaMailServerREST.secret);
             
             Response r = target.request()
@@ -342,7 +344,8 @@ public class VersionControl {
             .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                System.out.println("FODA SE");
+                System.out.println("execPostMessage: FODA SE");
+                System.out.println(r.getStatus());
             }
         }
 
@@ -365,7 +368,8 @@ public class VersionControl {
             .delete();
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                System.out.println("FODA SE");
+                System.out.println("execDeleteMessage: FODA SE");
+                System.out.println(r.getStatus());
             }
         }
 
@@ -387,7 +391,8 @@ public class VersionControl {
             .delete();
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                System.out.println("FODA SE");
+                System.out.println("execRemoveFromUserInbox: FODA SE");
+                System.out.println(r.getStatus());
             }
         }
 
@@ -408,8 +413,9 @@ public class VersionControl {
             .header(HEADER_VERSION, this.getVersion())
             .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
             
-            if(r.getStatus() != Status.ACCEPTED.getStatusCode()){
-                System.out.println("FODA SE");
+            if(r.getStatus() != Status.OK.getStatusCode()){
+                System.out.println("execPostForwardedMessage: FODA SE");
+                System.out.println(r.getStatus());
             }
             
             return r.readEntity(new GenericType<List<String>>(){});
@@ -418,8 +424,10 @@ public class VersionControl {
         public List<String> postForwardedMessage(Message msg){
             List<String> failedDeliveries = new LinkedList<>();
             
+            System.out.println("Child uri is " + this.childrenList.size());
             for(String child : this.childrenList){
                 String uri = this.getReplicaUri(child);
+
                 
                failedDeliveries = this.execPostforwardedMessage(uri, msg);
             }
@@ -437,7 +445,8 @@ public class VersionControl {
             .delete();
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                System.out.println("FODA SE");
+                System.out.println("execDeleteForwardedMessage: FODA SE");
+                System.out.println(r.getStatus());
             }
         }
 

@@ -25,8 +25,8 @@ public class DropboxServerUtils extends ServerUtils {
 
     public static Gson json = new Gson();
 
-    public DropboxServerUtils(String secret){
-        super(secret);
+    public DropboxServerUtils(){
+        super(ServerTypes.PROXY);
     }
 
     @Override

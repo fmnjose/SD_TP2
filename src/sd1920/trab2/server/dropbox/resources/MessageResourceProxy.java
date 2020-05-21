@@ -17,7 +17,6 @@ import com.google.gson.Gson;
 import sd1920.trab2.api.Message;
 import sd1920.trab2.api.User;
 import sd1920.trab2.api.rest.MessageServiceRest;
-import sd1920.trab2.replication.Operation;
 import sd1920.trab2.server.dropbox.ProxyMailServer;
 import sd1920.trab2.server.dropbox.requests.Create;
 import sd1920.trab2.server.dropbox.requests.Delete;
@@ -35,7 +34,7 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 	private static Gson json = new Gson();
 
 	public MessageResourceProxy() throws UnknownHostException {
-		super(ProxyMailServer.secret);
+		super();
 
 		this.randomNumberGenerator = new Random(System.currentTimeMillis());
 

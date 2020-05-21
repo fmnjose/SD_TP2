@@ -80,6 +80,7 @@ public class RequestHandler implements Runnable {
             r = target.request().accept(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
 
+            System.out.println("processPostRequest: " + r.getStatus() + " " + msg.getId());
             failedDeliveries = r.readEntity(new GenericType<List<String>>() {});
         } else {
             MessageServiceSoap msgService = null;
@@ -109,6 +110,7 @@ public class RequestHandler implements Runnable {
         List<String> failedDeliveries = null;
         try{
             failedDeliveries = processPostRequest(request);
+            System.out.println("Beans");
         }
         catch (ProcessingException e) {
             System.out.println("execPostRequest: Failed to forward message to " + request.getDomain() + ". Retrying...");
@@ -124,6 +126,8 @@ public class RequestHandler implements Runnable {
         }
 
         String senderName = LocalServerUtils.getSenderCanonicalName(request.getMessage().getSender());
+
+        System.out.println("NULL CHECK: " + request.getDomain() + " " + request.getMessage().getId());
 
         for (String recipient : failedDeliveries) {
             utils.saveErrorMessages(senderName, recipient, request.getMessage());
@@ -146,6 +150,7 @@ public class RequestHandler implements Runnable {
         if (uri.isRest()) {
             WebTarget target = client.target(uri.getUri());
             target = target.path(MessageResourceRest.PATH).path("msg").path(Long.toString(mid));
+            System.out.println("Request " + request.getMid() + " has secret " + request.getSecret());
             target  = target.queryParam("secret", request.getSecret());
 
             target.request().delete();

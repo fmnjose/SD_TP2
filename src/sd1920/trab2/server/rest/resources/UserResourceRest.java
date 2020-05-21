@@ -116,6 +116,7 @@ public class UserResourceRest implements UserServiceRest {
 
     @Override
     public User getUser(String name, String pwd) {
+        System.out.println("getUser: " + name);
         User user;
 
         if(name == null || name.equals("")){
