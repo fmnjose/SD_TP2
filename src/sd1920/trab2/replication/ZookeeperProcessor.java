@@ -9,7 +9,7 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
 
-public class ZookeeperProcessor implements Watcher {
+public class ZookeeperProcessor implements Watcher {	
 	private ZooKeeper zk;
 
 	/**
@@ -67,7 +67,7 @@ public class ZookeeperProcessor implements Watcher {
 
 	@Override
 	public void process(WatchedEvent event) {
-		System.out.println( event);
+		System.out.println(event);
 	}
 	
 

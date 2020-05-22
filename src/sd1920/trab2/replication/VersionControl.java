@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -25,10 +26,13 @@ import sd1920.trab2.api.Message;
 import sd1920.trab2.api.User;
 import sd1920.trab2.api.rest.MessageServiceRest;
 import sd1920.trab2.api.rest.UserServiceRest;
+import sd1920.trab2.server.dropbox.ProxyMailServer;
 import sd1920.trab2.server.replica.ReplicaMailServerREST;
 import sd1920.trab2.server.serverUtils.ServerUtils;
 
 public class VersionControl {
+
+    private static Logger Log = Logger.getLogger(ProxyMailServer.class.getName());
 
     public static final String HEADER_VERSION = "Msgserver-version";
 
@@ -70,7 +74,7 @@ public class VersionControl {
         this.startListening();
 		
 		newPath = zk.write(this.domain + "/server_", uri, CreateMode.EPHEMERAL_SEQUENTIAL);
-        System.out.println("Created child znode: " + newPath);
+        Log.info("Created child znode: " + newPath);
         
         sync = SyncPoint.getInstance();
 
@@ -78,7 +82,7 @@ public class VersionControl {
     }
     
     public void addOperation(Operation op){
-        System.out.println("Adding operation " + op.getType().toString());
+        Log.info("Adding operation " + op.getType().toString());
 
         if(!this.ops.isEmpty())
             purgeList();
@@ -211,9 +215,9 @@ public class VersionControl {
     }
 
     public void syncVersion(long version){
-        System.out.println("Synching version");
+        Log.info("Synching version");
         if (version > this.getVersion() + 1) {
-            System.out.println("Version Mismatch: Got " + Long.toString(version) + ". Local " + Long.toString(this.getVersion()));
+            Log.info("Version Mismatch: Got " + Long.toString(version) + ". Local " + Long.toString(this.getVersion()));
             WebTarget target = client.target(primaryUri);
             target = target.path(MessageServiceRest.PATH).path("replica");
             target = target.queryParam("secret", ReplicaMailServerREST.secret);
@@ -224,7 +228,7 @@ public class VersionControl {
             .get();
 
             if(r.getStatus() == Status.ACCEPTED.getStatusCode()){
-                System.out.println("Got updated ops");
+                Log.info("Got updated ops");
                 List<Operation> updatedOperations = r.readEntity(new GenericType<List<Operation>>() {});
                 
                 for (Operation operation : updatedOperations) {
@@ -233,7 +237,7 @@ public class VersionControl {
                 }
             }
             else if(r.getStatus() == Status.GONE.getStatusCode()){
-                System.out.println("Updating state");
+                Log.info("Updating state");
                 this.updateState();
                 this.version = version;
             }
@@ -281,8 +285,8 @@ public class VersionControl {
             .post(Entity.entity(user, MediaType.APPLICATION_JSON));
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                System.out.println("execPostUser: FODA SE");
-                System.out.println(r.getStatus());
+                Log.info("execPostUser: FODA SE");
+                Log.info(String.valueOf(r.getStatus()));
             }
         }
 
@@ -303,8 +307,8 @@ public class VersionControl {
             .put(Entity.entity(user, MediaType.APPLICATION_JSON));
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                System.out.println("execUpdateUser: FODA SE");
-                System.out.println(r.getStatus());
+                Log.info("execUpdateUser: FODA SE");
+                Log.info(String.valueOf(r.getStatus()));
             }
         }
 
@@ -326,8 +330,8 @@ public class VersionControl {
             .delete();
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                System.out.println("execDeleteUser: FODA SE");
-                System.out.println(r.getStatus());
+                Log.info("execDeleteUser: FODA SE");
+                Log.info(String.valueOf(r.getStatus()));
             }
         }
 
@@ -349,8 +353,8 @@ public class VersionControl {
             .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                System.out.println("execPostMessage: FODA SE");
-                System.out.println(r.getStatus());
+                Log.info("execPostMessage: FODA SE");
+                Log.info(String.valueOf(r.getStatus()));
             }
         }
 
@@ -373,8 +377,8 @@ public class VersionControl {
             .delete();
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                System.out.println("execDeleteMessage: FODA SE");
-                System.out.println(r.getStatus());
+                Log.info("execDeleteMessage: FODA SE");
+                Log.info(String.valueOf(r.getStatus()));
             }
         }
 
@@ -396,8 +400,8 @@ public class VersionControl {
             .delete();
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                System.out.println("execRemoveFromUserInbox: FODA SE");
-                System.out.println(r.getStatus());
+                Log.info("execRemoveFromUserInbox: FODA SE");
+                Log.info(String.valueOf(r.getStatus()));
             }
         }
 
@@ -419,8 +423,8 @@ public class VersionControl {
             .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
             
             if(r.getStatus() != Status.OK.getStatusCode()){
-                System.out.println("execPostForwardedMessage: FODA SE");
-                System.out.println(r.getStatus());
+                Log.info("execPostForwardedMessage: FODA SE");
+                Log.info(String.valueOf(r.getStatus()));
             }
             
             return r.readEntity(new GenericType<List<String>>(){});
@@ -449,8 +453,8 @@ public class VersionControl {
             .delete();
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                System.out.println("execDeleteForwardedMessage: FODA SE");
-                System.out.println(r.getStatus());
+                Log.info("execDeleteForwardedMessage: FODA SE");
+                Log.info(String.valueOf(r.getStatus()));
             }
         }
 

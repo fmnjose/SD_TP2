@@ -10,10 +10,6 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 
 import sd1920.trab2.api.Message;
-import sd1920.trab2.server.dropbox.ProxyMailServer;
-import sd1920.trab2.server.replica.ReplicaMailServerREST;
-import sd1920.trab2.server.rest.RESTMailServer;
-import sd1920.trab2.server.soap.SOAPMailServer;
 
 
 public abstract class LocalServerUtils extends ServerUtils{
@@ -55,10 +51,10 @@ public abstract class LocalServerUtils extends ServerUtils{
                 String recipientCanonicalName = getSenderCanonicalName(recipient);
                 if (!userInboxs.containsKey(recipientCanonicalName)) {
                     if (forwarded){
-                        System.out.println("saveMessage: user does not exist for forwarded message " + msg.getId());
+                        Log.info("saveMessage: user does not exist for forwarded message " + msg.getId());
                         return false;
                     }else {
-                        System.out.println("saveMessage: Void User");
+                        Log.info("saveMessage: Void User");
                         this.saveErrorMessages(senderName, recipient, msg);
                     }
                 } else {
@@ -67,7 +63,7 @@ public abstract class LocalServerUtils extends ServerUtils{
                 }
             }
         }
-        System.out.println("saveMessage: Sucessfuly saved message " + msg.getId());
+        Log.info("saveMessage: Sucessfuly saved message " + msg.getId());
         return true;
     }
 

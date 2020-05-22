@@ -3,6 +3,7 @@ package sd1920.trab2.server.dropbox.requests;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.OAuth2AccessToken;
@@ -14,10 +15,13 @@ import com.google.gson.Gson;
 
 import org.pac4j.scribe.builder.api.DropboxApi20;
 
+import sd1920.trab2.server.dropbox.ProxyMailServer;
 import sd1920.trab2.server.dropbox.arguments.DeleteArgs;
 import sd1920.trab2.server.dropbox.arguments.DeleteBatchArgs;
 
 public class Delete{
+
+    private static Logger Log = Logger.getLogger(ProxyMailServer.class.getName());
 
     private static final String DELETE_BATCH_URL = "https://api.dropboxapi.com/2/files/delete_batch";
 
@@ -58,7 +62,7 @@ public class Delete{
     }
 
     public static boolean run(List<String> paths){
-		System.out.println("Deleting " + paths.size() + " files");
+		Log.info("Deleting " + paths.size() + " files");
 		boolean success = false;
 
 		List<DeleteArgs> args = new LinkedList<>();
@@ -71,7 +75,7 @@ public class Delete{
 				break;
 				
 			try {
-				System.out.println("I sleep");
+				Log.info("I sleep");
 				Thread.sleep(DropboxRequest.SLEEP_TIME);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -79,10 +83,10 @@ public class Delete{
         }
 
 		if(success){
-			System.out.println("Deletion for " + paths.size() + " files successful");
+			Log.info("Deletion for " + paths.size() + " files successful");
 			return true;
 		}else{
-			System.out.println("Failed to delete " + paths.size() + " files");
+			Log.info("Failed to delete " + paths.size() + " files");
 			return false;
 		}
 	}

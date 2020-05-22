@@ -1,6 +1,7 @@
 package sd1920.trab2.server.dropbox.requests;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.OAuth2AccessToken;
@@ -12,9 +13,12 @@ import com.google.gson.Gson;
 
 import org.pac4j.scribe.builder.api.DropboxApi20;
 
+import sd1920.trab2.server.dropbox.ProxyMailServer;
 import sd1920.trab2.server.dropbox.arguments.CreateFolderV2Args;
 
 public class CreateDirectory {
+
+    private static Logger Log = Logger.getLogger(ProxyMailServer.class.getName());
 
 	private static final String CREATE_FOLDER_V2_URL = "https://api.dropboxapi.com/2/files/create_folder_v2";
 
@@ -36,7 +40,7 @@ public class CreateDirectory {
 		try {
 			long curr = System.currentTimeMillis();
 			r = service.execute(createFolder);
-			System.out.println("Time Elapsed newDir: " + (System.currentTimeMillis() - curr));
+			Log.info("Time Elapsed newDir: " + (System.currentTimeMillis() - curr));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -70,10 +74,10 @@ public class CreateDirectory {
 		}
 		
 		if(success){
-			System.out.println("Directory '" + directoryPath + "' created successfuly.");
+			Log.info("Directory '" + directoryPath + "' created successfuly.");
 			return true;
 		}else{
-			System.out.println("Failed to create directory '" + directoryPath + "'");
+			Log.info("Failed to create directory '" + directoryPath + "'");
 			return false;
 		}
 	}

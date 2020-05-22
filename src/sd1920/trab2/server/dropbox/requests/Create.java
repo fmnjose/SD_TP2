@@ -1,6 +1,7 @@
 package sd1920.trab2.server.dropbox.requests;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.OAuth2AccessToken;
@@ -12,10 +13,13 @@ import com.google.gson.Gson;
 
 import org.pac4j.scribe.builder.api.DropboxApi20;
 
+import sd1920.trab2.server.dropbox.ProxyMailServer;
 import sd1920.trab2.server.dropbox.arguments.CreateFileArgs;
 
 public class Create {
     private static final String CREATE_FILE_URL = "https://content.dropboxapi.com/2/files/upload";
+
+    private static Logger Log = Logger.getLogger(ProxyMailServer.class.getName());
 
     private static boolean execute(String filePath, Object file) {
 		OAuthRequest createFile = new OAuthRequest(Verb.POST, CREATE_FILE_URL);
@@ -38,7 +42,7 @@ public class Create {
 		try {
 			Long curr = System.currentTimeMillis();
 			r = service.execute(createFile);
-			System.out.println("Time Elapsed Upload: " + (System.currentTimeMillis() - curr));
+			Log.info("Time Elapsed Upload: " + (System.currentTimeMillis() - curr));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -58,7 +62,7 @@ public class Create {
     }
     
     public static boolean run(String directoryPath, Object object){
-		System.out.println("Creating file on " + directoryPath);
+		Log.info("Creating file on " + directoryPath);
         boolean success = false;
         
         for(int i = 0; i < DropboxRequest.RETRIES; i++){
@@ -73,10 +77,10 @@ public class Create {
         }
 
 		if(success){
-			System.out.println("Succesfully created file: " + directoryPath);
+			Log.info("Succesfully created file: " + directoryPath);
 			return true;
 		}else{
-			System.out.println("Couldn't create file: " + directoryPath);
+			Log.info("Couldn't create file: " + directoryPath);
 			return false;
 		}
     }

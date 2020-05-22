@@ -42,9 +42,9 @@ public class DownloadFile {
 		try {
 			Long curr = System.currentTimeMillis();
 			r = service.execute(downloadFile);
-			System.out.println("Time Elapsed Download: " + (System.currentTimeMillis() - curr));
+			Log.info("Time Elapsed Download: " + (System.currentTimeMillis() - curr));
 		} catch (Exception e) {
-			System.out.println("Damn dropbox!");
+			Log.info("Damn dropbox!");
 			return null;
 		}
 		
@@ -53,7 +53,7 @@ public class DownloadFile {
 			String jstring = new String(r.getBody().getBytes());
             return jstring;
 		} else if(r.getCode() == 409){
-			System.out.println("DownloadFile: File does not exist");
+			Log.info("DownloadFile: File does not exist");
 			throw new WebApplicationException(Status.CONFLICT);
 		} else {
 			System.err.println("HTTP Error Code: " + r.getCode() + ": " + r.getMessage());
@@ -67,7 +67,7 @@ public class DownloadFile {
     }
 
     public static String run(String filePath){
-		System.out.println("Downloading " + filePath);
+		Log.info("Downloading " + filePath);
 		boolean success = false;
 		String o = null;
 		
@@ -78,21 +78,21 @@ public class DownloadFile {
                     success = true;
                     break;
 				}
-				System.out.println("I SLEEP");
+				Log.info("I SLEEP");
 				Thread.sleep(1000);
 			} catch(WebApplicationException e){
 				break;
 			} catch(Exception e){
-				System.out.println("SearchFile: What the frog");
+				Log.info("SearchFile: What the frog");
 			}
 
         }		
 		
 		if(success){
-			System.out.println("File: " + filePath + " was downloaded");
+			Log.info("File: " + filePath + " was downloaded");
 			return o;
 		}else{
-			System.out.println("File: " + filePath + " was NOT found");
+			Log.info("File: " + filePath + " was NOT found");
 			return null;
 		}
     }

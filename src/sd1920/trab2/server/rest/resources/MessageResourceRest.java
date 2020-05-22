@@ -44,10 +44,10 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 		String sender = msg.getSender();
 		Set<String> recipientDomains = new HashSet<>();
 
-		System.out.println("postMessage: Received request to register a new message (Sender: " + sender + "; Subject: "+msg.getSubject()+")");
+		Log.info("postMessage: Received request to register a new message (Sender: " + sender + "; Subject: "+msg.getSubject()+")");
 		
 		if(sender == null || msg.getDestination() == null || msg.getDestination().size() == 0) {
-			System.out.println("postMessage: Message was rejected due to lack of recepients.");
+			Log.info("postMessage: Message was rejected due to lack of recepients.");
 			throw new WebApplicationException(Status.CONFLICT );
 		}
 
@@ -70,7 +70,7 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 							
 		}
 
-		System.out.println("postMessage: Created new message with id: " + newID);
+		Log.info("postMessage: Created new message with id: " + newID);
 
 		for(String recipient: msg.getDestination()){
 			String[] tokens = recipient.split("@");
@@ -94,11 +94,11 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
-		System.out.println("getMessage: Received request for message with id: " + mid +".");
+		Log.info("getMessage: Received request for message with id: " + mid +".");
 		synchronized(this.allMessages){
 			synchronized(this.userInboxs){
 				if(!this.allMessages.containsKey(mid) || !this.userInboxs.get(user).contains(mid)) {
-					System.out.println("getMessage: Requested message does not exists.");
+					Log.info("getMessage: Requested message does not exists.");
 					throw new WebApplicationException( Status.NOT_FOUND ); 
 				}
 			}
@@ -110,12 +110,12 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 
 	@Override
 	public List<Long> getMessages(String user, String pwd) {
-		System.out.println("getMessages: Received request for messages to '" + user + "'");
+		Log.info("getMessages: Received request for messages to '" + user + "'");
 
 		User u = this.getUserRest(user, pwd);
 
 		if(u == null){
-			System.out.println("getMessages: User with name " + user + " does not exist in the domain.");
+			Log.info("getMessages: User with name " + user + " does not exist in the domain.");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -125,13 +125,13 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 			mids = userInboxs.getOrDefault(user, Collections.emptySet());
 		}
 
-		System.out.println("getMessages: Returning message list to user with " + mids.size() + " messages.");
+		Log.info("getMessages: Returning message list to user with " + mids.size() + " messages.");
 		return new ArrayList<>(mids);
 	}
 
 	@Override
 	public void deleteMessage(String user, long mid, String pwd) {
-		System.out.println("deleteMessage: Received request to delete a message with the id: " + String.valueOf(mid));
+		Log.info("deleteMessage: Received request to delete a message with the id: " + String.valueOf(mid));
 		
 		User sender = null;
 		
@@ -145,7 +145,7 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 		sender  = this.getUserRest(user, pwd);
 		
 		if(sender == null){
-			System.out.println("delete message: User not found or wrong password");
+			Log.info("delete message: User not found or wrong password");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 		
@@ -177,19 +177,19 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 
 	@Override
 	public void removeFromUserInbox(String user, long mid, String pwd) {
-		System.out.println("removeFromUserInbox: Received request to delete message " + String.valueOf(mid) + " from the inbox of " + user);
+		Log.info("removeFromUserInbox: Received request to delete message " + String.valueOf(mid) + " from the inbox of " + user);
 		
 		User u = this.getUserRest(user, pwd);
 
 		if(u == null){
-			System.out.println("removeFromUserInbox: User with name " + user + " does not exist in the domain.");
+			Log.info("removeFromUserInbox: User with name " + user + " does not exist in the domain.");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 		
 		synchronized(this.allMessages){
 			synchronized(this.userInboxs){
 				if(!this.allMessages.containsKey(mid) || !this.userInboxs.get(user).contains(mid)){
-					System.out.println("removeFromUserInbox: Message not found");
+					Log.info("removeFromUserInbox: Message not found");
 					throw new WebApplicationException(Status.NOT_FOUND);
 				}
 			}
@@ -202,7 +202,7 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 	@Override
 	public void createInbox(String user, String secret) {
 		if(!secret.equals(RESTMailServer.secret)){
-			System.out.println("An intruder!");
+			Log.info("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -213,10 +213,10 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 
 	@Override
 	public List<String> postForwardedMessage(Message msg, String secret) {
-		System.out.println("postForwardedMessage: Received request to save the message " + msg.getId());
+		Log.info("postForwardedMessage: Received request to save the message " + msg.getId());
 
 		if(!secret.equals(RESTMailServer.secret)){
-			System.out.println("An intruder!");
+			Log.info("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -228,16 +228,16 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 				failedDeliveries.add(recipient);
 		}
 
-		System.out.println("postForwardedMessage: Couldn't deliver the message to " + failedDeliveries.size() + " people");
+		Log.info("postForwardedMessage: Couldn't deliver the message to " + failedDeliveries.size() + " people");
 		return failedDeliveries;
 	}
 
 	@Override
 	public void deleteForwardedMessage(long mid, String secret) {
-		System.out.println("deleteForwardedMessage: Received request to delete message " + mid);
+		Log.info("deleteForwardedMessage: Received request to delete message " + mid);
 
 		if(!secret.equals(RESTMailServer.secret)){
-			System.out.println("An intruder!");
+			Log.info("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 

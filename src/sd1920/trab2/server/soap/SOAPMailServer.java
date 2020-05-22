@@ -53,7 +53,7 @@ public class SOAPMailServer {
 		// Provide an executor to create threads as needed...
 		server.setExecutor(Executors.newCachedThreadPool());
 
-		System.out.println(String.format("\n%s Server ready @ %s\n", SERVICE, serverURI));
+		Log.info(String.format("\n%s Server ready @ %s\n", SERVICE, serverURI));
 
 		// Create a SOAP Endpoint (you need one for each service)
 		Endpoint soapMessagesEndpoint = Endpoint.create(new MessageResourceSoap());
@@ -65,7 +65,7 @@ public class SOAPMailServer {
 
 		server.start();
 
-		System.out.println(String.format("\n%s Server ready @ %s\n", SERVICE, serverURI));
+		Log.info(String.format("\n%s Server ready @ %s\n", SERVICE, serverURI));
 
 		serverRecord = new Discovery(SERVICE, serverURI);
 

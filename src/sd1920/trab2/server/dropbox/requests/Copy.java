@@ -2,6 +2,7 @@ package sd1920.trab2.server.dropbox.requests;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ws.rs.core.Response.Status;
 
@@ -15,10 +16,14 @@ import com.google.gson.Gson;
 
 import org.pac4j.scribe.builder.api.DropboxApi20;
 
+import sd1920.trab2.server.dropbox.ProxyMailServer;
 import sd1920.trab2.server.dropbox.arguments.CopyArgs;
 import sd1920.trab2.server.dropbox.arguments.CopyBatchArgs;
 
 public class Copy {
+
+    private static Logger Log = Logger.getLogger(ProxyMailServer.class.getName());
+
 	private static final String COPY_BATCH_URL = "https://api.dropboxapi.com/2/files/copy_batch_v2";
 	private static final String COPY_URL = "https://api.dropboxapi.com/2/files/copy_v2";
 
@@ -34,7 +39,7 @@ public class Copy {
 
 		String s = json.toJson(args);
 
-		System.out.println(s);
+		Log.info(s);
 
 		copy.setPayload(s.getBytes());   
         
@@ -45,7 +50,7 @@ public class Copy {
 		try {
 			Long curr = System.currentTimeMillis();
 			r = service.execute(copy);
-			System.out.println("Time Elapsed Copy: " + (System.currentTimeMillis() - curr));
+			Log.info("Time Elapsed Copy: " + (System.currentTimeMillis() - curr));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -76,7 +81,7 @@ public class Copy {
 
 		String s = json.toJson(arg);
 
-		System.out.println(s);
+		Log.info(s);
 
 		copy.setPayload(s.getBytes());   
         
@@ -87,7 +92,7 @@ public class Copy {
 		try {
 			Long curr = System.currentTimeMillis();
 			r = service.execute(copy);
-			System.out.println("Time Elapsed Copy: " + (System.currentTimeMillis() - curr));
+			Log.info("Time Elapsed Copy: " + (System.currentTimeMillis() - curr));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -107,17 +112,17 @@ public class Copy {
 	}
     
     public static boolean run(List<CopyArgs> copies){
-		System.out.println("Copying " + copies.size() +" copies");
+		Log.info("Copying " + copies.size() +" copies");
 		boolean success = false;
 
 		if(copies.size() == 0)
 			return true;
 		
 		for(CopyArgs copy : copies){
-			System.out.println("From " + copy.getFromPath() + " ; To " + copy.getToPath());
+			Log.info("From " + copy.getFromPath() + " ; To " + copy.getToPath());
 		}
 
-		System.out.println("FEIJOADA");
+		Log.info("FEIJOADA");
         
         CopyBatchArgs args = new CopyBatchArgs(copies);
 
@@ -133,19 +138,19 @@ public class Copy {
         }
 
 		if(success){
-			System.out.println("Copy: Succesfully copied all files");
+			Log.info("Copy: Succesfully copied all files");
 			return true;
 		}else{
-			System.out.println("Copy: Something went wrong");
+			Log.info("Copy: Something went wrong");
 			return false;
 		}
     }
 
     public static boolean run(CopyArgs copy){	
-		System.out.println("Copying from " + copy.getFromPath() + " to " + copy.getToPath());
+		Log.info("Copying from " + copy.getFromPath() + " to " + copy.getToPath());
 		boolean success = false;
 		
-		System.out.println("FEIJOADA");
+		Log.info("FEIJOADA");
         
         while(true){
             if(success = execute(copy))
@@ -159,10 +164,10 @@ public class Copy {
         }
 
 		if(success){
-			System.out.println("Copy: Succesful");
+			Log.info("Copy: Succesful");
 			return true;
 		}else{
-			System.out.println("Copy: Unsuccessful");
+			Log.info("Copy: Unsuccessful");
 			return false;
 		}
 	}

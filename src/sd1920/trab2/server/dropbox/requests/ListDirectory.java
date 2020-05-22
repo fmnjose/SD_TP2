@@ -2,6 +2,7 @@ package sd1920.trab2.server.dropbox.requests;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.pac4j.scribe.builder.api.DropboxApi20;
 
@@ -13,6 +14,7 @@ import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.google.gson.Gson;
 
+import sd1920.trab2.server.dropbox.ProxyMailServer;
 import sd1920.trab2.server.dropbox.arguments.ListFolderArgs;
 import sd1920.trab2.server.dropbox.arguments.ListFolderContinueArgs;
 import sd1920.trab2.server.dropbox.replies.ListFolderReturn;
@@ -20,6 +22,8 @@ import sd1920.trab2.server.dropbox.replies.ListFolderReturn.FolderEntry;
 
 public class ListDirectory {
 	
+    private static Logger Log = Logger.getLogger(ProxyMailServer.class.getName());
+
 	protected static final String JSON_CONTENT_TYPE = "application/json; charset=utf-8";
 	
 	private static final String LIST_FOLDER_URL = "https://api.dropboxapi.com/2/files/list_folder";
@@ -79,7 +83,7 @@ public class ListDirectory {
 	}
 	
 	public static List<String> run(String directoryPath) {
-		System.out.println("Listing " + directoryPath);
+		Log.info("Listing " + directoryPath);
 
 		List<String> result = null;
 
@@ -92,19 +96,19 @@ public class ListDirectory {
                     success = true;
                     break;
 				}
-				System.out.println("I SLEEP");
+				Log.info("I SLEEP");
 				Thread.sleep(DropboxRequest.SLEEP_TIME);
 			} catch(InterruptedException e){
-				System.out.println("SearchFile: What the frog");
+				Log.info("SearchFile: What the frog");
 			}
 
         }		
 		
 		if(success){
-			System.out.println("Folder: " + directoryPath + " was listed");
+			Log.info("Folder: " + directoryPath + " was listed");
 			return result;
 		}else{
-			System.out.println("Folder: " + directoryPath + " was NOT found");
+			Log.info("Folder: " + directoryPath + " was NOT found");
 			return null;
 		}
 	}
