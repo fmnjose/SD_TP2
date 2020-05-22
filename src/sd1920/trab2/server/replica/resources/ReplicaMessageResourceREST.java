@@ -50,7 +50,7 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 	@Override
 	public void execPostMessage(long version, Message msg, String secret) {
 		if (!secret.equals(ReplicaMailServerREST.secret)) {
-			Log.info("An intruder!");
+			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -66,7 +66,7 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 		
 		
-		Log.info("postMessage: Created new message with id: " + msg.getId());
+		System.out.println("postMessage: Created new message with id: " + msg.getId());
 		
 		for (String recipient : msg.getDestination()) {
 			String[] tokens = recipient.split("@");
@@ -88,18 +88,18 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 		if (!vc.isPrimary()){
 			String redirectPath = String.format(POST_MESSAGE_FORMAT, vc.getPrimaryUri());
 			redirectPath = UriBuilder.fromPath(redirectPath).queryParam("pwd",pwd).toString();
-			Log.info("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR MESSAGE " + msg.getId());
+			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR MESSAGE " + msg.getId());
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
 
 		User user;
 		String sender = msg.getSender();
 
-		Log.info("postMessage: Received request to register a new message (Sender: " + sender + "; Subject: "
+		System.out.println("postMessage: Received request to register a new message (Sender: " + sender + "; Subject: "
 				+ msg.getSubject() + ")");
 
 		if (sender == null || msg.getDestination() == null || msg.getDestination().size() == 0) {
-			Log.info("postMessage: Message was rejected due to lack of recepients.");
+			System.out.println("postMessage: Message was rejected due to lack of recepients.");
 			throw new WebApplicationException(Status.CONFLICT);
 		}
 
@@ -135,12 +135,10 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 		if (u == null) {
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
-
-		Log.info("getMessage: Received request for message with id: " + mid + ".");
 		synchronized (this.allMessages) {
 			synchronized (this.userInboxs) {
 				if (!this.allMessages.containsKey(mid) || !this.userInboxs.get(user).contains(mid)) {
-					Log.info("getMessage: Requested message does not exists.");
+					System.out.println("getMessage: Requested message does not exists.");
 					throw new WebApplicationException(Status.NOT_FOUND);
 				}
 			}
@@ -152,12 +150,10 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 	@Override
 	public List<Long> getMessages(String user, String pwd) {
-		Log.info("getMessages: Received request for messages to '" + user + "'");
-
 		User u = this.getUserRest(user, pwd);
 
 		if (u == null) {
-			Log.info("getMessages: User with name " + user + " does not exist in the domain.");
+			System.out.println("getMessages: User with name " + user + " does not exist in the domain.");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -167,16 +163,15 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 			mids = userInboxs.getOrDefault(user, Collections.emptySet());
 		}
 
-		Log.info("getMessages: Returning message list to user with " + mids.size() + " messages.");
 		return new ArrayList<>(mids);
 	}
 
 	@Override
 	public void execDeleteMessage(long version, String user, long mid, String secret) {
-		Log.info("execDeleteMessage: " + Long.toString(mid));
+		System.out.println("execDeleteMessage: " + Long.toString(mid));
 
 		if (!secret.equals(ReplicaMailServerREST.secret)) {
-			Log.info("An intruder!");
+			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -214,18 +209,17 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 		args.add(user);
 		args.add(mid);
 		
-		Log.info("pixa");
 		vc.addOperation(new Operation(Operation.Type.DELETE_MESSAGE, args));
 	}
 
 	@Override
 	public void deleteMessage(String user, long mid, String pwd) {
-		Log.info("deleteMessage: Received request to delete a message with the id: " + String.valueOf(mid));
+		System.out.println("deleteMessage: Received request to delete a message with the id: " + String.valueOf(mid));
 
 		if (!vc.isPrimary()){
 			String redirectPath = String.format(DELETE_MESSAGE_FORMAT, vc.getPrimaryUri(), user, mid);
 			redirectPath = UriBuilder.fromPath(redirectPath).queryParam("pwd", pwd).toString();
-			Log.info("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR MESSAGE " + mid);
+			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR MESSAGE " + mid);
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
 		User sender = null;
@@ -239,7 +233,7 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 		sender = this.getUserRest(user, pwd);
 
 		if (sender == null) {
-			Log.info("delete message: User not found or wrong password");
+			System.out.println("delete message: User not found or wrong password");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -256,7 +250,7 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 	@Override
 	public void execRemoveFromUserInbox(long version, String user, long mid, String secret) {
 		if (!secret.equals(ReplicaMailServerREST.secret)) {
-			Log.info("An intruder!");
+			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -276,27 +270,27 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 	@Override
 	public void removeFromUserInbox(String user, long mid, String pwd) {
-		Log.info("removeFromUserInbox: Received request to delete message " + String.valueOf(mid)
+		System.out.println("removeFromUserInbox: Received request to delete message " + String.valueOf(mid)
 				+ " from the inbox of " + user);
 
 		if (!vc.isPrimary()){
 			String redirectPath = String.format(REMOVE_FROM_INBOX_FORMAT, vc.getPrimaryUri(), user, mid);
 			redirectPath = UriBuilder.fromPath(redirectPath).queryParam("pwd", pwd).toString();
-			Log.info("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR MESSAGE " + mid);
+			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR MESSAGE " + mid);
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
 
 		User u = this.getUserRest(user, pwd);
 
 		if (u == null) {
-			Log.info("removeFromUserInbox: User with name " + user + " does not exist in the domain.");
+			System.out.println("removeFromUserInbox: User with name " + user + " does not exist in the domain.");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
 		synchronized (this.allMessages) {
 			synchronized (this.userInboxs) {
 				if (!this.allMessages.containsKey(mid) || !this.userInboxs.get(user).contains(mid)) {
-					Log.info("removeFromUserInbox: Message not found");
+					System.out.println("removeFromUserInbox: Message not found");
 					throw new WebApplicationException(Status.NOT_FOUND);
 				}
 			}
@@ -310,7 +304,7 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 	@Override
 	public void createInbox(String user, String secret) {
 		if (!secret.equals(ReplicaMailServerREST.secret)) {
-			Log.info("An intruder!");
+			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -321,9 +315,9 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 	@Override
 	public List<String> execPostForwardedMessage(long version, Message msg, String secret) {
-		Log.info("execPostForwardedMessage: Received message " + msg.getId());
+		System.out.println("execPostForwardedMessage: Received message " + msg.getId());
 		if (!secret.equals(ReplicaMailServerREST.secret)) {
-			Log.info("An intruder!");
+			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -345,17 +339,17 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 	@Override
 	public List<String> postForwardedMessage(Message msg, String secret) {
-		Log.info("postForwardedMessage: Received request to save the message " + msg.getId());
+		System.out.println("postForwardedMessage: Received request to save the message " + msg.getId());
 
 		if (!secret.equals(ReplicaMailServerREST.secret)) {
-			Log.info("An intruder!");
+			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 		
 		if (!vc.isPrimary()){
 			String redirectPath = String.format(POST_FORWARDED_FORMAT, vc.getPrimaryUri());
 			redirectPath = UriBuilder.fromPath(redirectPath).queryParam("secret", secret).toString();
-			Log.info("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR MESSAGE " + msg.getId());
+			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR MESSAGE " + msg.getId());
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
 
@@ -363,16 +357,16 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 		List<String> failedDeliveries = vc.postForwardedMessage(msg);
 
-		Log.info(
+		System.out.println(
 				"postForwardedMessage: Couldn't deliver the message to " + failedDeliveries.size() + " people");
 		return failedDeliveries;
 	}
 
 	@Override
 	public void execDeleteForwardedMessage(long version, long mid, String secret) {
-		Log.info("execDeleteForwardedMessage: MID: " + Long.toString(mid));
+		System.out.println("execDeleteForwardedMessage: MID: " + Long.toString(mid));
 		if (!secret.equals(ReplicaMailServerREST.secret)) {
-			Log.info("An intruder!");
+			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -398,17 +392,20 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 	@Override
 	public void deleteForwardedMessage(long mid, String secret) {
-		Log.info("deleteForwardedMessage: Received request to delete message " + mid);
+		System.out.println("deleteForwardedMessage: Received request to delete message " + mid);
+
+		System.out.println("Secret = " + secret);
 
 		if (!secret.equals(ReplicaMailServerREST.secret)) {
-			Log.info("An intruder!");
+			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
+		System.out.println("Gunga ginga");
 		if (!vc.isPrimary()){
 			String redirectPath = String.format(DELETE_FORWARDED_FORMAT, vc.getPrimaryUri(), mid);
 			redirectPath = UriBuilder.fromPath(redirectPath).queryParam("secret", secret).toString();
-			Log.info("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR MESSAGE " + mid);
+			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR MESSAGE " + mid);
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
 
@@ -424,7 +421,7 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 	@Override
 	public List<Operation> getUpdatedOperations(long version, String secret) {
-		Log.info("getUpdatedOperations: Received requests to operations starting on version: " + version);
+		System.out.println("getUpdatedOperations: Received requests to operations starting on version: " + version);
 
 		if (version < vc.getHeadVersion())
 			throw new WebApplicationException(Status.GONE);
@@ -435,7 +432,7 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 	@Override
 	public Map<Long, Message> getAllMessages(String secret) {
 		if (!secret.equals(ReplicaMailServerREST.secret)) {
-			Log.info("An intruder!");
+			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -445,7 +442,7 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 	@Override
 	public Map<String, Set<Long>> getUserInboxes(String secret) {
 		if (!secret.equals(ReplicaMailServerREST.secret)) {
-			Log.info("An intruder!");
+			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -455,7 +452,7 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 	@Override
 	public void updateAllMessages(Map<Long, Message> allMessages, String secret) {
 		if (!secret.equals(ReplicaMailServerREST.secret)) {
-			Log.info("An intruder!");
+			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -465,7 +462,7 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 	@Override
 	public void updateUserInboxes(Map<String, Set<Long>> usersInboxes, String secret) {
 		if (!secret.equals(ReplicaMailServerREST.secret)) {
-			Log.info("An intruder!");
+			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 

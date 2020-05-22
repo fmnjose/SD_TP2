@@ -40,7 +40,7 @@ public class CreateDirectory {
 		try {
 			long curr = System.currentTimeMillis();
 			r = service.execute(createFolder);
-			Log.info("Time Elapsed newDir: " + (System.currentTimeMillis() - curr));
+			System.out.println("Time Elapsed newDir: " + (System.currentTimeMillis() - curr));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -74,10 +74,10 @@ public class CreateDirectory {
 		}
 		
 		if(success){
-			Log.info("Directory '" + directoryPath + "' created successfuly.");
+			System.out.println("Directory '" + directoryPath + "' created successfuly.");
 			return true;
 		}else{
-			Log.info("Failed to create directory '" + directoryPath + "'");
+			System.out.println("Failed to create directory '" + directoryPath + "'");
 			return false;
 		}
 	}

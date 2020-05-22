@@ -83,7 +83,7 @@ public class ListDirectory {
 	}
 	
 	public static List<String> run(String directoryPath) {
-		Log.info("Listing " + directoryPath);
+		System.out.println("Listing " + directoryPath);
 
 		List<String> result = null;
 
@@ -96,19 +96,19 @@ public class ListDirectory {
                     success = true;
                     break;
 				}
-				Log.info("I SLEEP");
+				System.out.println("I SLEEP");
 				Thread.sleep(DropboxRequest.SLEEP_TIME);
 			} catch(InterruptedException e){
-				Log.info("SearchFile: What the frog");
+				System.out.println("SearchFile: What the frog");
 			}
 
         }		
 		
 		if(success){
-			Log.info("Folder: " + directoryPath + " was listed");
+			System.out.println("Folder: " + directoryPath + " was listed");
 			return result;
 		}else{
-			Log.info("Folder: " + directoryPath + " was NOT found");
+			System.out.println("Folder: " + directoryPath + " was NOT found");
 			return null;
 		}
 	}

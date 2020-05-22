@@ -74,7 +74,7 @@ public class VersionControl {
         this.startListening();
 		
 		newPath = zk.write(this.domain + "/server_", uri, CreateMode.EPHEMERAL_SEQUENTIAL);
-        Log.info("Created child znode: " + newPath);
+        System.out.println("Created child znode: " + newPath);
         
         sync = SyncPoint.getInstance();
 
@@ -82,7 +82,7 @@ public class VersionControl {
     }
     
     public void addOperation(Operation op){
-        Log.info("Adding operation " + op.getType().toString());
+        System.out.println("Adding operation " + op.getType().toString());
 
         if(!this.ops.isEmpty())
             purgeList();
@@ -215,9 +215,8 @@ public class VersionControl {
     }
 
     public void syncVersion(long version){
-        Log.info("Synching version");
         if (version > this.getVersion() + 1) {
-            Log.info("Version Mismatch: Got " + Long.toString(version) + ". Local " + Long.toString(this.getVersion()));
+            System.out.println("Version Mismatch: Got " + Long.toString(version) + ". Local " + Long.toString(this.getVersion()));
             WebTarget target = client.target(primaryUri);
             target = target.path(MessageServiceRest.PATH).path("replica");
             target = target.queryParam("secret", ReplicaMailServerREST.secret);
@@ -228,7 +227,7 @@ public class VersionControl {
             .get();
 
             if(r.getStatus() == Status.ACCEPTED.getStatusCode()){
-                Log.info("Got updated ops");
+                System.out.println("Got updated ops");
                 List<Operation> updatedOperations = r.readEntity(new GenericType<List<Operation>>() {});
                 
                 for (Operation operation : updatedOperations) {
@@ -237,7 +236,7 @@ public class VersionControl {
                 }
             }
             else if(r.getStatus() == Status.GONE.getStatusCode()){
-                Log.info("Updating state");
+                System.out.println("Updating state");
                 this.updateState();
                 this.version = version;
             }
@@ -285,8 +284,8 @@ public class VersionControl {
             .post(Entity.entity(user, MediaType.APPLICATION_JSON));
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                Log.info("execPostUser: FODA SE");
-                Log.info(String.valueOf(r.getStatus()));
+                System.out.println("execPostUser: Failed exec");
+                System.out.println(String.valueOf(r.getStatus()));
             }
         }
 
@@ -307,8 +306,8 @@ public class VersionControl {
             .put(Entity.entity(user, MediaType.APPLICATION_JSON));
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                Log.info("execUpdateUser: FODA SE");
-                Log.info(String.valueOf(r.getStatus()));
+                System.out.println("execUpdateUser: Failed execUpdate");
+                System.out.println(String.valueOf(r.getStatus()));
             }
         }
 
@@ -330,8 +329,8 @@ public class VersionControl {
             .delete();
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                Log.info("execDeleteUser: FODA SE");
-                Log.info(String.valueOf(r.getStatus()));
+                System.out.println("execDeleteUser: Failed delete user");
+                System.out.println(String.valueOf(r.getStatus()));
             }
         }
 
@@ -353,8 +352,8 @@ public class VersionControl {
             .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                Log.info("execPostMessage: FODA SE");
-                Log.info(String.valueOf(r.getStatus()));
+                System.out.println("execPostMessage: failed post message");
+                System.out.println(String.valueOf(r.getStatus()));
             }
         }
 
@@ -377,8 +376,8 @@ public class VersionControl {
             .delete();
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                Log.info("execDeleteMessage: FODA SE");
-                Log.info(String.valueOf(r.getStatus()));
+                System.out.println("execDeleteMessage: failed delete message");
+                System.out.println(String.valueOf(r.getStatus()));
             }
         }
 
@@ -400,8 +399,8 @@ public class VersionControl {
             .delete();
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                Log.info("execRemoveFromUserInbox: FODA SE");
-                Log.info(String.valueOf(r.getStatus()));
+                System.out.println("execRemoveFromUserInbox: Failed remove from user inbox");
+                System.out.println(String.valueOf(r.getStatus()));
             }
         }
 
@@ -423,8 +422,8 @@ public class VersionControl {
             .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
             
             if(r.getStatus() != Status.OK.getStatusCode()){
-                Log.info("execPostForwardedMessage: FODA SE");
-                Log.info(String.valueOf(r.getStatus()));
+                System.out.println("execPostForwardedMessage: failed post forwarded");
+                System.out.println(String.valueOf(r.getStatus()));
             }
             
             return r.readEntity(new GenericType<List<String>>(){});
@@ -453,8 +452,8 @@ public class VersionControl {
             .delete();
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                Log.info("execDeleteForwardedMessage: FODA SE");
-                Log.info(String.valueOf(r.getStatus()));
+                System.out.println("execDeleteForwardedMessage: Failed forward delete message");
+                System.out.println(String.valueOf(r.getStatus()));
             }
         }
 

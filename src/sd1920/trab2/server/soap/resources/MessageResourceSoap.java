@@ -43,10 +43,10 @@ public class MessageResourceSoap extends LocalServerUtils implements MessageServ
 		String sender = msg.getSender();
 		Set<String> recipientDomains = new HashSet<>();
 
-		Log.info("postMessage: Received request to register a new message (Sender: " + sender + "; Subject: "+msg.getSubject()+")");
+		System.out.println("postMessage: Received request to register a new message (Sender: " + sender + "; Subject: "+msg.getSubject()+")");
 		
 		if(sender == null || msg.getDestination() == null || msg.getDestination().size() == 0) {
-			Log.info("postMessage: Message was rejected due to lack of recepients.");
+			System.out.println("postMessage: Message was rejected due to lack of recepients.");
 			throw new MessagesException("postMessage: Message was rejected due to lack of recepients");
 		}
 
@@ -55,7 +55,7 @@ public class MessageResourceSoap extends LocalServerUtils implements MessageServ
 		user = getUserSoap(senderName, pwd);
 
 		if(user == null){
-			Log.info("postMessage: user error");
+			System.out.println("postMessage: user error");
 			throw new MessagesException("postMessage: Message was rejected due to unexisting user.");
 		}
 
@@ -70,7 +70,7 @@ public class MessageResourceSoap extends LocalServerUtils implements MessageServ
 			allMessages.put(newID, msg);
 							
 		}
-		Log.info("postMessage: Created new message with id: " + newID);
+		System.out.println("postMessage: Created new message with id: " + newID);
 
 		for(String recipient: msg.getDestination()){
 			String[] tokens = recipient.split("@");
@@ -83,7 +83,7 @@ public class MessageResourceSoap extends LocalServerUtils implements MessageServ
 		this.forwardMessage(recipientDomains,msg, ServerTypes.SOAP);
 		
 
-		Log.info("postMessage: Recorded message with identifier: " + msg.getId());
+		System.out.println("postMessage: Recorded message with identifier: " + msg.getId());
 		return msg.getId();	
 	}
 
@@ -94,17 +94,17 @@ public class MessageResourceSoap extends LocalServerUtils implements MessageServ
 		User u = this.getUserSoap(user, pwd);
 		
 		if(u == null){
-			Log.info("getMessage: user error");
+			System.out.println("getMessage: user error");
 			throw new MessagesException("getMessage: User does not exist or password is incorrect");
 		}
 
-		Log.info("getMessage: Received request for message with id: " + mid +".");
+		System.out.println("getMessage: Received request for message with id: " + mid +".");
 		synchronized(this.allMessages){
 			synchronized(this.userInboxs){
-				Log.info(String.valueOf(this.allMessages.containsKey(mid)));
-				Log.info(String.valueOf(this.userInboxs.get(user).contains(mid)));
+				System.out.println(String.valueOf(this.allMessages.containsKey(mid)));
+				System.out.println(String.valueOf(this.userInboxs.get(user).contains(mid)));
 				if(!this.allMessages.containsKey(mid) || !this.userInboxs.get(user).contains(mid)) { //check if message exists
-					Log.info("getMessage: Requested message does not exists.");
+					System.out.println("getMessage: Requested message does not exists.");
 					throw new MessagesException("getMessage: Requested message does not exists."); //if not send HTTP 404 back to client
 				}
 			}
@@ -117,11 +117,11 @@ public class MessageResourceSoap extends LocalServerUtils implements MessageServ
 	@Override
 	public List<Long> getMessages(String user, String pwd) throws MessagesException{
 
-		Log.info("getMessages: Received request for messages with optional user parameter set to: '" + user + "'");
+		System.out.println("getMessages: Received request for messages with optional user parameter set to: '" + user + "'");
 		User u = this.getUserSoap(user, pwd);
 
 		if(u == null){
-			Log.info("getMessages: User with name " + user + " does not exist in the domain.");
+			System.out.println("getMessages: User with name " + user + " does not exist in the domain.");
 			throw new MessagesException("getMessages: User with name " + user + " does not exist in the domain.");
 		}
 
@@ -131,7 +131,7 @@ public class MessageResourceSoap extends LocalServerUtils implements MessageServ
 			mids = userInboxs.getOrDefault(user, Collections.emptySet());
 		}
 
-		Log.info("getMessages: Returning message list to user with " + mids.size() + " messages.");
+		System.out.println("getMessages: Returning message list to user with " + mids.size() + " messages.");
 		return new ArrayList<>(mids);
 	}
 
@@ -141,7 +141,7 @@ public class MessageResourceSoap extends LocalServerUtils implements MessageServ
 		
 		Message msg;
 
-		Log.info("deleteMesage: Received request to delete a message with the id: " + String.valueOf(mid));
+		System.out.println("deleteMesage: Received request to delete a message with the id: " + String.valueOf(mid));
 		
 		synchronized(this.allMessages){
 			msg = this.allMessages.get(mid);
@@ -150,7 +150,7 @@ public class MessageResourceSoap extends LocalServerUtils implements MessageServ
 		sender  = this.getUserSoap(user, pwd);
 		
 		if(sender == null){
-			Log.info("delete message: User not found or wrong password");
+			System.out.println("delete message: User not found or wrong password");
 			throw new MessagesException("Delete message: User not found or wrong password");
 		}
 		
@@ -171,7 +171,7 @@ public class MessageResourceSoap extends LocalServerUtils implements MessageServ
 			if(tokens[1].equals(this.domain)){
 				synchronized(this.userInboxs){
 					userInboxs.get(tokens[0]).remove(mid);					
-					Log.info("deleteMessage: Removing message for user " + u);
+					System.out.println("deleteMessage: Removing message for user " + u);
 				}
 			}else
 				recipientDomains.add(tokens[1]);
@@ -182,20 +182,20 @@ public class MessageResourceSoap extends LocalServerUtils implements MessageServ
 	@Override
 	public void removeFromUserInbox(String user, String pwd, long mid) throws MessagesException{
 
-		Log.info("removeFromUserInbox: Received request to delete message " + mid + " from the inbox of " + user);
+		System.out.println("removeFromUserInbox: Received request to delete message " + mid + " from the inbox of " + user);
 		
 
 		User u = this.getUserSoap(user, pwd);
 
 		if(u == null){
-			Log.info("removeFromUserInbox; User with name " + user + " does not exist in the domain.");
+			System.out.println("removeFromUserInbox; User with name " + user + " does not exist in the domain.");
 			throw new MessagesException("User with name " + user + " does not exist in the domain.");
 		}
 		
 		synchronized(this.allMessages){
 			synchronized(this.userInboxs){
 				if(!this.allMessages.containsKey(mid) || !this.userInboxs.get(user).contains(mid)){
-					Log.info("removeFromUserInbox: Message not found");
+					System.out.println("removeFromUserInbox: Message not found");
 					throw new MessagesException("Message not found");
 				}
 			}
@@ -209,7 +209,7 @@ public class MessageResourceSoap extends LocalServerUtils implements MessageServ
 	@Override
 	public void createInbox(String user, String secret) throws MessagesException{
 		if(!secret.equals(SOAPMailServer.secret)){
-			Log.info("An intruder!");
+			System.out.println("An intruder!");
 			throw new MessagesException("Unauthorized access");
 		}
 
@@ -220,10 +220,10 @@ public class MessageResourceSoap extends LocalServerUtils implements MessageServ
 
 	@Override
 	public List<String> postForwardedMessage(Message msg, String secret) throws MessagesException{
-		Log.info("postForwardedMessage: Received forwarded message from " + msg.getSender() + ". ID: " + msg.getId());
+		System.out.println("postForwardedMessage: Received forwarded message from " + msg.getSender() + ". ID: " + msg.getId());
 
 		if(!secret.equals(SOAPMailServer.secret)){
-			Log.info("An intruder!");
+			System.out.println("An intruder!");
 			throw new MessagesException("Unauthorized access");
 		}
 
@@ -241,18 +241,18 @@ public class MessageResourceSoap extends LocalServerUtils implements MessageServ
 
 	@Override
 	public void deleteForwardedMessage(long mid, String secret) throws MessagesException{
-		Log.info("deleteForwardedMessage: Received request to delete message " + mid);
+		System.out.println("deleteForwardedMessage: Received request to delete message " + mid);
 		
 		Set<String> recipients = null;
 
 		if(!secret.equals(SOAPMailServer.secret)){
-			Log.info("An intruder!");
+			System.out.println("An intruder!");
 			throw new MessagesException("Unauthorized access");
 		}
 
 		synchronized(this.allMessages){
 			if(!this.allMessages.containsKey(mid)){
-				Log.info("deleteForwardedMessage: Message not found");
+				System.out.println("deleteForwardedMessage: Message not found");
 				return;
 			}
 

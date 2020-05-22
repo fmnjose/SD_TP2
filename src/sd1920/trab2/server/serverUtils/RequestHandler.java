@@ -36,7 +36,7 @@ import sd1920.trab2.server.rest.resources.MessageResourceRest;
  */
 public class RequestHandler implements Runnable {
 
-    private static final int SLEEP_TIME = 200;
+    private static final int SLEEP_TIME = 1000;
 
     protected static Client client;
     private ServerUtils utils;
@@ -78,7 +78,7 @@ public class RequestHandler implements Runnable {
             r = target.request().accept(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
 
-            Log.info("processPostRequest: " + r.getStatus() + " " + msg.getId());
+            System.out.println("processPostRequest: " + r.getStatus() + " " + msg.getId());
             failedDeliveries = r.readEntity(new GenericType<List<String>>() {});
         } else {
             MessageServiceSoap msgService = null;
@@ -110,15 +110,15 @@ public class RequestHandler implements Runnable {
             failedDeliveries = processPostRequest(request);
         }
         catch (ProcessingException e) {
-            Log.info("execPostRequest: Failed to forward message to " + request.getDomain() + ". Retrying...");
+            System.out.println("execPostRequest: Failed to forward message to " + request.getDomain() + ". Retrying...");
             return false;
         }
         catch (MalformedURLException e) {
-            Log.info("execPostRequest: Bad Url");
+            System.out.println("execPostRequest: Bad Url");
             return false;
         } 
         catch (WebServiceException| MessagesException e) {
-            Log.info("execPostRequest: Failed to forward message to " + request.getDomain() + ".");
+            System.out.println("execPostRequest: Failed to forward message to " + request.getDomain() + ".");
             return false;
         }
 
@@ -173,16 +173,16 @@ public class RequestHandler implements Runnable {
         try {
             processDeleteRequest(request);
         } catch (ProcessingException e) {
-            Log.info("execDeleteRequest: Failed to redirect request to " + request.getDomain() + ". Retrying...");
+            System.out.println("execDeleteRequest: Failed to redirect request to " + request.getDomain() + ". Retrying...");
             return false;
         } catch (MalformedURLException e) {
-            Log.info("execDeleteRequest: Bad Url");
+            System.out.println("execDeleteRequest: Bad Url");
             return false;
         } catch (WebServiceException e) {
-            Log.info("execDeleteRequest: Failed to forward message to " + request.getDomain() + ".");
+            System.out.println("execDeleteRequest: Failed to forward message to " + request.getDomain() + ".");
             return false;
         } catch (MessagesException me) {
-            Log.info("execDeleteRequest: Error, could not send the message.");
+            System.out.println("execDeleteRequest: Error, could not send the message.");
             return true;
         }
 
@@ -191,9 +191,9 @@ public class RequestHandler implements Runnable {
 
     private void processCopyRequest(CopyRequest request){
             if(Copy.run(request.getCopy()))
-                Log.info("execCopyRequest: Sucessfully saved");
+                System.out.println("execCopyRequest: Sucessfully saved");
             else{ 
-                Log.info("execCopyRequest: Couldn't copy");
+                System.out.println("execCopyRequest: Couldn't copy");
                 if(!request.isForwarded())
                     this.utils.saveErrorMessages(request.getSender(), request.getRecipient(), request.getMessage());
             }
@@ -230,11 +230,11 @@ public class RequestHandler implements Runnable {
 
             while (true) {
                 if(this.processRequest(r)){     
-                    Log.info("RequestHandler: Successfully completed request to domain " + r.getDomain()
+                    System.out.println("RequestHandler: Successfully completed request to domain " + r.getDomain()
                             + ". More successful than i'll ever be!");
                     break;
                 } else {
-                    Log.info("RequestHandler: Couldn't contact other domain " + r.getDomain() + ". I SLEEP...");
+                    System.out.println("RequestHandler: Couldn't contact other domain " + r.getDomain() + ". I SLEEP...");
                     try {
                         Thread.sleep(SLEEP_TIME);
                     } catch (InterruptedException e) {

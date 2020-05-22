@@ -44,7 +44,7 @@ public class UserResourceSoap implements UserServiceSoap{
     private boolean createUserInbox(String userName){
         boolean error = true;
 
-        Log.info("Sending request to create a new inbox in MessageResource.");
+        System.out.println("Sending request to create a new inbox in MessageResource.");
         int tries = 0;
 
         MessageServiceSoap msgService = null;
@@ -54,11 +54,11 @@ public class UserResourceSoap implements UserServiceSoap{
             msgService = service.getPort(MessageServiceSoap.class);							
         }
         catch(MalformedURLException e){
-            Log.info("createUserInbox: Bad Url");
+            System.out.println("createUserInbox: Bad Url");
             return false;
         } 
         catch(WebServiceException e){
-            Log.info("createUserInbox: Failed to send inbox creation request. Retrying...");
+            System.out.println("createUserInbox: Failed to send inbox creation request. Retrying...");
             return false;
         }
 
@@ -73,17 +73,17 @@ public class UserResourceSoap implements UserServiceSoap{
                 msgService.createInbox(userName, SOAPMailServer.secret);
             }
             catch(MessagesException me){
-                Log.info("createUserInbox: Error, could not send the request. Retrying...");
+                System.out.println("createUserInbox: Error, could not send the request. Retrying...");
                 error = true;
             }
             catch(WebServiceException wse){
-                Log.info("createUserInbox: Communication error. Retrying...");
+                System.out.println("createUserInbox: Communication error. Retrying...");
                 wse.printStackTrace();
                 try{
                     Thread.sleep(LocalServerUtils.SLEEP_TIME);
                 }
                 catch(InterruptedException e){
-                    Log.info("Log a dizer 'what?'");
+                    System.out.println("Log a dizer 'what?'");
                 }
                 error = true;
             }
@@ -91,9 +91,9 @@ public class UserResourceSoap implements UserServiceSoap{
         }
 
         if(error)
-            Log.info("createUserInbox: Failed to repeatedly send request to MessageResource. Giving up...");
+            System.out.println("createUserInbox: Failed to repeatedly send request to MessageResource. Giving up...");
         else
-            Log.info("createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!");		
+            System.out.println("createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!");		
         
         return error;
     }
@@ -107,16 +107,16 @@ public class UserResourceSoap implements UserServiceSoap{
             if(name == null || name.equals("") || 
                 user.getPwd() == null || user.getPwd().equals("") || 
                     user.getDomain() == null || user.getDomain().equals("")){
-                Log.info("User creation was rejected due to lack of name, pwd or domain.");
+                System.out.println("User creation was rejected due to lack of name, pwd or domain.");
                 throw new MessagesException("postUser: User creation was rejected due to lack of name, pwd or domain.");
             }
             else if(!user.getDomain().equals(serverDomain)){
-                Log.info("User creation was rejected due to mismatch between the provided domain and the server domain");
+                System.out.println("User creation was rejected due to mismatch between the provided domain and the server domain");
                 throw new MessagesException("postUser: User creation was rejected due to mismatch between the provided domain and the server domain");
             }
             synchronized(this.users){
                 if(this.users.containsKey(name)){
-                    Log.info("User creation was rejected due to the user already existing");
+                    System.out.println("User creation was rejected due to the user already existing");
                     throw new MessagesException("postUser: User creation was rejected due to the user already existing");
                 }
                 this.users.put(name, user);
@@ -125,7 +125,7 @@ public class UserResourceSoap implements UserServiceSoap{
             if(this.createUserInbox(name))    
                 throw new MessagesException("postUser: Failed while creating new inbox for the user");
             
-            Log.info("Created new user with name: " + name);
+            System.out.println("Created new user with name: " + name);
             
             return String.format("%s@%s", name, user.getDomain());
         }
@@ -139,7 +139,7 @@ public class UserResourceSoap implements UserServiceSoap{
         User user;
 
         if(name == null || name.equals("")){
-            Log.info("getUser: User fetch was rejected due to invalid parameters:");
+            System.out.println("getUser: User fetch was rejected due to invalid parameters:");
             throw new MessagesException("getUser: User fetch was rejected due to invalid parameters");
         }
 
@@ -148,10 +148,10 @@ public class UserResourceSoap implements UserServiceSoap{
         }
 
         if(user == null){
-            Log.info("getUser: User fetch was rejected due to missing user: " + name + ".");
+            System.out.println("getUser: User fetch was rejected due to missing user: " + name + ".");
             throw new MessagesException("getUser: User fetch was rejected due to missing user");
         }else if(pwd == null || !user.getPwd().equals(pwd)){
-            Log.info("User fetch was rejected due to an invalid password");
+            System.out.println("User fetch was rejected due to an invalid password");
             throw new MessagesException("getUser: User fetch was rejected due to an invalid password");
         }else{
             return user;
@@ -164,7 +164,7 @@ public class UserResourceSoap implements UserServiceSoap{
         User existingUser;
         
         if(name == null || name.equals("")){
-            Log.info("User update was rejected due to invalid parameters");
+            System.out.println("User update was rejected due to invalid parameters");
             throw new MessagesException("updateUser: User update was rejected due to invalid parameters");
         }
 
@@ -172,11 +172,11 @@ public class UserResourceSoap implements UserServiceSoap{
             existingUser = this.users.get(name);
 
             if(existingUser == null){
-                Log.info("User update was rejected due to a missing user");
+                System.out.println("User update was rejected due to a missing user");
                 throw new MessagesException("updateUser: User update was rejected due to a missing user");
 
             }else if(!existingUser.getPwd().equals(pwd)){
-                Log.info("User update was rejected due to an invalid password");
+                System.out.println("User update was rejected due to an invalid password");
                 throw new MessagesException("User update was rejected due to an invalid password");
             }
 
@@ -194,7 +194,7 @@ public class UserResourceSoap implements UserServiceSoap{
         User user;
 
         if(name == null || name.equals("")){
-            Log.info("User deletion was rejected due to invalid parameters");
+            System.out.println("User deletion was rejected due to invalid parameters");
             throw new MessagesException("deleteUser: User deletion was rejected due to invalid parameters");
 
         }
@@ -203,11 +203,11 @@ public class UserResourceSoap implements UserServiceSoap{
             user = this.users.get(name);
             
             if(user == null){
-                Log.info("User deletion was rejected due to a missing user");
+                System.out.println("User deletion was rejected due to a missing user");
                 throw new MessagesException("deleteUser: User deletion was rejected due to a missing user");
 
             }else if(pwd == null || !user.getPwd().equals(pwd)){
-                Log.info("User update was rejected due to an invalid password");
+                System.out.println("User update was rejected due to an invalid password");
                 throw new MessagesException("deleteUser: User update was rejected due to an invalid password");
             }
 

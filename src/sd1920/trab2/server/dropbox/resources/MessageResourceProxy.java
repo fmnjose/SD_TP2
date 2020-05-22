@@ -63,11 +63,11 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 		Set<String> recipientDomains = new HashSet<>();
 		Set<String> recipients = new HashSet<>();
 
-		Log.info("postMessage: Received request to register a new message (Sender: " + sender + "; Subject: "
+		System.out.println("postMessage: Received request to register a new message (Sender: " + sender + "; Subject: "
 				+ msg.getSubject() + ")");
 
 		if (sender == null || msg.getDestination() == null || msg.getDestination().size() == 0) {
-			Log.info("postMessage: Message was rejected due to lack of recepients.");
+			System.out.println("postMessage: Message was rejected due to lack of recepients.");
 			throw new WebApplicationException(Status.CONFLICT);
 		}
 
@@ -94,7 +94,7 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 
 		Create.run(path, msg);
 
-		Log.info("postMessage: Created new message with id: " + newID);
+		System.out.println("postMessage: Created new message with id: " + newID);
 
 		for (String recipient : msg.getDestination()) {
 			String[] tokens = recipient.split("@");
@@ -109,26 +109,26 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 
 		this.forwardMessage(recipientDomains, msg, ServerTypes.PROXY);
 
-		Log.info("Time elapsed PostMessage: " + (System.currentTimeMillis() - curr));
+		System.out.println("Time elapsed PostMessage: " + (System.currentTimeMillis() - curr));
 
 		return msg.getId();
 	}
 
 	@Override
 	public Message getMessage(String user, long mid, String pwd) {
-		Log.info("getMessage: Received request for message with id: " + mid + ".");
+		System.out.println("getMessage: Received request for message with id: " + mid + ".");
 
 		String userName = getSenderCanonicalName(user);
 
 		User u = this.getUserRest(user, pwd);
 
 		if (u == null) {
-			Log.info("getMessage: User does not exist");
+			System.out.println("getMessage: User does not exist");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
 		if (!u.getPwd().equals(pwd)) {
-			Log.info("getMessage: Invalid Password");
+			System.out.println("getMessage: Invalid Password");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -137,7 +137,7 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 		List<Long> mids = this.listPathsToIds(ListDirectory.run(path));
 
 		if (!mids.contains(mid)) {
-			Log.info("getMessage: Requested message does not exist.");
+			System.out.println("getMessage: Requested message does not exist.");
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
 
@@ -152,14 +152,14 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 
 	@Override
 	public List<Long> getMessages(String user, String pwd) {
-		Log.info("getMessages: Received request for messages to '" + user + "'");
+		System.out.println("getMessages: Received request for messages to '" + user + "'");
 
 		String userName = getSenderCanonicalName(user);
 
 		User u = this.getUserRest(userName, pwd);
 
 		if (u == null) {
-			Log.info("getMessages: User does not exist");
+			System.out.println("getMessages: User does not exist");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -167,20 +167,20 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 
 		List<String> mids = ListDirectory.run(path);
 
-		Log.info("getMessages: Returning message list to user with " + mids.size() + " messages.");
+		System.out.println("getMessages: Returning message list to user with " + mids.size() + " messages.");
 		return this.listPathsToIds(mids);
 	}
 
 	@Override
 	public void deleteMessage(String user, long mid, String pwd) {
-		Log.info("deleteMessage: Received request to delete a message with the id: " + String.valueOf(mid));
+		System.out.println("deleteMessage: Received request to delete a message with the id: " + String.valueOf(mid));
 
 		String senderName = getSenderCanonicalName(user);
 
 		User sender = this.getUserRest(senderName, pwd);
 
 		if (sender == null) {
-			Log.info("deleteMessage: User does not exist");
+			System.out.println("deleteMessage: User does not exist");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -189,14 +189,14 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 		String messageString = DownloadFile.run(path);
 
 		if (messageString == null) {
-			Log.info("deleteMessage: Message does not exist");
+			System.out.println("deleteMessage: Message does not exist");
 			return;
 		}
 
 		Message msg = json.fromJson(messageString, Message.class);
 
 		if (!getSenderCanonicalName(msg.getSender()).equals(senderName)) {
-			Log.info("deleteMessage: Sender mismatch");
+			System.out.println("deleteMessage: Sender mismatch");
 			return;
 		}
 
@@ -225,7 +225,7 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 
 	@Override
 	public void removeFromUserInbox(String user, long mid, String pwd) {
-		Log.info("removeFromUserInbox: Received request to delete message " + String.valueOf(mid)
+		System.out.println("removeFromUserInbox: Received request to delete message " + String.valueOf(mid)
 				+ " from the inbox of " + user);
 
 		String name = getSenderCanonicalName(user);
@@ -233,7 +233,7 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 		User u = this.getUserRest(name, pwd);
 
 		if (u == null || !u.getPwd().equals(pwd)) {
-			Log.info("removeFromUserInbox: User does not exist or invalid Password");
+			System.out.println("removeFromUserInbox: User does not exist or invalid Password");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -242,12 +242,12 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 		String inboxPath = String.format(UserResourceProxy.USER_MESSAGE_FORMAT, ProxyMailServer.hostname, name, mid);
 
 		if (!GetMeta.run(inboxPath) || !GetMeta.run(messagePath)) {
-			Log.info("removeFromUserInbox: Message not found");
+			System.out.println("removeFromUserInbox: Message not found");
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
 
 		Delete.run(inboxPath);
-		Log.info("removeFromUserInbox: Successful");
+		System.out.println("removeFromUserInbox: Successful");
 	}
 
 	@Override
@@ -257,10 +257,10 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 
 	@Override
 	public List<String> postForwardedMessage(Message msg, String secret) {
-		Log.info("postForwardedMessage: Received request to save the message " + msg.getId());
+		System.out.println("postForwardedMessage: Received request to save the message " + msg.getId());
 
 		if (!secret.equals(ProxyMailServer.secret)) {
-			Log.info("An intruder!");
+			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -269,7 +269,7 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 
 		Create.run(path, msg);
 
-		Log.info("posForwardedMessage: Saved message with ID: " + Long.toString(msg.getId()));
+		System.out.println("posForwardedMessage: Saved message with ID: " + Long.toString(msg.getId()));
 
 		Set<String> recipients = new HashSet<>();
 
@@ -291,7 +291,7 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 
 		this.saveMessage(recipients, msg, false);
 
-		Log.info(
+		System.out.println(
 				"postForwardedMessage: Couldn't deliver the message to " + failedDeliveries.size() + " people");
 
 		return failedDeliveries;
@@ -299,10 +299,10 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 
 	@Override
 	public void deleteForwardedMessage(long mid, String secret) {
-		Log.info("deleteForwardedMessage: Received request to delete message " + mid);
+		System.out.println("deleteForwardedMessage: Received request to delete message " + mid);
 
 		if (!secret.equals(ProxyMailServer.secret)) {
-			Log.info("An intruder!");
+			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -312,7 +312,7 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 		String messageString = DownloadFile.run(path);
 
 		if (messageString == null) {
-			Log.info("deleteForwardedMessage: Message does not exist");
+			System.out.println("deleteForwardedMessage: Message does not exist");
 			return;
 		}
 
@@ -321,7 +321,7 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 		// DeletesMessage
 		Delete.run(path);
 
-		Log.info("deleteForwardedMessage: Deleted message with ID: " + Long.toString(mid));
+		System.out.println("deleteForwardedMessage: Deleted message with ID: " + Long.toString(mid));
 
 		List<String> deletePaths = new LinkedList<>();
 
@@ -337,6 +337,6 @@ public class MessageResourceProxy extends DropboxServerUtils implements MessageS
 		}
 
 		Delete.run(deletePaths);
-		Log.info("deleteForwardedMessage: Deletion request sent");
+		System.out.println("deleteForwardedMessage: Deletion request sent");
 	}
 }

@@ -35,26 +35,26 @@ public class UserResourceProxy implements UserServiceRest {
     
     @Override
     public String postUser(User user) {
-        Log.info("postUser: request to post " + user.getName());
+        System.out.println("postUser: request to post " + user.getName());
 
         String name = user.getName();
 
         if(name == null || name.equals("") || 
             user.getPwd() == null || user.getPwd().equals("") || 
                 user.getDomain() == null || user.getDomain().equals("")){
-            Log.info("postUser: User creation was rejected due to lack of name, pwd or domain.");
+            System.out.println("postUser: User creation was rejected due to lack of name, pwd or domain.");
             throw new WebApplicationException(Status.CONFLICT);
         }
 
         if(!user.getDomain().equals(ProxyMailServer.hostname)){
-            Log.info("postUser: Wrong domain");
+            System.out.println("postUser: Wrong domain");
             throw new WebApplicationException(Status.FORBIDDEN);
         }
 
         String directoryPath = String.format(USER_FOLDER_FORMAT, ProxyMailServer.hostname, name);
 
         if(GetMeta.run(directoryPath)){
-            Log.info("postUser: User creation was rejected due to the user already existing");
+            System.out.println("postUser: User creation was rejected due to the user already existing");
             throw new WebApplicationException(Status.CONFLICT);
         }
 
@@ -70,16 +70,16 @@ public class UserResourceProxy implements UserServiceRest {
 
         Create.run(directoryPath, user);
 
-        Log.info("postUser: Created new user with name: " + name);
+        System.out.println("postUser: Created new user with name: " + name);
         
         return String.format("%s@%s", name, user.getDomain());
     }
 
     @Override
     public User getUser(String name, String pwd) {
-        Log.info("downloadUser: Downloading user " + name);
+        System.out.println("downloadUser: Downloading user " + name);
         if(name == null || name.equals("") || pwd == null){
-            Log.info("downloadUser: Invalid parameters");
+            System.out.println("downloadUser: Invalid parameters");
             throw new WebApplicationException(Status.FORBIDDEN);
         }
         
@@ -88,19 +88,19 @@ public class UserResourceProxy implements UserServiceRest {
         String userString = DownloadFile.run(filePath);
 
         if(userString == null){
-            Log.info("downloadUser: Missing user");
+            System.out.println("downloadUser: Missing user");
             throw new WebApplicationException(Status.FORBIDDEN);
         }
 
-        Log.info(userString);
+        System.out.println(userString);
 
         User user = json.fromJson(userString, User.class);
 
         if(!user.getPwd().equals(pwd)){
-            Log.info("downloadUser: Invalid password");
+            System.out.println("downloadUser: Invalid password");
             throw new WebApplicationException(Status.FORBIDDEN);
         }else if(!user.getDomain().equals(ProxyMailServer.hostname)){
-            Log.info("postUser: User creation was rejected due to mismatch between the provided domain and the server domain");
+            System.out.println("postUser: User creation was rejected due to mismatch between the provided domain and the server domain");
             throw new WebApplicationException(Status.FORBIDDEN);
         }
         

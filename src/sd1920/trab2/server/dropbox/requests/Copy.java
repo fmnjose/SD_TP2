@@ -39,7 +39,7 @@ public class Copy {
 
 		String s = json.toJson(args);
 
-		Log.info(s);
+		System.out.println(s);
 
 		copy.setPayload(s.getBytes());   
         
@@ -50,7 +50,7 @@ public class Copy {
 		try {
 			Long curr = System.currentTimeMillis();
 			r = service.execute(copy);
-			Log.info("Time Elapsed Copy: " + (System.currentTimeMillis() - curr));
+			System.out.println("Time Elapsed Copy: " + (System.currentTimeMillis() - curr));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -81,7 +81,7 @@ public class Copy {
 
 		String s = json.toJson(arg);
 
-		Log.info(s);
+		System.out.println(s);
 
 		copy.setPayload(s.getBytes());   
         
@@ -92,7 +92,7 @@ public class Copy {
 		try {
 			Long curr = System.currentTimeMillis();
 			r = service.execute(copy);
-			Log.info("Time Elapsed Copy: " + (System.currentTimeMillis() - curr));
+			System.out.println("Time Elapsed Copy: " + (System.currentTimeMillis() - curr));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -112,17 +112,17 @@ public class Copy {
 	}
     
     public static boolean run(List<CopyArgs> copies){
-		Log.info("Copying " + copies.size() +" copies");
+		System.out.println("Copying " + copies.size() +" copies");
 		boolean success = false;
 
 		if(copies.size() == 0)
 			return true;
 		
 		for(CopyArgs copy : copies){
-			Log.info("From " + copy.getFromPath() + " ; To " + copy.getToPath());
+			System.out.println("From " + copy.getFromPath() + " ; To " + copy.getToPath());
 		}
 
-		Log.info("FEIJOADA");
+		System.out.println("FEIJOADA");
         
         CopyBatchArgs args = new CopyBatchArgs(copies);
 
@@ -138,19 +138,19 @@ public class Copy {
         }
 
 		if(success){
-			Log.info("Copy: Succesfully copied all files");
+			System.out.println("Copy: Succesfully copied all files");
 			return true;
 		}else{
-			Log.info("Copy: Something went wrong");
+			System.out.println("Copy: Something went wrong");
 			return false;
 		}
     }
 
     public static boolean run(CopyArgs copy){	
-		Log.info("Copying from " + copy.getFromPath() + " to " + copy.getToPath());
+		System.out.println("Copying from " + copy.getFromPath() + " to " + copy.getToPath());
 		boolean success = false;
 		
-		Log.info("FEIJOADA");
+		System.out.println("FEIJOADA");
         
         while(true){
             if(success = execute(copy))
@@ -164,10 +164,10 @@ public class Copy {
         }
 
 		if(success){
-			Log.info("Copy: Succesful");
+			System.out.println("Copy: Succesful");
 			return true;
 		}else{
-			Log.info("Copy: Unsuccessful");
+			System.out.println("Copy: Unsuccessful");
 			return false;
 		}
 	}

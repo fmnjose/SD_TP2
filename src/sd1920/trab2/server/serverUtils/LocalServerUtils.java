@@ -24,7 +24,7 @@ public abstract class LocalServerUtils extends ServerUtils{
         this.config = new ClientConfig();
 		this.config.property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT);
         this.config.property(ClientProperties.READ_TIMEOUT, TIMEOUT);
-        
+
         this.allMessages = new HashMap<Long, Message>();
         this.userInboxs = new HashMap<String, Set<Long>>();
 
@@ -51,10 +51,10 @@ public abstract class LocalServerUtils extends ServerUtils{
                 String recipientCanonicalName = getSenderCanonicalName(recipient);
                 if (!userInboxs.containsKey(recipientCanonicalName)) {
                     if (forwarded){
-                        Log.info("saveMessage: user does not exist for forwarded message " + msg.getId());
+                        System.out.println("saveMessage: user does not exist for forwarded message " + msg.getId());
                         return false;
                     }else {
-                        Log.info("saveMessage: Void User");
+                        System.out.println("saveMessage: Void User");
                         this.saveErrorMessages(senderName, recipient, msg);
                     }
                 } else {
@@ -63,7 +63,7 @@ public abstract class LocalServerUtils extends ServerUtils{
                 }
             }
         }
-        Log.info("saveMessage: Sucessfuly saved message " + msg.getId());
+        System.out.println("saveMessage: Sucessfuly saved message " + msg.getId());
         return true;
     }
 

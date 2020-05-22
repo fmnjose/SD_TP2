@@ -32,7 +32,7 @@ public class SyncPoint
 	 */
 	public synchronized void waitForVersion( long n) {
 		while( version < n) {
-			Log.info("waitForVersion: Waiting for " + Long.toString(n) + ". Current is " + Long.toString(version));
+			System.out.println("waitForVersion: Waiting for " + Long.toString(n) + ". Current is " + Long.toString(version));
 			try {
 				wait();
 			} catch (InterruptedException e) {
@@ -63,6 +63,7 @@ public class SyncPoint
 			result.put(n, res);
 		version = n;
 		notifyAll();
+		System.out.println("Wake up!");
 	}
 
 	/**

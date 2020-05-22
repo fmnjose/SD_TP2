@@ -43,8 +43,8 @@ public class GetMeta {
 		try {
 			Long curr = System.currentTimeMillis();
 			r = service.execute(getMeta);
-			Log.info(r.getBody());
-			Log.info("Time Elapsed GetMeta: " + (System.currentTimeMillis() - curr));
+			System.out.println(r.getBody());
+			System.out.println("Time Elapsed GetMeta: " + (System.currentTimeMillis() - curr));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -64,7 +64,7 @@ public class GetMeta {
     }
 
     public static boolean run(String path){
-		Log.info("getMeta: " + path);
+		System.out.println("getMeta: " + path);
 		boolean result = false;
         
         for(int i = 0; i < DropboxRequest.RETRIES; i++){
@@ -73,18 +73,18 @@ public class GetMeta {
 				break;
 				
 			}catch(IOException e){
-				Log.info("getMeta: What the frog");
+				System.out.println("getMeta: What the frog");
 			}catch(WebApplicationException e){
-				Log.info("getMeta: What the frog");
+				System.out.println("getMeta: What the frog");
 			}
         }		
 		
 		if(result){
-			Log.info("File with name " + path + " was found.");
+			System.out.println("File with name " + path + " was found.");
 			return true;
 		}
 			
-		Log.info("Couldn't find file with name " + path + ".");
+		System.out.println("Couldn't find file with name " + path + ".");
 		return false;
 		
     }

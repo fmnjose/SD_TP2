@@ -98,7 +98,7 @@ public abstract class ServerUtils {
                 break;
             default:
                 this.secret = "";
-                Log.info("What?");
+                System.out.println("What?");
         }
         
         this.config = new ClientConfig();
@@ -125,11 +125,11 @@ public abstract class ServerUtils {
         try {
             r = target.path(name).request().accept(MediaType.APPLICATION_JSON).get();
         } catch (ProcessingException e) {
-            Log.info("getUserRest: Could not communicate with the UserResource. What?");
+            System.out.println("getUserRest: Could not communicate with the UserResource. What?");
         }
 
         if (r.getStatus() == Status.FORBIDDEN.getStatusCode()) {
-            Log.info("getUserRest: User either doesn't exist or the password is incorrect");
+            System.out.println("getUserRest: User either doesn't exist or the password is incorrect");
             return null;
         }
 
@@ -172,11 +172,11 @@ public abstract class ServerUtils {
 			userService = service.getPort(UserServiceSoap.class);							
 		}
 		catch(MalformedURLException e){
-			Log.info("getUser: Bad Url");
+			System.out.println("getUser: Bad Url");
 			return null;
 		} 
 		catch(WebServiceException e){
-			Log.info("getUser: Failed to forward message to " + domain + ". Retrying...");
+			System.out.println("getUser: Failed to forward message to " + domain + ". Retrying...");
 			return null;
 		}
 
@@ -187,10 +187,10 @@ public abstract class ServerUtils {
             user = userService.getUser(name, pwd);
         }
         catch( MessagesException me){
-            Log.info("getUser: Error, could not send the message. Retrying...");
+            System.out.println("getUser: Error, could not send the message. Retrying...");
         }
         catch(WebServiceException wse){
-            Log.info("getUser: Communication error...");	
+            System.out.println("getUser: Communication error...");	
         }
 
 		return user;
@@ -221,7 +221,7 @@ public abstract class ServerUtils {
                 break;
             default:
                 domains = null;
-                Log.info("WEIRD SERVER");
+                System.out.println("WEIRD SERVER");
         }
         
         for (String domain : recipientDomains) {
@@ -229,11 +229,11 @@ public abstract class ServerUtils {
             uri = domains.knownUrisOf(domain);
 
             if (uri == null){
-				Log.info("forwardMessage: " + domain + " does not exist or is offline.");
+				System.out.println("forwardMessage: " + domain + " does not exist or is offline.");
 				continue;
 			}
 
-			Log.info("forwardMessage: Trying to forward message " + msg.getId() + " to " + domain);            
+			System.out.println("forwardMessage: Trying to forward message " + msg.getId() + " to " + domain);            
             
             synchronized(this.requests){
                 RequestHandler rh = this.requests.get(domain);
@@ -277,7 +277,7 @@ public abstract class ServerUtils {
                 break;
             default:
                 domains = null;
-                Log.info("WEIRD SERVER");
+                System.out.println("WEIRD SERVER");
         }
 
         for(String domain: recipientDomains){
@@ -285,12 +285,12 @@ public abstract class ServerUtils {
             uri = domains.knownUrisOf(domain);
 			
 			if(uri == null){
-				Log.info("forwardDelete: " + domain + " does not exist or is offline.");
+				System.out.println("forwardDelete: " + domain + " does not exist or is offline.");
 				continue;
 			}
 
 
-			Log.info("forwardDelete: Sending delete request to domain: " + domain);
+			System.out.println("forwardDelete: Sending delete request to domain: " + domain);
 
             synchronized(this.requests){
                 RequestHandler rh = this.requests.get(domain);

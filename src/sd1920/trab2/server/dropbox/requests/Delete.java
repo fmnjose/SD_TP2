@@ -62,7 +62,7 @@ public class Delete{
     }
 
     public static boolean run(List<String> paths){
-		Log.info("Deleting " + paths.size() + " files");
+		System.out.println("Deleting " + paths.size() + " files");
 		boolean success = false;
 
 		List<DeleteArgs> args = new LinkedList<>();
@@ -75,7 +75,7 @@ public class Delete{
 				break;
 				
 			try {
-				Log.info("I sleep");
+				System.out.println("I sleep");
 				Thread.sleep(DropboxRequest.SLEEP_TIME);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -83,10 +83,10 @@ public class Delete{
         }
 
 		if(success){
-			Log.info("Deletion for " + paths.size() + " files successful");
+			System.out.println("Deletion for " + paths.size() + " files successful");
 			return true;
 		}else{
-			Log.info("Failed to delete " + paths.size() + " files");
+			System.out.println("Failed to delete " + paths.size() + " files");
 			return false;
 		}
 	}

@@ -42,7 +42,7 @@ public class Create {
 		try {
 			Long curr = System.currentTimeMillis();
 			r = service.execute(createFile);
-			Log.info("Time Elapsed Upload: " + (System.currentTimeMillis() - curr));
+			System.out.println("Time Elapsed Upload: " + (System.currentTimeMillis() - curr));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -62,7 +62,7 @@ public class Create {
     }
     
     public static boolean run(String directoryPath, Object object){
-		Log.info("Creating file on " + directoryPath);
+		System.out.println("Creating file on " + directoryPath);
         boolean success = false;
         
         for(int i = 0; i < DropboxRequest.RETRIES; i++){
@@ -77,10 +77,10 @@ public class Create {
         }
 
 		if(success){
-			Log.info("Succesfully created file: " + directoryPath);
+			System.out.println("Succesfully created file: " + directoryPath);
 			return true;
 		}else{
-			Log.info("Couldn't create file: " + directoryPath);
+			System.out.println("Couldn't create file: " + directoryPath);
 			return false;
 		}
     }
