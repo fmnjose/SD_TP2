@@ -39,6 +39,8 @@ public class SyncPoint
 				// do nothing
 			}
 		}
+
+		System.out.println("Im free: " + n);
 	}
 
 	/**

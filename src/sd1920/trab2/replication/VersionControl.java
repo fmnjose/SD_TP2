@@ -89,7 +89,8 @@ public class VersionControl {
 
         if(!this.ops.isEmpty())
             purgeList();
-            
+        
+        System.out.println("List purged");
         ops.add(op);
 
         synchronized(this.version){
