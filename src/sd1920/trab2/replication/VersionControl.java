@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -37,7 +38,7 @@ public class VersionControl {
     public static final String HEADER_VERSION = "Msgserver-version";
 
     private static final String NODE_FORMAT = "%s/%s";
-    private static final long TTL = 18000;
+    private static final long TTL = 8000;
     private boolean isPrimary;
 
     private ZookeeperProcessor zk;
@@ -47,6 +48,7 @@ public class VersionControl {
     private String primaryUri;
     private SyncPoint sync;
     private Long awaitingVersion;
+    private int lastChildrenCount;
 
     private Client client;
 
@@ -62,6 +64,7 @@ public class VersionControl {
         this.isPrimary = false;
         this.childrenList = new LinkedList<>();
         this.zk = new ZookeeperProcessor("kafka:2181");
+        this.lastChildrenCount = 0;
 
         ClientConfig config = new ClientConfig();
 		config.property(ClientProperties.CONNECT_TIMEOUT, ServerUtils.TIMEOUT);
@@ -105,9 +108,15 @@ public class VersionControl {
 			public void process(WatchedEvent event) {
                 childrenList = zk.getChildren( domain, this);
                 Collections.sort(childrenList);
+
                 byte[] b = zk.getData(String.format(NODE_FORMAT, domain, childrenList.get(0)));
                 String puri = new String(b);
                 isPrimary = uri.equals(puri);
+
+                //if(!isPrimary && lastChildrenCount < childrenList.size())
+
+
+                lastChildrenCount = childrenList.size();
                 primaryUri = puri;
 			}
 		});
@@ -167,6 +176,7 @@ public class VersionControl {
             .get();
 
         Map<Long, Message> allMessages = r.readEntity(new GenericType<Map<Long,Message>>() {});
+        System.out.println("All Messages size: " + allMessages.size());
         //SET
         target = client.target(this.primaryUri);
             target = target.path(MessageServiceRest.PATH).path("update");
@@ -186,6 +196,8 @@ public class VersionControl {
             .get();
 
         Map<String, Set<Long>> userInboxes = r.readEntity(new GenericType<Map<String,Set<Long>>>() {});
+        System.out.println("All userInboxes size: " + userInboxes.size());
+        
         //SET
         target = client.target(this.primaryUri);
             target = target.path(MessageServiceRest.PATH).path("update").path("mbox");
@@ -205,6 +217,7 @@ public class VersionControl {
             .get();
 
         Map<String, User> users = r.readEntity(new GenericType<Map<String,User>>() {});
+        System.out.println("All users size: " + users.size());
         //SET
         target = client.target(this.primaryUri);
             target = target.path(MessageServiceRest.PATH).path("update");
@@ -274,7 +287,7 @@ public class VersionControl {
     //METHODS CALLED BY THE RESOURCES UPON RECEIVING A REQUEST
         //USER_RESOURCE
 
-        private void execPostUser(String uri, User user){
+        private void execPostUser(String uri, User user) throws ProcessingException {
             WebTarget target = client.target(uri);
             target = target.path(UserServiceRest.PATH).path("replica");
             target = target.queryParam("secret", ReplicaMailServerREST.secret);
@@ -289,14 +302,23 @@ public class VersionControl {
             }
         }
 
-        public void postuser(User user){            
+        public void postuser(User user){   
+            short failedReplications = 0;
+
             for(String child : this.childrenList){
                 String uri = this.getReplicaUri(child);
-               this.execPostUser(uri, user);
+               
+                try{
+                    this.execPostUser(uri, user);
+                }catch(ProcessingException e){
+                    failedReplications++;
+                }
             }
+
+
         }
 
-        private void execUpdateUSer(String uri, String name, User user){
+        private void execUpdateUSer(String uri, String name, User user) throws ProcessingException {
             WebTarget target = client.target(uri);
             target = target.path(UserServiceRest.PATH).path(name).path("replica");
             target = target.queryParam("secret", ReplicaMailServerREST.secret);
@@ -311,15 +333,21 @@ public class VersionControl {
             }
         }
 
-        public void updateUser(String name, User user){            
+        public void updateUser(String name, User user){
+            short failedReplications = 0;
+            
             for(String child : this.childrenList){
                 String uri = this.getReplicaUri(child);
                 
-                this.execUpdateUSer(uri, name, user);
+                try{
+                    this.execUpdateUSer(uri, name, user);
+                }catch(ProcessingException e){
+                    failedReplications++;
+                }
             }
         }
 
-        private void execDeleteUser(String uri, String name){
+        private void execDeleteUser(String uri, String name) throws ProcessingException{
             WebTarget target = client.target(uri);
             target = target.path(UserServiceRest.PATH).path(name).path("replica");
             target = target.queryParam("secret", ReplicaMailServerREST.secret);
@@ -334,15 +362,22 @@ public class VersionControl {
             }
         }
 
-        public void deleteUser(String name){            
+        public void deleteUser(String name){   
+            short failedReplications = 0;
+            
             for(String child : this.childrenList){
                 String uri = this.getReplicaUri(child);
                 
-               this.execDeleteUser(uri, name);
+               try {
+                   this.execDeleteUser(uri, name);
+               } catch (ProcessingException e) {
+                   failedReplications++;
+               }
+               
             }
         }
 
-        private void execPostMessage(String uri, Message msg){
+        private void execPostMessage(String uri, Message msg) throws ProcessingException{
             WebTarget target = client.target(uri);
             target = target.path(MessageServiceRest.PATH).path("replica");
             target = target.queryParam("secret", ReplicaMailServerREST.secret);
@@ -358,15 +393,21 @@ public class VersionControl {
         }
 
         //MESSAGE_RESOURCE
-        public void postMessage(Message msg){            
+        public void postMessage(Message msg){     
+            short failedReplications = 0;
+            
             for(String child : this.childrenList){
                 String uri = this.getReplicaUri(child);
                 
-               this.execPostMessage(uri, msg);
+               try{
+                    this.execPostMessage(uri, msg);
+               }catch(ProcessingException e){
+                    failedReplications++;
+               }
             }
         }
 
-        private void execDeleteMessage(String uri, String name, long mid){
+        private void execDeleteMessage(String uri, String name, long mid) throws ProcessingException {
             WebTarget target = client.target(uri);
             target = target.path(MessageServiceRest.PATH).path("msg").path(name).path(Long.toString(mid)).path("replica");
             target = target.queryParam("secret", ReplicaMailServerREST.secret);
@@ -381,15 +422,23 @@ public class VersionControl {
             }
         }
 
-        public void deleteMessage(String name, long mid){            
+        public void deleteMessage(String name, long mid){  
+            short failedReplications = 0;
+            
             for(String child : this.childrenList){
                 String uri = this.getReplicaUri(child);
                 
-                this.execDeleteMessage(uri, name, mid);
+                try {
+                    this.execDeleteMessage(uri, name, mid); 
+                } catch (ProcessingException e) {
+                    failedReplications++;
+                }
+
+
             }
         }
 
-        private void execRemoveFromUserInbox(String uri, String name, long mid){
+        private void execRemoveFromUserInbox(String uri, String name, long mid) throws ProcessingException {
             WebTarget target = client.target(uri);
             target = target.path(MessageServiceRest.PATH).path("mbox").path(name).path(Long.toString(mid)).path("replica");
             target = target.queryParam("secret", ReplicaMailServerREST.secret);
@@ -404,15 +453,22 @@ public class VersionControl {
             }
         }
 
-        public void removeFromUserInbox(String name, long mid){            
+        public void removeFromUserInbox(String name, long mid){   
+            short failedReplications = 0;
+            
             for(String child : this.childrenList){
                 String uri = this.getReplicaUri(child);
                 
-                this.execRemoveFromUserInbox(uri, name, mid);
+                try {
+                    this.execRemoveFromUserInbox(uri, name, mid);                    
+                } catch (ProcessingException e) {
+                    failedReplications++;
+                }
+                
             }
         }
 
-        private List<String> execPostforwardedMessage(String uri, Message msg){
+        private List<String> execPostforwardedMessage(String uri, Message msg) throws ProcessingException {
             WebTarget target = client.target(uri);
             target = target.path(MessageServiceRest.PATH).path("mbox").path("replica");
             target = target.queryParam("secret", ReplicaMailServerREST.secret);
@@ -431,18 +487,23 @@ public class VersionControl {
 
         public List<String> postForwardedMessage(Message msg){
             List<String> failedDeliveries = new LinkedList<>();
-            
+            short failedReplications = 0;
+
             for(String child : this.childrenList){
                 String uri = this.getReplicaUri(child);
 
-                
-               failedDeliveries = this.execPostforwardedMessage(uri, msg);
+                try {
+                    failedDeliveries = this.execPostforwardedMessage(uri, msg);
+                } catch (ProcessingException e) {
+                    failedReplications++;
+                }
+
             }
                         
             return failedDeliveries;
         }
 
-        private void execDeleteForwardedMessage(String uri, long mid){
+        private void execDeleteForwardedMessage(String uri, long mid) throws ProcessingException {
             WebTarget target = client.target(uri);
             target = target.path(MessageServiceRest.PATH).path("msg").path(Long.toString(mid)).path("replica");
             target = target.queryParam("secret", ReplicaMailServerREST.secret);

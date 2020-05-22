@@ -101,8 +101,6 @@ public class MessageResourceSoap extends LocalServerUtils implements MessageServ
 		System.out.println("getMessage: Received request for message with id: " + mid +".");
 		synchronized(this.allMessages){
 			synchronized(this.userInboxs){
-				System.out.println(String.valueOf(this.allMessages.containsKey(mid)));
-				System.out.println(String.valueOf(this.userInboxs.get(user).contains(mid)));
 				if(!this.allMessages.containsKey(mid) || !this.userInboxs.get(user).contains(mid)) { //check if message exists
 					System.out.println("getMessage: Requested message does not exists.");
 					throw new MessagesException("getMessage: Requested message does not exists."); //if not send HTTP 404 back to client

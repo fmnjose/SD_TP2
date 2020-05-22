@@ -16,6 +16,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.glassfish.jersey.client.ClientConfig;
@@ -158,6 +159,13 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
 
     @Override
     public User getUser(String name, String pwd) {
+        if (!vc.isPrimary()){
+			String redirectPath = String.format(ServerUtils.GET_USER_FORMAT, vc.getPrimaryUri(), name);
+			redirectPath = UriBuilder.fromPath(redirectPath).queryParam("pwd", pwd).toString();
+			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR USER " + name);
+			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
+		}
+
         User user;
 
         if(name == null || name.equals("")){

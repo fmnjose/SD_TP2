@@ -4,19 +4,15 @@ Status: Image is up to date for nunopreguica/sd1920-tester-tp2:latest
 docker.io/nunopreguica/sd1920-tester-tp2:latest
 SD1920 +++ TP2 +++ Testing image: sd1920-trab2-52890-53277
 Version 5a - 20/05/2020
-killByImage(sd1920-trab2-52890-53277): Removing container: [/objective_meitner]
-killByImage(sd1920-trab2-52890-53277): Removing container: [/festive_pare]
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 1a )	 Testing Docker environment [executing: docker info]
 ---------------------------------------------------------------
 Docker ID: IHDA:GYRV:F3AZ:3P6E:SCFI:TZ2E:2LID:RKI6:3MWU:Y4H6:26BF:HCJM
-
-OK                                                                                                                   
+OK                                                                                                                   
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 1b )	Testing: Docker engine CPU cores...
 ---------------------------------------------------------------
-
-OK                                                                                                                   
+OK                                                                                                                   
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 1c )	Checking messages.props [executing: docker run sd1920-trab2-52890-53277 /bin/cat messages.props and nunopreguica/sd1920tpbase]
 ---------------------------------------------------------------
@@ -39,15 +35,13 @@ OK
 ;	REP_SERVER_EXTRA_ARGS_FIRST=lemonke 
 ;	MESSAGES_REP_PORT=8080 
 ;	SERVER_KEYSTORE=server.ks
-
-OK                                                                                                                   
+OK                                                                                                                   
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 1d )	Checking TLS keys in client truststore
 ---------------------------------------------------------------
-
-OK                                                                                                                   
-killByImage(sd1920-trab2-52890-53277): Removing container: [/agitated_morse]
-killByImage(sd1920-trab2-52890-53277): Removing container: [/quizzical_driscoll]
+OK                                                                                                                   
+killByImage(sd1920-trab2-52890-53277): Removing container: [/cranky_margulis]
+killByImage(sd1920-trab2-52890-53277): Removing container: [/lucid_ramanujan]
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 101a )	  Skipped...
 ---------------------------------------------------------------
@@ -172,523 +166,372 @@ killByImage(sd1920-trab2-52890-53277): Removing container: [/quizzical_driscoll]
 118a )	  Skipped...
 ---------------------------------------------------------------
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-118b )	 Testing DeleteMessage across multiple domains : [3] REST servers ; [1] SOAP servers; [] PROXY servers
+118b )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+119a )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+119b )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+119c )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+120a )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+120b )	  Skipped...
+---------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+121a )	 Testing Mix Workload : [3] REST servers ; [] SOAP servers; [] PROXY servers ; write to any replica server = true ; stoping net for replica 1
 ---------------------------------------------------------------
 CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name kafka -h kafka nunopreguica/ps1920-kafka
 Started: kafka : 
-023171b140ec358dc45445012f785591f5ec888adaf02bb76e2f035d62b8f545
-sleeping: 14 s                                                                                
-sleeping: 13 s                                                                                
-sleeping: 12 s                                                                                
-sleeping: 11 s                                                                                
-sleeping: 10 s                                                                                
-sleeping: 9 s                                                                                
-sleeping: 8 s                                                                                
-sleeping: 7 s                                                                                
-sleeping: 6 s                                                                                
-sleeping: 5 s                                                                                
-sleeping: 4 s                                                                                
-sleeping: 3 s                                                                                
-sleeping: 2 s                                                                                
-sleeping: 1 s                                                                                
-sleeping: 0 s                                                                                
-                                                                                
-Starting REST services: <3> replicas : mainClass = <sd1920.trab2.server.replica.ReplicaMailServerREST> ; TLS : true
+4181dd3af15e8a9fda2eccc38fa22a87ba3385b2e13a53e22b7b1d37a44c3e35
+sleeping: 14 s                                                                                sleeping: 13 s                                                                                sleeping: 12 s                                                                                sleeping: 11 s                                                                                sleeping: 10 s                                                                                sleeping: 9 s                                                                                sleeping: 8 s                                                                                sleeping: 7 s                                                                                sleeping: 6 s                                                                                sleeping: 5 s                                                                                sleeping: 4 s                                                                                sleeping: 3 s                                                                                sleeping: 2 s                                                                                sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                Starting REST services: <3> replicas : mainClass = <sd1920.trab2.server.replica.ReplicaMailServerREST> ; TLS : true
 INFO: Starting REST services: <3> replicas : mainClass = <sd1920.trab2.server.replica.ReplicaMailServerREST> ; TLS : true
 CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-1-1 -h msgserver-1 sd1920-trab2-52890-53277 java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.replica.ReplicaMailServerREST lemonke
 Started: msgserver-1-1 : java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.replica.ReplicaMailServerREST lemonke 
-229d11cfed260cc896e93fbfa63fe30220b1c50089b991e307ee893ad72edf3c
-sleeping: 14 s                                                                                
-sleeping: 13 s                                                                                
-sleeping: 12 s                                                                                
-sleeping: 11 s                                                                                
-sleeping: 10 s                                                                                
-sleeping: 9 s                                                                                
-sleeping: 8 s                                                                                
-sleeping: 7 s                                                                                
-sleeping: 6 s                                                                                
-sleeping: 5 s                                                                                
-sleeping: 4 s                                                                                
-sleeping: 3 s                                                                                
-sleeping: 2 s                                                                                
-sleeping: 1 s                                                                                
-sleeping: 0 s                                                                                
-                                                                                
-CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-1-2 -h msgserver-1 sd1920-trab2-52890-53277 java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.replica.ReplicaMailServerREST lemonke
+81b03e8c321ca5bb49c0056b6ffd8f50611e672df504569bb5aa4274c6467f84
+sleeping: 19 s                                                                                sleeping: 18 s                                                                                sleeping: 17 s                                                                                sleeping: 16 s                                                                                sleeping: 15 s                                                                                sleeping: 14 s                                                                                sleeping: 13 s                                                                                sleeping: 12 s                                                                                sleeping: 11 s                                                                                sleeping: 10 s                                                                                sleeping: 9 s                                                                                sleeping: 8 s                                                                                sleeping: 7 s                                                                                sleeping: 6 s                                                                                sleeping: 5 s                                                                                sleeping: 4 s                                                                                sleeping: 3 s                                                                                sleeping: 2 s                                                                                sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-1-2 -h msgserver-1 sd1920-trab2-52890-53277 java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.replica.ReplicaMailServerREST lemonke
 Started: msgserver-1-2 : java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.replica.ReplicaMailServerREST lemonke
-01faf58065ccb22a1327b18db26fb32270007b8ba4aa2626f56cd44a213363dd
+c71cbc50daa1735abb28aa9aed0aa964bf7c6cfc423b64df335690a7d23cd9e9
 CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-1-3 -h msgserver-1 sd1920-trab2-52890-53277 java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.replica.ReplicaMailServerREST lemonke
 Started: msgserver-1-3 : java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.replica.ReplicaMailServerREST lemonke
-ca1a96684440c66226cfefae1d4bee136b0c5c4a5b7cbc8b1c86dd7689914efb
-Starting SOAP services: <1> replicas : mainClass = <sd1920.trab2.server.soap.SOAPMailServer> ; TLS : true
-INFO: Starting SOAP services: <1> replicas : mainClass = <sd1920.trab2.server.soap.SOAPMailServer> ; TLS : true
-CMD: /usr/local/bin/docker run --rm --privileged -d --network=sdnet --name msgserver-2-1 -h msgserver-2 sd1920-trab2-52890-53277 java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.soap.SOAPMailServer lemonke
-Started: msgserver-2-1 : java -Djavax.net.ssl.keyStore=/home/sd/server.ks -Djavax.net.ssl.keyStorePassword=password -Djavax.net.ssl.trustStore=/home/sd/truststore.ks -Djavax.net.ssl.trustStorePassword=changeit -cp /home/sd/sd1920.jar sd1920.trab2.server.soap.SOAPMailServer lemonke
-0a2088d9bc2c5095dc3c72f45081862b24c7c9c244e8b1602e296e3c84ea09ce
-sleeping: 14 s                                                                                
-sleeping: 13 s                                                                                
-sleeping: 12 s                                                                                
-sleeping: 11 s                                                                                
-sleeping: 10 s                                                                                
-sleeping: 9 s                                                                                
-sleeping: 8 s                                                                                
-sleeping: 7 s                                                                                
-sleeping: 6 s                                                                                
-sleeping: 5 s                                                                                
-sleeping: 4 s                                                                                
-sleeping: 3 s                                                                                
-sleeping: 2 s                                                                                
-sleeping: 1 s                                                                                
-sleeping: 0 s                                                                                
-                                                                                
----------- Creating 5 users in each domain
-1/5                                                                                
-[PostUser https://172.18.0.4:8080/rest] User{chantel.rath, cfr3k96epfu5, msgserver-1, Miss Lavina Waelchi} -> 200:chantel.rath@msgserver-1
-2/5                                                                                
-[PostUser https://172.18.0.4:8080/rest] User{aubrey.blick, 33floc73, msgserver-1, Dr. Temple Green} -> 200:aubrey.blick@msgserver-1
-3/5                                                                                
-[PostUser https://172.18.0.4:8080/rest] User{perry.hessel, kq2g5v64pqqrdh9, msgserver-1, Herb Hansen} -> 200:perry.hessel@msgserver-1
-4/5                                                                                
-[PostUser https://172.18.0.4:8080/rest] User{corrie.bailey, scerl0yfs52, msgserver-1, Dannie Armstrong} -> 200:corrie.bailey@msgserver-1
-5/5                                                                                
-[PostUser https://172.18.0.4:8080/rest] User{catherin.gutmann, zdqm4u574, msgserver-1, Alton Koelpin DDS} -> 200:catherin.gutmann@msgserver-1
-1/5                                                                                
-[PostUser SOAP] User{duane.bradtke, p7a5w3kzbzgb4p, msgserver-2, Gerry Frami} -> OK:duane.bradtke@msgserver-2
-2/5                                                                                
-[PostUser SOAP] User{bradley.huel, e4afjfbwrow1z, msgserver-2, Kristi Harris} -> OK:bradley.huel@msgserver-2
-3/5                                                                                
-[PostUser SOAP] User{adelia.connelly, 38brfogec6p, msgserver-2, Thu Walsh} -> OK:adelia.connelly@msgserver-2
-4/5                                                                                
-[PostUser SOAP] User{tanja.will, f84e0jhb1, msgserver-2, Thaddeus Moen} -> OK:tanja.will@msgserver-2
-5/5                                                                                
-[PostUser SOAP] User{marhta.baumbach, zuuby5zxz0ikgw, msgserver-2, Emanuel Cartwright PhD} -> OK:marhta.baumbach@msgserver-2
----------- Creating 10 messages
-[PostMessage https://172.18.0.4:8080/rest] cfr3k96epfu5, Msg{-1,chantel.rath@msgserver-1,Quas ut.,[duane.bradtke@msgserver-2],1590158681123} -> 200:4950625071954023496
-[PostMessage https://172.18.0.4:8080/rest] 33floc73, Msg{-1,aubrey.blick@msgserver-1,Est nostrum quam voluptas sit nobis.,[duane.bradtke@msgserver-2,bradley.huel@msgserver-2],1590158681783} -> 200:1838242164590656684
-[PostMessage https://172.18.0.4:8080/rest] kq2g5v64pqqrdh9, Msg{-1,perry.hessel@msgserver-1,Omnis illo iure consequatur unde cupiditate.,[adelia.connelly@msgserver-2,duane.bradtke@msgserver-2,bradley.huel@msgserver-2],1590158681931} -> 200:6940189609377328599
-[PostMessage https://172.18.0.4:8080/rest] scerl0yfs52, Msg{-1,corrie.bailey@msgserver-1,Quia rerum commodi doloribus delectus.,[adelia.connelly@msgserver-2,duane.bradtke@msgserver-2,bradley.huel@msgserver-2,tanja.will@msgserver-2],1590158681999} -> 200:1610145734600368710
-[PostMessage https://172.18.0.4:8080/rest] zdqm4u574, Msg{-1,catherin.gutmann@msgserver-1,Quaerat.,[adelia.connelly@msgserver-2,duane.bradtke@msgserver-2,bradley.huel@msgserver-2,tanja.will@msgserver-2,marhta.baumbach@msgserver-2],1590158682064} -> 200:7924171389654796375
-[PostMessage SOAP] p7a5w3kzbzgb4p, Msg{-1,duane.bradtke@msgserver-2,Enim ipsam in velit quae.,[chantel.rath@msgserver-1],1590158682211} -> OK:6496262837651353254
-[PostMessage SOAP] e4afjfbwrow1z, Msg{-1,bradley.huel@msgserver-2,Libero omnis neque similique.,[chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590158682728} -> OK:1589932552527499614
-[PostMessage SOAP] 38brfogec6p, Msg{-1,adelia.connelly@msgserver-2,Et consequatur.,[perry.hessel@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590158683035} -> OK:6755844502369967470
-[PostMessage SOAP] f84e0jhb1, Msg{-1,tanja.will@msgserver-2,Et debitis.,[perry.hessel@msgserver-1,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1590158683352} -> OK:4483057590563753396
-[PostMessage SOAP] zuuby5zxz0ikgw, Msg{-1,marhta.baumbach@msgserver-2,Sint et dolorum quia et possimus.,[perry.hessel@msgserver-1,catherin.gutmann@msgserver-1,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1590158683664} -> OK:5588588729063801110
----------- Deleting 4 messages
-[DeleteMessage https://172.18.0.4:8080/rest] chantel.rath, mid= 4950625071954023496, pwd= cfr3k96epfu5 -> 204:null
-[DeleteMessage https://172.18.0.4:8080/rest] aubrey.blick, mid= 1838242164590656684, pwd= 33floc73 -> 204:null
-[DeleteMessage https://172.18.0.4:8080/rest] perry.hessel, mid= 6940189609377328599, pwd= kq2g5v64pqqrdh9 -> 204:null
-[DeleteMessage https://172.18.0.4:8080/rest] corrie.bailey, mid= 1610145734600368710, pwd= scerl0yfs52 -> 204:null
-sleeping: 14 s                                                                                
-sleeping: 13 s                                                                                
-sleeping: 12 s                                                                                
-sleeping: 11 s                                                                                
-sleeping: 10 s                                                                                
-sleeping: 9 s                                                                                
-sleeping: 8 s                                                                                
-sleeping: 7 s                                                                                
-sleeping: 6 s                                                                                
-sleeping: 5 s                                                                                
-sleeping: 4 s                                                                                
-sleeping: 3 s                                                                                
-sleeping: 2 s                                                                                
-sleeping: 1 s                                                                                
-sleeping: 0 s                                                                                
-                                                                                
----------- Checking inboxes
-[GetMessageS https://172.18.0.6:8080/rest] chantel.rath, pwd=cfr3k96epfu5 -> 200:[6755844502369967470, 6496262837651353254, 5588588729063801110, 4483057590563753396, 1589932552527499614]
-[GetMessageS https://172.18.0.5:8080/rest] chantel.rath, pwd=cfr3k96epfu5 -> 200:[6755844502369967470, 6496262837651353254, 5588588729063801110, 4483057590563753396, 1589932552527499614]
-[GetMessageS https://172.18.0.4:8080/rest] chantel.rath, pwd=cfr3k96epfu5 -> 200:[6755844502369967470, 6496262837651353254, 5588588729063801110, 4483057590563753396, 1589932552527499614]
-[GetMessageS https://172.18.0.6:8080/rest] aubrey.blick, pwd=33floc73 -> 200:[6755844502369967470, 5588588729063801110, 4483057590563753396, 1589932552527499614]
-[GetMessageS https://172.18.0.5:8080/rest] aubrey.blick, pwd=33floc73 -> 200:[6755844502369967470, 5588588729063801110, 4483057590563753396, 1589932552527499614]
-[GetMessageS https://172.18.0.4:8080/rest] aubrey.blick, pwd=33floc73 -> 200:[6755844502369967470, 5588588729063801110, 4483057590563753396, 1589932552527499614]
-[GetMessageS https://172.18.0.6:8080/rest] perry.hessel, pwd=kq2g5v64pqqrdh9 -> 200:[6755844502369967470, 5588588729063801110, 4483057590563753396]
-[GetMessageS https://172.18.0.5:8080/rest] perry.hessel, pwd=kq2g5v64pqqrdh9 -> 200:[6755844502369967470, 5588588729063801110, 4483057590563753396]
-[GetMessageS https://172.18.0.4:8080/rest] perry.hessel, pwd=kq2g5v64pqqrdh9 -> 200:[6755844502369967470, 5588588729063801110, 4483057590563753396]
-[GetMessageS https://172.18.0.6:8080/rest] corrie.bailey, pwd=scerl0yfs52 -> 200:[5588588729063801110, 4483057590563753396]
-[GetMessageS https://172.18.0.5:8080/rest] corrie.bailey, pwd=scerl0yfs52 -> 200:[5588588729063801110, 4483057590563753396]
-[GetMessageS https://172.18.0.4:8080/rest] corrie.bailey, pwd=scerl0yfs52 -> 200:[5588588729063801110, 4483057590563753396]
-[GetMessageS https://172.18.0.6:8080/rest] catherin.gutmann, pwd=zdqm4u574 -> 200:[5588588729063801110]
-[GetMessageS https://172.18.0.5:8080/rest] catherin.gutmann, pwd=zdqm4u574 -> 200:[5588588729063801110]
-[GetMessageS https://172.18.0.4:8080/rest] catherin.gutmann, pwd=zdqm4u574 -> 200:[5588588729063801110]
-[GetMessageS] duane.bradtke, pwd=p7a5w3kzbzgb4p -> OK:[7924171389654796375]
-[GetMessageS] bradley.huel, pwd=e4afjfbwrow1z -> OK:[7924171389654796375]
-[GetMessageS] adelia.connelly, pwd=38brfogec6p -> OK:[7924171389654796375]
-[GetMessageS] tanja.will, pwd=f84e0jhb1 -> OK:[7924171389654796375]
-[GetMessageS] marhta.baumbach, pwd=zuuby5zxz0ikgw -> OK:[7924171389654796375]
----------- Checking message access
-[GetMessage SOAP] duane.bradtke, mid=4950625071954023496, pwd=p7a5w3kzbzgb4p -> -1 getMessage: Requested message does not exists. URI:https://172.18.0.7:8080/soap/messages/?wsdl
-sd1920.trab1.api.soap.MessagesException: getMessage: Requested message does not exists.
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createUserDefinedException(SOAPFaultBuilder.java:302)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createException(SOAPFaultBuilder.java:111)
-	at com.sun.xml.ws.client.sei.StubHandler.readResponse(StubHandler.java:223)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:176)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:263)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:89)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:62)
-	at com.sun.xml.ws.client.sei.SEIStub.invoke(SEIStub.java:131)
-	at com.sun.proxy.$Proxy73.getMessage(Unknown Source)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:150)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:137)
-	at sd1920.trab1.ServerState.lambda$execGetMessage$9(ServerState.java:302)
+19297c5716e589ec18b5aaa9dcebf1e8497ac9e29538031f2910d8d158481393
+sleeping: 19 s                                                                                sleeping: 18 s                                                                                sleeping: 17 s                                                                                sleeping: 16 s                                                                                sleeping: 15 s                                                                                sleeping: 14 s                                                                                sleeping: 13 s                                                                                sleeping: 12 s                                                                                sleeping: 11 s                                                                                sleeping: 10 s                                                                                sleeping: 9 s                                                                                sleeping: 8 s                                                                                sleeping: 7 s                                                                                sleeping: 6 s                                                                                sleeping: 5 s                                                                                sleeping: 4 s                                                                                sleeping: 3 s                                                                                sleeping: 2 s                                                                                sleeping: 1 s                                                                                sleeping: 0 s                                                                                                                                                                ---------- Creating 12 users
+1/12                                                                                [PostUser https://172.18.0.4:8080/rest] User{chantel.rath, cfr3k96epfu5, msgserver-1, Miss Lavina Waelchi} -> 200:chantel.rath@msgserver-1
+2/12                                                                                [PostUser https://172.18.0.5:8080/rest] User{aubrey.blick, 33floc73, msgserver-1, Dr. Temple Green} -> 200:aubrey.blick@msgserver-1
+3/12                                                                                [PostUser https://172.18.0.5:8080/rest] User{perry.hessel, kq2g5v64pqqrdh9, msgserver-1, Herb Hansen} -> 200:perry.hessel@msgserver-1
+4/12                                                                                [PostUser https://172.18.0.4:8080/rest] User{corrie.bailey, scerl0yfs52, msgserver-1, Dannie Armstrong} -> 200:corrie.bailey@msgserver-1
+5/12                                                                                [PostUser https://172.18.0.6:8080/rest] User{catherin.gutmann, zdqm4u574, msgserver-1, Alton Koelpin DDS} -> 200:catherin.gutmann@msgserver-1
+6/12                                                                                [PostUser https://172.18.0.5:8080/rest] User{duane.bradtke, p7a5w3kzbzgb4p, msgserver-1, Gerry Frami} -> 200:duane.bradtke@msgserver-1
+7/12                                                                                [PostUser https://172.18.0.6:8080/rest] User{bradley.huel, e4afjfbwrow1z, msgserver-1, Kristi Harris} -> 200:bradley.huel@msgserver-1
+8/12                                                                                [PostUser https://172.18.0.5:8080/rest] User{adelia.connelly, 38brfogec6p, msgserver-1, Thu Walsh} -> 200:adelia.connelly@msgserver-1
+9/12                                                                                [PostUser https://172.18.0.5:8080/rest] User{tanja.will, f84e0jhb1, msgserver-1, Thaddeus Moen} -> 200:tanja.will@msgserver-1
+10/12                                                                                [PostUser https://172.18.0.5:8080/rest] User{marhta.baumbach, zuuby5zxz0ikgw, msgserver-1, Emanuel Cartwright PhD} -> 200:marhta.baumbach@msgserver-1
+11/12                                                                                [PostUser https://172.18.0.5:8080/rest] User{lauri.lakin, 8scsyjod, msgserver-1, Janette Weissnat PhD} -> 200:lauri.lakin@msgserver-1
+12/12                                                                                [PostUser https://172.18.0.5:8080/rest] User{klara.cartwright, a8p8o6wy, msgserver-1, Odell Zemlak} -> 200:klara.cartwright@msgserver-1
+---------- Creating 12 correct messages
+[PostMessage https://172.18.0.5:8080/rest] cfr3k96epfu5, Msg{-1,chantel.rath,Deserunt optio est nostrum.,[aubrey.blick@msgserver-1],1590172349810} -> 200:647468260852511751
+[PostMessage https://172.18.0.4:8080/rest] 33floc73, Msg{-1,aubrey.blick@msgserver-1,Aut quis ut.,[perry.hessel@msgserver-1],1590172350227} -> 200:8463564521291199087
+[PostMessage https://172.18.0.4:8080/rest] kq2g5v64pqqrdh9, Msg{-1,perry.hessel,Itaque.,[corrie.bailey@msgserver-1],1590172350304} -> 200:8271930856228688013
+[PostMessage https://172.18.0.5:8080/rest] scerl0yfs52, Msg{-1,corrie.bailey@msgserver-1,Quia molestiae quia et.,[duane.bradtke@msgserver-1,catherin.gutmann@msgserver-1],1590172350397} -> 200:3653113493359218485
+[PostMessage https://172.18.0.6:8080/rest] zdqm4u574, Msg{-1,catherin.gutmann,Ipsa.,[duane.bradtke@msgserver-1,bradley.huel@msgserver-1],1590172350460} -> 200:8936970847068519146
+[PostMessage https://172.18.0.4:8080/rest] p7a5w3kzbzgb4p, Msg{-1,duane.bradtke@msgserver-1,Voluptas.,[adelia.connelly@msgserver-1,bradley.huel@msgserver-1],1590172350553} -> 200:3836157401491636382
+[PostMessage https://172.18.0.4:8080/rest] e4afjfbwrow1z, Msg{-1,bradley.huel,In quia sed eveniet.,[adelia.connelly@msgserver-1,tanja.will@msgserver-1,marhta.baumbach@msgserver-1],1590172350583} -> 200:2726043475342838453
+[PostMessage https://172.18.0.6:8080/rest] 38brfogec6p, Msg{-1,adelia.connelly@msgserver-1,Dignissimos sint veniam harum vel.,[tanja.will@msgserver-1,marhta.baumbach@msgserver-1,lauri.lakin@msgserver-1],1590172350623} -> 200:1236956626663413223
+[PostMessage https://172.18.0.6:8080/rest] f84e0jhb1, Msg{-1,tanja.will,Et dolorum quia.,[klara.cartwright@msgserver-1,marhta.baumbach@msgserver-1,lauri.lakin@msgserver-1],1590172350683} -> 200:2653600777797076292
+[PostMessage https://172.18.0.6:8080/rest] zuuby5zxz0ikgw, Msg{-1,marhta.baumbach@msgserver-1,Ut et fuga maxime recusandae.,[klara.cartwright@msgserver-1,lauri.lakin@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350738} -> 200:1331097871040514115
+[PostMessage https://172.18.0.5:8080/rest] 8scsyjod, Msg{-1,lauri.lakin,Vel.,[perry.hessel@msgserver-1,klara.cartwright@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350834} -> 200:2412263482311801570
+[PostMessage https://172.18.0.6:8080/rest] a8p8o6wy, Msg{-1,klara.cartwright@msgserver-1,Magnam dolores placeat incidunt natus.,[perry.hessel@msgserver-1,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1590172350874} -> 200:8928325482620631161
+---------- Getting inboxes correctly
+[GetMessageS https://172.18.0.6:8080/rest] chantel.rath, pwd=cfr3k96epfu5 -> 200:[2412263482311801570, 1331097871040514115, 8928325482620631161]
+[GetMessageS https://172.18.0.5:8080/rest] chantel.rath, pwd=cfr3k96epfu5 -> 200:[2412263482311801570, 1331097871040514115, 8928325482620631161]
+[GetMessageS https://172.18.0.4:8080/rest] chantel.rath, pwd=cfr3k96epfu5 -> 200:[2412263482311801570, 1331097871040514115, 8928325482620631161]
+[GetMessageS https://172.18.0.6:8080/rest] aubrey.blick, pwd=33floc73 -> 200:[2412263482311801570, 1331097871040514115, 647468260852511751, 8928325482620631161]
+[GetMessageS https://172.18.0.5:8080/rest] aubrey.blick, pwd=33floc73 -> 200:[2412263482311801570, 1331097871040514115, 647468260852511751, 8928325482620631161]
+[GetMessageS https://172.18.0.4:8080/rest] aubrey.blick, pwd=33floc73 -> 200:[2412263482311801570, 1331097871040514115, 647468260852511751, 8928325482620631161]
+[GetMessageS https://172.18.0.6:8080/rest] perry.hessel, pwd=kq2g5v64pqqrdh9 -> 200:[2412263482311801570, 8463564521291199087, 8928325482620631161]
+[GetMessageS https://172.18.0.5:8080/rest] perry.hessel, pwd=kq2g5v64pqqrdh9 -> 200:[2412263482311801570, 8463564521291199087, 8928325482620631161]
+[GetMessageS https://172.18.0.4:8080/rest] perry.hessel, pwd=kq2g5v64pqqrdh9 -> 200:[2412263482311801570, 8463564521291199087, 8928325482620631161]
+[GetMessageS https://172.18.0.6:8080/rest] corrie.bailey, pwd=scerl0yfs52 -> 200:[8271930856228688013, 8928325482620631161]
+[GetMessageS https://172.18.0.5:8080/rest] corrie.bailey, pwd=scerl0yfs52 -> 200:[8271930856228688013, 8928325482620631161]
+[GetMessageS https://172.18.0.4:8080/rest] corrie.bailey, pwd=scerl0yfs52 -> 200:[8271930856228688013, 8928325482620631161]
+[GetMessageS https://172.18.0.6:8080/rest] catherin.gutmann, pwd=zdqm4u574 -> 200:[3653113493359218485]
+[GetMessageS https://172.18.0.5:8080/rest] catherin.gutmann, pwd=zdqm4u574 -> 200:[3653113493359218485]
+[GetMessageS https://172.18.0.4:8080/rest] catherin.gutmann, pwd=zdqm4u574 -> 200:[3653113493359218485]
+[GetMessageS https://172.18.0.6:8080/rest] duane.bradtke, pwd=p7a5w3kzbzgb4p -> 200:[8936970847068519146, 3653113493359218485]
+[GetMessageS https://172.18.0.5:8080/rest] duane.bradtke, pwd=p7a5w3kzbzgb4p -> 200:[8936970847068519146, 3653113493359218485]
+[GetMessageS https://172.18.0.4:8080/rest] duane.bradtke, pwd=p7a5w3kzbzgb4p -> 200:[8936970847068519146, 3653113493359218485]
+[GetMessageS https://172.18.0.6:8080/rest] bradley.huel, pwd=e4afjfbwrow1z -> 200:[3836157401491636382, 8936970847068519146]
+[GetMessageS https://172.18.0.5:8080/rest] bradley.huel, pwd=e4afjfbwrow1z -> 200:[3836157401491636382, 8936970847068519146]
+[GetMessageS https://172.18.0.4:8080/rest] bradley.huel, pwd=e4afjfbwrow1z -> 200:[3836157401491636382, 8936970847068519146]
+[GetMessageS https://172.18.0.6:8080/rest] adelia.connelly, pwd=38brfogec6p -> 200:[3836157401491636382, 2726043475342838453]
+[GetMessageS https://172.18.0.5:8080/rest] adelia.connelly, pwd=38brfogec6p -> 200:[3836157401491636382, 2726043475342838453]
+[GetMessageS https://172.18.0.4:8080/rest] adelia.connelly, pwd=38brfogec6p -> 200:[3836157401491636382, 2726043475342838453]
+[GetMessageS https://172.18.0.6:8080/rest] tanja.will, pwd=f84e0jhb1 -> 200:[1236956626663413223, 2726043475342838453]
+[GetMessageS https://172.18.0.5:8080/rest] tanja.will, pwd=f84e0jhb1 -> 200:[1236956626663413223, 2726043475342838453]
+[GetMessageS https://172.18.0.4:8080/rest] tanja.will, pwd=f84e0jhb1 -> 200:[1236956626663413223, 2726043475342838453]
+[GetMessageS https://172.18.0.6:8080/rest] marhta.baumbach, pwd=zuuby5zxz0ikgw -> 200:[1236956626663413223, 2653600777797076292, 2726043475342838453]
+[GetMessageS https://172.18.0.5:8080/rest] marhta.baumbach, pwd=zuuby5zxz0ikgw -> 200:[1236956626663413223, 2653600777797076292, 2726043475342838453]
+[GetMessageS https://172.18.0.4:8080/rest] marhta.baumbach, pwd=zuuby5zxz0ikgw -> 200:[1236956626663413223, 2653600777797076292, 2726043475342838453]
+[GetMessageS https://172.18.0.6:8080/rest] lauri.lakin, pwd=8scsyjod -> 200:[1236956626663413223, 2653600777797076292, 1331097871040514115]
+[GetMessageS https://172.18.0.5:8080/rest] lauri.lakin, pwd=8scsyjod -> 200:[1236956626663413223, 2653600777797076292, 1331097871040514115]
+[GetMessageS https://172.18.0.4:8080/rest] lauri.lakin, pwd=8scsyjod -> 200:[1236956626663413223, 2653600777797076292, 1331097871040514115]
+[GetMessageS https://172.18.0.6:8080/rest] klara.cartwright, pwd=a8p8o6wy -> 200:[2412263482311801570, 2653600777797076292, 1331097871040514115]
+[GetMessageS https://172.18.0.5:8080/rest] klara.cartwright, pwd=a8p8o6wy -> 200:[2412263482311801570, 2653600777797076292, 1331097871040514115]
+[GetMessageS https://172.18.0.4:8080/rest] klara.cartwright, pwd=a8p8o6wy -> 200:[2412263482311801570, 2653600777797076292, 1331097871040514115]
+---------- Getting individual messages correctly
+[GetMessage https://172.18.0.6:8080/rest] aubrey.blick, mid=647468260852511751, pwd=33floc73 -> 200:Msg{647468260852511751,Miss Lavina Waelchi <chantel.rath@msgserver-1>,Deserunt optio est nostrum.,[aubrey.blick@msgserver-1],1590172349810}
+[GetMessage https://172.18.0.5:8080/rest] aubrey.blick, mid=647468260852511751, pwd=33floc73 -> 200:Msg{647468260852511751,Miss Lavina Waelchi <chantel.rath@msgserver-1>,Deserunt optio est nostrum.,[aubrey.blick@msgserver-1],1590172349810}
+[GetMessage https://172.18.0.4:8080/rest] aubrey.blick, mid=647468260852511751, pwd=33floc73 -> 200:Msg{647468260852511751,Miss Lavina Waelchi <chantel.rath@msgserver-1>,Deserunt optio est nostrum.,[aubrey.blick@msgserver-1],1590172349810}
+[GetMessage https://172.18.0.6:8080/rest] perry.hessel, mid=8463564521291199087, pwd=kq2g5v64pqqrdh9 -> 200:Msg{8463564521291199087,Dr. Temple Green <aubrey.blick@msgserver-1>,Aut quis ut.,[perry.hessel@msgserver-1],1590172350227}
+[GetMessage https://172.18.0.5:8080/rest] perry.hessel, mid=8463564521291199087, pwd=kq2g5v64pqqrdh9 -> 200:Msg{8463564521291199087,Dr. Temple Green <aubrey.blick@msgserver-1>,Aut quis ut.,[perry.hessel@msgserver-1],1590172350227}
+[GetMessage https://172.18.0.4:8080/rest] perry.hessel, mid=8463564521291199087, pwd=kq2g5v64pqqrdh9 -> 200:Msg{8463564521291199087,Dr. Temple Green <aubrey.blick@msgserver-1>,Aut quis ut.,[perry.hessel@msgserver-1],1590172350227}
+[GetMessage https://172.18.0.6:8080/rest] corrie.bailey, mid=8271930856228688013, pwd=scerl0yfs52 -> 200:Msg{8271930856228688013,Herb Hansen <perry.hessel@msgserver-1>,Itaque.,[corrie.bailey@msgserver-1],1590172350304}
+[GetMessage https://172.18.0.5:8080/rest] corrie.bailey, mid=8271930856228688013, pwd=scerl0yfs52 -> 200:Msg{8271930856228688013,Herb Hansen <perry.hessel@msgserver-1>,Itaque.,[corrie.bailey@msgserver-1],1590172350304}
+[GetMessage https://172.18.0.4:8080/rest] corrie.bailey, mid=8271930856228688013, pwd=scerl0yfs52 -> 200:Msg{8271930856228688013,Herb Hansen <perry.hessel@msgserver-1>,Itaque.,[corrie.bailey@msgserver-1],1590172350304}
+[GetMessage https://172.18.0.6:8080/rest] duane.bradtke, mid=3653113493359218485, pwd=p7a5w3kzbzgb4p -> 200:Msg{3653113493359218485,Dannie Armstrong <corrie.bailey@msgserver-1>,Quia molestiae quia et.,[duane.bradtke@msgserver-1,catherin.gutmann@msgserver-1],1590172350397}
+[GetMessage https://172.18.0.5:8080/rest] duane.bradtke, mid=3653113493359218485, pwd=p7a5w3kzbzgb4p -> 200:Msg{3653113493359218485,Dannie Armstrong <corrie.bailey@msgserver-1>,Quia molestiae quia et.,[duane.bradtke@msgserver-1,catherin.gutmann@msgserver-1],1590172350397}
+[GetMessage https://172.18.0.4:8080/rest] duane.bradtke, mid=3653113493359218485, pwd=p7a5w3kzbzgb4p -> 200:Msg{3653113493359218485,Dannie Armstrong <corrie.bailey@msgserver-1>,Quia molestiae quia et.,[duane.bradtke@msgserver-1,catherin.gutmann@msgserver-1],1590172350397}
+[GetMessage https://172.18.0.6:8080/rest] catherin.gutmann, mid=3653113493359218485, pwd=zdqm4u574 -> 200:Msg{3653113493359218485,Dannie Armstrong <corrie.bailey@msgserver-1>,Quia molestiae quia et.,[duane.bradtke@msgserver-1,catherin.gutmann@msgserver-1],1590172350397}
+[GetMessage https://172.18.0.5:8080/rest] catherin.gutmann, mid=3653113493359218485, pwd=zdqm4u574 -> 200:Msg{3653113493359218485,Dannie Armstrong <corrie.bailey@msgserver-1>,Quia molestiae quia et.,[duane.bradtke@msgserver-1,catherin.gutmann@msgserver-1],1590172350397}
+[GetMessage https://172.18.0.4:8080/rest] catherin.gutmann, mid=3653113493359218485, pwd=zdqm4u574 -> 200:Msg{3653113493359218485,Dannie Armstrong <corrie.bailey@msgserver-1>,Quia molestiae quia et.,[duane.bradtke@msgserver-1,catherin.gutmann@msgserver-1],1590172350397}
+[GetMessage https://172.18.0.6:8080/rest] duane.bradtke, mid=8936970847068519146, pwd=p7a5w3kzbzgb4p -> 200:Msg{8936970847068519146,Alton Koelpin DDS <catherin.gutmann@msgserver-1>,Ipsa.,[duane.bradtke@msgserver-1,bradley.huel@msgserver-1],1590172350460}
+[GetMessage https://172.18.0.5:8080/rest] duane.bradtke, mid=8936970847068519146, pwd=p7a5w3kzbzgb4p -> 200:Msg{8936970847068519146,Alton Koelpin DDS <catherin.gutmann@msgserver-1>,Ipsa.,[duane.bradtke@msgserver-1,bradley.huel@msgserver-1],1590172350460}
+[GetMessage https://172.18.0.4:8080/rest] duane.bradtke, mid=8936970847068519146, pwd=p7a5w3kzbzgb4p -> 200:Msg{8936970847068519146,Alton Koelpin DDS <catherin.gutmann@msgserver-1>,Ipsa.,[duane.bradtke@msgserver-1,bradley.huel@msgserver-1],1590172350460}
+[GetMessage https://172.18.0.6:8080/rest] bradley.huel, mid=8936970847068519146, pwd=e4afjfbwrow1z -> 200:Msg{8936970847068519146,Alton Koelpin DDS <catherin.gutmann@msgserver-1>,Ipsa.,[duane.bradtke@msgserver-1,bradley.huel@msgserver-1],1590172350460}
+[GetMessage https://172.18.0.5:8080/rest] bradley.huel, mid=8936970847068519146, pwd=e4afjfbwrow1z -> 200:Msg{8936970847068519146,Alton Koelpin DDS <catherin.gutmann@msgserver-1>,Ipsa.,[duane.bradtke@msgserver-1,bradley.huel@msgserver-1],1590172350460}
+[GetMessage https://172.18.0.4:8080/rest] bradley.huel, mid=8936970847068519146, pwd=e4afjfbwrow1z -> 200:Msg{8936970847068519146,Alton Koelpin DDS <catherin.gutmann@msgserver-1>,Ipsa.,[duane.bradtke@msgserver-1,bradley.huel@msgserver-1],1590172350460}
+[GetMessage https://172.18.0.6:8080/rest] adelia.connelly, mid=3836157401491636382, pwd=38brfogec6p -> 200:Msg{3836157401491636382,Gerry Frami <duane.bradtke@msgserver-1>,Voluptas.,[adelia.connelly@msgserver-1,bradley.huel@msgserver-1],1590172350553}
+[GetMessage https://172.18.0.5:8080/rest] adelia.connelly, mid=3836157401491636382, pwd=38brfogec6p -> 200:Msg{3836157401491636382,Gerry Frami <duane.bradtke@msgserver-1>,Voluptas.,[adelia.connelly@msgserver-1,bradley.huel@msgserver-1],1590172350553}
+[GetMessage https://172.18.0.4:8080/rest] adelia.connelly, mid=3836157401491636382, pwd=38brfogec6p -> 200:Msg{3836157401491636382,Gerry Frami <duane.bradtke@msgserver-1>,Voluptas.,[adelia.connelly@msgserver-1,bradley.huel@msgserver-1],1590172350553}
+[GetMessage https://172.18.0.6:8080/rest] bradley.huel, mid=3836157401491636382, pwd=e4afjfbwrow1z -> 200:Msg{3836157401491636382,Gerry Frami <duane.bradtke@msgserver-1>,Voluptas.,[adelia.connelly@msgserver-1,bradley.huel@msgserver-1],1590172350553}
+[GetMessage https://172.18.0.5:8080/rest] bradley.huel, mid=3836157401491636382, pwd=e4afjfbwrow1z -> 200:Msg{3836157401491636382,Gerry Frami <duane.bradtke@msgserver-1>,Voluptas.,[adelia.connelly@msgserver-1,bradley.huel@msgserver-1],1590172350553}
+[GetMessage https://172.18.0.4:8080/rest] bradley.huel, mid=3836157401491636382, pwd=e4afjfbwrow1z -> 200:Msg{3836157401491636382,Gerry Frami <duane.bradtke@msgserver-1>,Voluptas.,[adelia.connelly@msgserver-1,bradley.huel@msgserver-1],1590172350553}
+[GetMessage https://172.18.0.6:8080/rest] adelia.connelly, mid=2726043475342838453, pwd=38brfogec6p -> 200:Msg{2726043475342838453,Kristi Harris <bradley.huel@msgserver-1>,In quia sed eveniet.,[adelia.connelly@msgserver-1,tanja.will@msgserver-1,marhta.baumbach@msgserver-1],1590172350583}
+[GetMessage https://172.18.0.5:8080/rest] adelia.connelly, mid=2726043475342838453, pwd=38brfogec6p -> 200:Msg{2726043475342838453,Kristi Harris <bradley.huel@msgserver-1>,In quia sed eveniet.,[adelia.connelly@msgserver-1,tanja.will@msgserver-1,marhta.baumbach@msgserver-1],1590172350583}
+[GetMessage https://172.18.0.4:8080/rest] adelia.connelly, mid=2726043475342838453, pwd=38brfogec6p -> 200:Msg{2726043475342838453,Kristi Harris <bradley.huel@msgserver-1>,In quia sed eveniet.,[adelia.connelly@msgserver-1,tanja.will@msgserver-1,marhta.baumbach@msgserver-1],1590172350583}
+[GetMessage https://172.18.0.6:8080/rest] marhta.baumbach, mid=2726043475342838453, pwd=zuuby5zxz0ikgw -> 200:Msg{2726043475342838453,Kristi Harris <bradley.huel@msgserver-1>,In quia sed eveniet.,[adelia.connelly@msgserver-1,tanja.will@msgserver-1,marhta.baumbach@msgserver-1],1590172350583}
+[GetMessage https://172.18.0.5:8080/rest] marhta.baumbach, mid=2726043475342838453, pwd=zuuby5zxz0ikgw -> 200:Msg{2726043475342838453,Kristi Harris <bradley.huel@msgserver-1>,In quia sed eveniet.,[adelia.connelly@msgserver-1,tanja.will@msgserver-1,marhta.baumbach@msgserver-1],1590172350583}
+[GetMessage https://172.18.0.4:8080/rest] marhta.baumbach, mid=2726043475342838453, pwd=zuuby5zxz0ikgw -> 200:Msg{2726043475342838453,Kristi Harris <bradley.huel@msgserver-1>,In quia sed eveniet.,[adelia.connelly@msgserver-1,tanja.will@msgserver-1,marhta.baumbach@msgserver-1],1590172350583}
+[GetMessage https://172.18.0.6:8080/rest] tanja.will, mid=2726043475342838453, pwd=f84e0jhb1 -> 200:Msg{2726043475342838453,Kristi Harris <bradley.huel@msgserver-1>,In quia sed eveniet.,[adelia.connelly@msgserver-1,tanja.will@msgserver-1,marhta.baumbach@msgserver-1],1590172350583}
+[GetMessage https://172.18.0.5:8080/rest] tanja.will, mid=2726043475342838453, pwd=f84e0jhb1 -> 200:Msg{2726043475342838453,Kristi Harris <bradley.huel@msgserver-1>,In quia sed eveniet.,[adelia.connelly@msgserver-1,tanja.will@msgserver-1,marhta.baumbach@msgserver-1],1590172350583}
+[GetMessage https://172.18.0.4:8080/rest] tanja.will, mid=2726043475342838453, pwd=f84e0jhb1 -> 200:Msg{2726043475342838453,Kristi Harris <bradley.huel@msgserver-1>,In quia sed eveniet.,[adelia.connelly@msgserver-1,tanja.will@msgserver-1,marhta.baumbach@msgserver-1],1590172350583}
+[GetMessage https://172.18.0.6:8080/rest] lauri.lakin, mid=1236956626663413223, pwd=8scsyjod -> 200:Msg{1236956626663413223,Thu Walsh <adelia.connelly@msgserver-1>,Dignissimos sint veniam harum vel.,[tanja.will@msgserver-1,marhta.baumbach@msgserver-1,lauri.lakin@msgserver-1],1590172350623}
+[GetMessage https://172.18.0.5:8080/rest] lauri.lakin, mid=1236956626663413223, pwd=8scsyjod -> 200:Msg{1236956626663413223,Thu Walsh <adelia.connelly@msgserver-1>,Dignissimos sint veniam harum vel.,[tanja.will@msgserver-1,marhta.baumbach@msgserver-1,lauri.lakin@msgserver-1],1590172350623}
+[GetMessage https://172.18.0.4:8080/rest] lauri.lakin, mid=1236956626663413223, pwd=8scsyjod -> 200:Msg{1236956626663413223,Thu Walsh <adelia.connelly@msgserver-1>,Dignissimos sint veniam harum vel.,[tanja.will@msgserver-1,marhta.baumbach@msgserver-1,lauri.lakin@msgserver-1],1590172350623}
+[GetMessage https://172.18.0.6:8080/rest] marhta.baumbach, mid=1236956626663413223, pwd=zuuby5zxz0ikgw -> 200:Msg{1236956626663413223,Thu Walsh <adelia.connelly@msgserver-1>,Dignissimos sint veniam harum vel.,[tanja.will@msgserver-1,marhta.baumbach@msgserver-1,lauri.lakin@msgserver-1],1590172350623}
+[GetMessage https://172.18.0.5:8080/rest] marhta.baumbach, mid=1236956626663413223, pwd=zuuby5zxz0ikgw -> 200:Msg{1236956626663413223,Thu Walsh <adelia.connelly@msgserver-1>,Dignissimos sint veniam harum vel.,[tanja.will@msgserver-1,marhta.baumbach@msgserver-1,lauri.lakin@msgserver-1],1590172350623}
+[GetMessage https://172.18.0.4:8080/rest] marhta.baumbach, mid=1236956626663413223, pwd=zuuby5zxz0ikgw -> 200:Msg{1236956626663413223,Thu Walsh <adelia.connelly@msgserver-1>,Dignissimos sint veniam harum vel.,[tanja.will@msgserver-1,marhta.baumbach@msgserver-1,lauri.lakin@msgserver-1],1590172350623}
+[GetMessage https://172.18.0.6:8080/rest] tanja.will, mid=1236956626663413223, pwd=f84e0jhb1 -> 200:Msg{1236956626663413223,Thu Walsh <adelia.connelly@msgserver-1>,Dignissimos sint veniam harum vel.,[tanja.will@msgserver-1,marhta.baumbach@msgserver-1,lauri.lakin@msgserver-1],1590172350623}
+[GetMessage https://172.18.0.5:8080/rest] tanja.will, mid=1236956626663413223, pwd=f84e0jhb1 -> 200:Msg{1236956626663413223,Thu Walsh <adelia.connelly@msgserver-1>,Dignissimos sint veniam harum vel.,[tanja.will@msgserver-1,marhta.baumbach@msgserver-1,lauri.lakin@msgserver-1],1590172350623}
+[GetMessage https://172.18.0.4:8080/rest] tanja.will, mid=1236956626663413223, pwd=f84e0jhb1 -> 200:Msg{1236956626663413223,Thu Walsh <adelia.connelly@msgserver-1>,Dignissimos sint veniam harum vel.,[tanja.will@msgserver-1,marhta.baumbach@msgserver-1,lauri.lakin@msgserver-1],1590172350623}
+[GetMessage https://172.18.0.6:8080/rest] lauri.lakin, mid=2653600777797076292, pwd=8scsyjod -> 200:Msg{2653600777797076292,Thaddeus Moen <tanja.will@msgserver-1>,Et dolorum quia.,[klara.cartwright@msgserver-1,marhta.baumbach@msgserver-1,lauri.lakin@msgserver-1],1590172350683}
+[GetMessage https://172.18.0.5:8080/rest] lauri.lakin, mid=2653600777797076292, pwd=8scsyjod -> 200:Msg{2653600777797076292,Thaddeus Moen <tanja.will@msgserver-1>,Et dolorum quia.,[klara.cartwright@msgserver-1,marhta.baumbach@msgserver-1,lauri.lakin@msgserver-1],1590172350683}
+[GetMessage https://172.18.0.4:8080/rest] lauri.lakin, mid=2653600777797076292, pwd=8scsyjod -> 200:Msg{2653600777797076292,Thaddeus Moen <tanja.will@msgserver-1>,Et dolorum quia.,[klara.cartwright@msgserver-1,marhta.baumbach@msgserver-1,lauri.lakin@msgserver-1],1590172350683}
+[GetMessage https://172.18.0.6:8080/rest] marhta.baumbach, mid=2653600777797076292, pwd=zuuby5zxz0ikgw -> 200:Msg{2653600777797076292,Thaddeus Moen <tanja.will@msgserver-1>,Et dolorum quia.,[klara.cartwright@msgserver-1,marhta.baumbach@msgserver-1,lauri.lakin@msgserver-1],1590172350683}
+[GetMessage https://172.18.0.5:8080/rest] marhta.baumbach, mid=2653600777797076292, pwd=zuuby5zxz0ikgw -> 200:Msg{2653600777797076292,Thaddeus Moen <tanja.will@msgserver-1>,Et dolorum quia.,[klara.cartwright@msgserver-1,marhta.baumbach@msgserver-1,lauri.lakin@msgserver-1],1590172350683}
+[GetMessage https://172.18.0.4:8080/rest] marhta.baumbach, mid=2653600777797076292, pwd=zuuby5zxz0ikgw -> 200:Msg{2653600777797076292,Thaddeus Moen <tanja.will@msgserver-1>,Et dolorum quia.,[klara.cartwright@msgserver-1,marhta.baumbach@msgserver-1,lauri.lakin@msgserver-1],1590172350683}
+[GetMessage https://172.18.0.6:8080/rest] klara.cartwright, mid=2653600777797076292, pwd=a8p8o6wy -> 200:Msg{2653600777797076292,Thaddeus Moen <tanja.will@msgserver-1>,Et dolorum quia.,[klara.cartwright@msgserver-1,marhta.baumbach@msgserver-1,lauri.lakin@msgserver-1],1590172350683}
+[GetMessage https://172.18.0.5:8080/rest] klara.cartwright, mid=2653600777797076292, pwd=a8p8o6wy -> 200:Msg{2653600777797076292,Thaddeus Moen <tanja.will@msgserver-1>,Et dolorum quia.,[klara.cartwright@msgserver-1,marhta.baumbach@msgserver-1,lauri.lakin@msgserver-1],1590172350683}
+[GetMessage https://172.18.0.4:8080/rest] klara.cartwright, mid=2653600777797076292, pwd=a8p8o6wy -> 200:Msg{2653600777797076292,Thaddeus Moen <tanja.will@msgserver-1>,Et dolorum quia.,[klara.cartwright@msgserver-1,marhta.baumbach@msgserver-1,lauri.lakin@msgserver-1],1590172350683}
+[GetMessage https://172.18.0.6:8080/rest] lauri.lakin, mid=1331097871040514115, pwd=8scsyjod -> 200:Msg{1331097871040514115,Emanuel Cartwright PhD <marhta.baumbach@msgserver-1>,Ut et fuga maxime recusandae.,[klara.cartwright@msgserver-1,lauri.lakin@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350738}
+[GetMessage https://172.18.0.5:8080/rest] lauri.lakin, mid=1331097871040514115, pwd=8scsyjod -> 200:Msg{1331097871040514115,Emanuel Cartwright PhD <marhta.baumbach@msgserver-1>,Ut et fuga maxime recusandae.,[klara.cartwright@msgserver-1,lauri.lakin@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350738}
+[GetMessage https://172.18.0.4:8080/rest] lauri.lakin, mid=1331097871040514115, pwd=8scsyjod -> 200:Msg{1331097871040514115,Emanuel Cartwright PhD <marhta.baumbach@msgserver-1>,Ut et fuga maxime recusandae.,[klara.cartwright@msgserver-1,lauri.lakin@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350738}
+[GetMessage https://172.18.0.6:8080/rest] aubrey.blick, mid=1331097871040514115, pwd=33floc73 -> 200:Msg{1331097871040514115,Emanuel Cartwright PhD <marhta.baumbach@msgserver-1>,Ut et fuga maxime recusandae.,[klara.cartwright@msgserver-1,lauri.lakin@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350738}
+[GetMessage https://172.18.0.5:8080/rest] aubrey.blick, mid=1331097871040514115, pwd=33floc73 -> 200:Msg{1331097871040514115,Emanuel Cartwright PhD <marhta.baumbach@msgserver-1>,Ut et fuga maxime recusandae.,[klara.cartwright@msgserver-1,lauri.lakin@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350738}
+[GetMessage https://172.18.0.4:8080/rest] aubrey.blick, mid=1331097871040514115, pwd=33floc73 -> 200:Msg{1331097871040514115,Emanuel Cartwright PhD <marhta.baumbach@msgserver-1>,Ut et fuga maxime recusandae.,[klara.cartwright@msgserver-1,lauri.lakin@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350738}
+[GetMessage https://172.18.0.6:8080/rest] chantel.rath, mid=1331097871040514115, pwd=cfr3k96epfu5 -> 200:Msg{1331097871040514115,Emanuel Cartwright PhD <marhta.baumbach@msgserver-1>,Ut et fuga maxime recusandae.,[klara.cartwright@msgserver-1,lauri.lakin@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350738}
+[GetMessage https://172.18.0.5:8080/rest] chantel.rath, mid=1331097871040514115, pwd=cfr3k96epfu5 -> 200:Msg{1331097871040514115,Emanuel Cartwright PhD <marhta.baumbach@msgserver-1>,Ut et fuga maxime recusandae.,[klara.cartwright@msgserver-1,lauri.lakin@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350738}
+[GetMessage https://172.18.0.4:8080/rest] chantel.rath, mid=1331097871040514115, pwd=cfr3k96epfu5 -> 200:Msg{1331097871040514115,Emanuel Cartwright PhD <marhta.baumbach@msgserver-1>,Ut et fuga maxime recusandae.,[klara.cartwright@msgserver-1,lauri.lakin@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350738}
+[GetMessage https://172.18.0.6:8080/rest] klara.cartwright, mid=1331097871040514115, pwd=a8p8o6wy -> 200:Msg{1331097871040514115,Emanuel Cartwright PhD <marhta.baumbach@msgserver-1>,Ut et fuga maxime recusandae.,[klara.cartwright@msgserver-1,lauri.lakin@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350738}
+[GetMessage https://172.18.0.5:8080/rest] klara.cartwright, mid=1331097871040514115, pwd=a8p8o6wy -> 200:Msg{1331097871040514115,Emanuel Cartwright PhD <marhta.baumbach@msgserver-1>,Ut et fuga maxime recusandae.,[klara.cartwright@msgserver-1,lauri.lakin@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350738}
+[GetMessage https://172.18.0.4:8080/rest] klara.cartwright, mid=1331097871040514115, pwd=a8p8o6wy -> 200:Msg{1331097871040514115,Emanuel Cartwright PhD <marhta.baumbach@msgserver-1>,Ut et fuga maxime recusandae.,[klara.cartwright@msgserver-1,lauri.lakin@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350738}
+[GetMessage https://172.18.0.6:8080/rest] aubrey.blick, mid=2412263482311801570, pwd=33floc73 -> 200:Msg{2412263482311801570,Janette Weissnat PhD <lauri.lakin@msgserver-1>,Vel.,[perry.hessel@msgserver-1,klara.cartwright@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350834}
+[GetMessage https://172.18.0.5:8080/rest] aubrey.blick, mid=2412263482311801570, pwd=33floc73 -> 200:Msg{2412263482311801570,Janette Weissnat PhD <lauri.lakin@msgserver-1>,Vel.,[perry.hessel@msgserver-1,klara.cartwright@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350834}
+[GetMessage https://172.18.0.4:8080/rest] aubrey.blick, mid=2412263482311801570, pwd=33floc73 -> 200:Msg{2412263482311801570,Janette Weissnat PhD <lauri.lakin@msgserver-1>,Vel.,[perry.hessel@msgserver-1,klara.cartwright@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350834}
+[GetMessage https://172.18.0.6:8080/rest] perry.hessel, mid=2412263482311801570, pwd=kq2g5v64pqqrdh9 -> 200:Msg{2412263482311801570,Janette Weissnat PhD <lauri.lakin@msgserver-1>,Vel.,[perry.hessel@msgserver-1,klara.cartwright@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350834}
+[GetMessage https://172.18.0.5:8080/rest] perry.hessel, mid=2412263482311801570, pwd=kq2g5v64pqqrdh9 -> 200:Msg{2412263482311801570,Janette Weissnat PhD <lauri.lakin@msgserver-1>,Vel.,[perry.hessel@msgserver-1,klara.cartwright@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350834}
+[GetMessage https://172.18.0.4:8080/rest] perry.hessel, mid=2412263482311801570, pwd=kq2g5v64pqqrdh9 -> 200:Msg{2412263482311801570,Janette Weissnat PhD <lauri.lakin@msgserver-1>,Vel.,[perry.hessel@msgserver-1,klara.cartwright@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350834}
+[GetMessage https://172.18.0.6:8080/rest] chantel.rath, mid=2412263482311801570, pwd=cfr3k96epfu5 -> 200:Msg{2412263482311801570,Janette Weissnat PhD <lauri.lakin@msgserver-1>,Vel.,[perry.hessel@msgserver-1,klara.cartwright@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350834}
+[GetMessage https://172.18.0.5:8080/rest] chantel.rath, mid=2412263482311801570, pwd=cfr3k96epfu5 -> 200:Msg{2412263482311801570,Janette Weissnat PhD <lauri.lakin@msgserver-1>,Vel.,[perry.hessel@msgserver-1,klara.cartwright@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350834}
+[GetMessage https://172.18.0.4:8080/rest] chantel.rath, mid=2412263482311801570, pwd=cfr3k96epfu5 -> 200:Msg{2412263482311801570,Janette Weissnat PhD <lauri.lakin@msgserver-1>,Vel.,[perry.hessel@msgserver-1,klara.cartwright@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350834}
+[GetMessage https://172.18.0.6:8080/rest] klara.cartwright, mid=2412263482311801570, pwd=a8p8o6wy -> 200:Msg{2412263482311801570,Janette Weissnat PhD <lauri.lakin@msgserver-1>,Vel.,[perry.hessel@msgserver-1,klara.cartwright@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350834}
+[GetMessage https://172.18.0.5:8080/rest] klara.cartwright, mid=2412263482311801570, pwd=a8p8o6wy -> 200:Msg{2412263482311801570,Janette Weissnat PhD <lauri.lakin@msgserver-1>,Vel.,[perry.hessel@msgserver-1,klara.cartwright@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350834}
+[GetMessage https://172.18.0.4:8080/rest] klara.cartwright, mid=2412263482311801570, pwd=a8p8o6wy -> 200:Msg{2412263482311801570,Janette Weissnat PhD <lauri.lakin@msgserver-1>,Vel.,[perry.hessel@msgserver-1,klara.cartwright@msgserver-1,chantel.rath@msgserver-1,aubrey.blick@msgserver-1],1590172350834}
+[GetMessage https://172.18.0.6:8080/rest] aubrey.blick, mid=8928325482620631161, pwd=33floc73 -> 200:Msg{8928325482620631161,Odell Zemlak <klara.cartwright@msgserver-1>,Magnam dolores placeat incidunt natus.,[perry.hessel@msgserver-1,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1590172350874}
+[GetMessage https://172.18.0.5:8080/rest] aubrey.blick, mid=8928325482620631161, pwd=33floc73 -> 200:Msg{8928325482620631161,Odell Zemlak <klara.cartwright@msgserver-1>,Magnam dolores placeat incidunt natus.,[perry.hessel@msgserver-1,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1590172350874}
+[GetMessage https://172.18.0.4:8080/rest] aubrey.blick, mid=8928325482620631161, pwd=33floc73 -> 200:Msg{8928325482620631161,Odell Zemlak <klara.cartwright@msgserver-1>,Magnam dolores placeat incidunt natus.,[perry.hessel@msgserver-1,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1590172350874}
+[GetMessage https://172.18.0.6:8080/rest] corrie.bailey, mid=8928325482620631161, pwd=scerl0yfs52 -> 200:Msg{8928325482620631161,Odell Zemlak <klara.cartwright@msgserver-1>,Magnam dolores placeat incidunt natus.,[perry.hessel@msgserver-1,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1590172350874}
+[GetMessage https://172.18.0.5:8080/rest] corrie.bailey, mid=8928325482620631161, pwd=scerl0yfs52 -> 200:Msg{8928325482620631161,Odell Zemlak <klara.cartwright@msgserver-1>,Magnam dolores placeat incidunt natus.,[perry.hessel@msgserver-1,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1590172350874}
+[GetMessage https://172.18.0.4:8080/rest] corrie.bailey, mid=8928325482620631161, pwd=scerl0yfs52 -> 200:Msg{8928325482620631161,Odell Zemlak <klara.cartwright@msgserver-1>,Magnam dolores placeat incidunt natus.,[perry.hessel@msgserver-1,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1590172350874}
+[GetMessage https://172.18.0.6:8080/rest] perry.hessel, mid=8928325482620631161, pwd=kq2g5v64pqqrdh9 -> 200:Msg{8928325482620631161,Odell Zemlak <klara.cartwright@msgserver-1>,Magnam dolores placeat incidunt natus.,[perry.hessel@msgserver-1,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1590172350874}
+[GetMessage https://172.18.0.5:8080/rest] perry.hessel, mid=8928325482620631161, pwd=kq2g5v64pqqrdh9 -> 200:Msg{8928325482620631161,Odell Zemlak <klara.cartwright@msgserver-1>,Magnam dolores placeat incidunt natus.,[perry.hessel@msgserver-1,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1590172350874}
+[GetMessage https://172.18.0.4:8080/rest] perry.hessel, mid=8928325482620631161, pwd=kq2g5v64pqqrdh9 -> 200:Msg{8928325482620631161,Odell Zemlak <klara.cartwright@msgserver-1>,Magnam dolores placeat incidunt natus.,[perry.hessel@msgserver-1,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1590172350874}
+[GetMessage https://172.18.0.6:8080/rest] chantel.rath, mid=8928325482620631161, pwd=cfr3k96epfu5 -> 200:Msg{8928325482620631161,Odell Zemlak <klara.cartwright@msgserver-1>,Magnam dolores placeat incidunt natus.,[perry.hessel@msgserver-1,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1590172350874}
+[GetMessage https://172.18.0.5:8080/rest] chantel.rath, mid=8928325482620631161, pwd=cfr3k96epfu5 -> 200:Msg{8928325482620631161,Odell Zemlak <klara.cartwright@msgserver-1>,Magnam dolores placeat incidunt natus.,[perry.hessel@msgserver-1,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1590172350874}
+[GetMessage https://172.18.0.4:8080/rest] chantel.rath, mid=8928325482620631161, pwd=cfr3k96epfu5 -> 200:Msg{8928325482620631161,Odell Zemlak <klara.cartwright@msgserver-1>,Magnam dolores placeat incidunt natus.,[perry.hessel@msgserver-1,chantel.rath@msgserver-1,corrie.bailey@msgserver-1,aubrey.blick@msgserver-1],1590172350874}
+---------- Getting inboxes incorrectly
+[GetMessageS https://172.18.0.4:8080/rest] chantel.rath, pwd=cfr3k96epfu5asd -> 403:null
+[GetMessageS https://172.18.0.4:8080/rest] sylvie.johns, pwd=ojf7rdxo -> 403:null
+---------- Getting messages incorrectly
+[GetMessage https://172.18.0.6:8080/rest] aubrey.blickasd, mid=647468260852511751, pwd=33floc73 -> 403:null
+[GetMessage https://172.18.0.5:8080/rest] aubrey.blickasd, mid=647468260852511751, pwd=33floc73 -> 403:null
+[GetMessage https://172.18.0.4:8080/rest] aubrey.blickasd, mid=647468260852511751, pwd=33floc73 -> 403:null
+---------- Sending invalid messages
+[PostMessage https://172.18.0.6:8080/rest] 33floc73, Msg{-1,aubrey.blickasd,Consequatur quam dolor.,[aubrey.blick@msgserver-1],1590172354934} -> 403:null
+---------- Deleting messages from inbox of one recipient
+[RemoveFromInbox https://172.18.0.6:8080/rest] aubrey.blick, mid=647468260852511751, pwd=33floc73 -> 204:null
+[RemoveFromInbox https://172.18.0.5:8080/rest] perry.hessel, mid=8463564521291199087, pwd=kq2g5v64pqqrdh9 -> 204:null
+[RemoveFromInbox https://172.18.0.6:8080/rest] corrie.bailey, mid=8271930856228688013, pwd=scerl0yfs52 -> 204:null
+[RemoveFromInbox https://172.18.0.4:8080/rest] duane.bradtke, mid=3653113493359218485, pwd=p7a5w3kzbzgb4p -> 204:null
+[RemoveFromInbox https://172.18.0.6:8080/rest] duane.bradtke, mid=8936970847068519146, pwd=p7a5w3kzbzgb4p -> 204:null
+[RemoveFromInbox https://172.18.0.5:8080/rest] adelia.connelly, mid=3836157401491636382, pwd=38brfogec6p -> 204:null
+[RemoveFromInbox https://172.18.0.5:8080/rest] adelia.connelly, mid=2726043475342838453, pwd=38brfogec6p -> 204:null
+[RemoveFromInbox https://172.18.0.4:8080/rest] lauri.lakin, mid=1236956626663413223, pwd=8scsyjod -> 204:null
+[RemoveFromInbox https://172.18.0.5:8080/rest] lauri.lakin, mid=2653600777797076292, pwd=8scsyjod -> 204:null
+[RemoveFromInbox https://172.18.0.6:8080/rest] lauri.lakin, mid=1331097871040514115, pwd=8scsyjod -> 204:null
+[RemoveFromInbox https://172.18.0.4:8080/rest] aubrey.blick, mid=2412263482311801570, pwd=33floc73 -> 204:null
+[RemoveFromInbox https://172.18.0.4:8080/rest] aubrey.blick, mid=8928325482620631161, pwd=33floc73 -> 204:null
+---------- Getting inboxes (to check if no new messages were created)
+[GetMessageS https://172.18.0.6:8080/rest] chantel.rath, pwd=cfr3k96epfu5 -> 200:[2412263482311801570, 1331097871040514115, 8928325482620631161]
+[GetMessageS https://172.18.0.5:8080/rest] chantel.rath, pwd=cfr3k96epfu5 -> 200:[2412263482311801570, 1331097871040514115, 8928325482620631161]
+[GetMessageS https://172.18.0.4:8080/rest] chantel.rath, pwd=cfr3k96epfu5 -> 200:[2412263482311801570, 1331097871040514115, 8928325482620631161]
+[GetMessageS https://172.18.0.6:8080/rest] aubrey.blick, pwd=33floc73 -> 200:[1331097871040514115]
+[GetMessageS https://172.18.0.5:8080/rest] aubrey.blick, pwd=33floc73 -> 200:[1331097871040514115]
+[GetMessageS https://172.18.0.4:8080/rest] aubrey.blick, pwd=33floc73 -> 200:[1331097871040514115]
+[GetMessageS https://172.18.0.6:8080/rest] perry.hessel, pwd=kq2g5v64pqqrdh9 -> 200:[2412263482311801570, 8928325482620631161]
+[GetMessageS https://172.18.0.5:8080/rest] perry.hessel, pwd=kq2g5v64pqqrdh9 -> 200:[2412263482311801570, 8928325482620631161]
+[GetMessageS https://172.18.0.4:8080/rest] perry.hessel, pwd=kq2g5v64pqqrdh9 -> 200:[2412263482311801570, 8928325482620631161]
+[GetMessageS https://172.18.0.6:8080/rest] corrie.bailey, pwd=scerl0yfs52 -> 200:[8928325482620631161]
+[GetMessageS https://172.18.0.5:8080/rest] corrie.bailey, pwd=scerl0yfs52 -> 200:[8928325482620631161]
+[GetMessageS https://172.18.0.4:8080/rest] corrie.bailey, pwd=scerl0yfs52 -> 200:[8928325482620631161]
+[GetMessageS https://172.18.0.6:8080/rest] catherin.gutmann, pwd=zdqm4u574 -> 200:[3653113493359218485]
+[GetMessageS https://172.18.0.5:8080/rest] catherin.gutmann, pwd=zdqm4u574 -> 200:[3653113493359218485]
+[GetMessageS https://172.18.0.4:8080/rest] catherin.gutmann, pwd=zdqm4u574 -> 200:[3653113493359218485]
+[GetMessageS https://172.18.0.6:8080/rest] duane.bradtke, pwd=p7a5w3kzbzgb4p -> 200:[]
+[GetMessageS https://172.18.0.5:8080/rest] duane.bradtke, pwd=p7a5w3kzbzgb4p -> 200:[]
+[GetMessageS https://172.18.0.4:8080/rest] duane.bradtke, pwd=p7a5w3kzbzgb4p -> 200:[]
+[GetMessageS https://172.18.0.6:8080/rest] bradley.huel, pwd=e4afjfbwrow1z -> 200:[3836157401491636382, 8936970847068519146]
+[GetMessageS https://172.18.0.5:8080/rest] bradley.huel, pwd=e4afjfbwrow1z -> 200:[3836157401491636382, 8936970847068519146]
+[GetMessageS https://172.18.0.4:8080/rest] bradley.huel, pwd=e4afjfbwrow1z -> 200:[3836157401491636382, 8936970847068519146]
+[GetMessageS https://172.18.0.6:8080/rest] adelia.connelly, pwd=38brfogec6p -> 200:[]
+[GetMessageS https://172.18.0.5:8080/rest] adelia.connelly, pwd=38brfogec6p -> 200:[]
+[GetMessageS https://172.18.0.4:8080/rest] adelia.connelly, pwd=38brfogec6p -> 200:[]
+[GetMessageS https://172.18.0.6:8080/rest] tanja.will, pwd=f84e0jhb1 -> 200:[1236956626663413223, 2726043475342838453]
+[GetMessageS https://172.18.0.5:8080/rest] tanja.will, pwd=f84e0jhb1 -> 200:[1236956626663413223, 2726043475342838453]
+[GetMessageS https://172.18.0.4:8080/rest] tanja.will, pwd=f84e0jhb1 -> 200:[1236956626663413223, 2726043475342838453]
+[GetMessageS https://172.18.0.6:8080/rest] marhta.baumbach, pwd=zuuby5zxz0ikgw -> 200:[1236956626663413223, 2653600777797076292, 2726043475342838453]
+[GetMessageS https://172.18.0.5:8080/rest] marhta.baumbach, pwd=zuuby5zxz0ikgw -> 200:[1236956626663413223, 2653600777797076292, 2726043475342838453]
+[GetMessageS https://172.18.0.4:8080/rest] marhta.baumbach, pwd=zuuby5zxz0ikgw -> 200:[1236956626663413223, 2653600777797076292, 2726043475342838453]
+[GetMessageS https://172.18.0.6:8080/rest] lauri.lakin, pwd=8scsyjod -> 200:[]
+[GetMessageS https://172.18.0.5:8080/rest] lauri.lakin, pwd=8scsyjod -> 200:[]
+[GetMessageS https://172.18.0.4:8080/rest] lauri.lakin, pwd=8scsyjod -> 200:[]
+[GetMessageS https://172.18.0.6:8080/rest] klara.cartwright, pwd=a8p8o6wy -> 200:[2412263482311801570, 2653600777797076292, 1331097871040514115]
+[GetMessageS https://172.18.0.5:8080/rest] klara.cartwright, pwd=a8p8o6wy -> 200:[2412263482311801570, 2653600777797076292, 1331097871040514115]
+[GetMessageS https://172.18.0.4:8080/rest] klara.cartwright, pwd=a8p8o6wy -> 200:[2412263482311801570, 2653600777797076292, 1331097871040514115]
+Starting failures for 40000 ms
+exec [/sbin/iptables -A INPUT -p tcp --destination-port 8080 -j DROP] in msgserver-1-2
+---------- Re-sending 6 deleted messages
+[PostMessage https://172.18.0.4:8080/rest] cfr3k96epfu5, Msg{-1,chantel.rath@msgserver-1,Deserunt optio est nostrum.,[aubrey.blick@msgserver-1],1590172349810} -> 200:5571102258644613835
+[PostMessage https://172.18.0.4:8080/rest] 33floc73, Msg{-1,aubrey.blick@msgserver-1,Aut quis ut.,[perry.hessel@msgserver-1],1590172350227} -> 200:5421371515294168518
+exec [/sbin/iptables --flush] in msgserver-1-2
+[PostMessage https://172.18.0.4:8080/rest] kq2g5v64pqqrdh9, Msg{-1,perry.hessel@msgserver-1,Itaque.,[corrie.bailey@msgserver-1],1590172350304} -> -1 java.net.SocketTimeoutException: Read timed out URI:https://172.18.0.4:8080/rest
+javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: Read timed out
+	at org.glassfish.jersey.client.internal.HttpUrlConnector.apply(HttpUrlConnector.java:261)
+	at org.glassfish.jersey.client.ClientRuntime.invoke(ClientRuntime.java:296)
+	at org.glassfish.jersey.client.JerseyInvocation.lambda$invoke$0(JerseyInvocation.java:609)
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:292)
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:274)
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:205)
+	at org.glassfish.jersey.process.internal.RequestScope.runInScope(RequestScope.java:390)
+	at org.glassfish.jersey.client.JerseyInvocation.invoke(JerseyInvocation.java:608)
+	at org.glassfish.jersey.client.JerseyInvocation$Builder.method(JerseyInvocation.java:421)
+	at org.glassfish.jersey.client.JerseyInvocation$Builder.post(JerseyInvocation.java:327)
+	at sd1920.trab1.clt.rest.RESTMessagesServiceClt.postMessage(RESTMessagesServiceClt.java:72)
+	at sd1920.trab1.ServerState.lambda$execPostMessage$8(ServerState.java:281)
 	at sd1920.trab1.ServerState.runOp(ServerState.java:434)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:302)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:299)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:317)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:310)
-	at tests.workloads.MultiDomainDeleteMessage.lambda$execute$3(MultiDomainDeleteMessage.java:81)
-	at java.lang.Iterable.forEach(Iterable.java:75)
-	at tests.workloads.MultiDomainDeleteMessage.execute(MultiDomainDeleteMessage.java:81)
+	at sd1920.trab1.ServerState.execPostMessage(ServerState.java:281)
+	at tests.MessagesTest.execPostMessage(MessagesTest.java:305)
+	at tests.workloads.MessagesMixWorkloadNetStopRestart.execute(MessagesMixWorkloadNetStopRestart.java:136)
 	at tests.BaseTest.test(BaseTest.java:167)
-	at tests.Tester.main(Tester.java:371)
+	at tests.Tester.main(Tester.java:383)
+Caused by: java.net.SocketTimeoutException: Read timed out
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.socketRead(SocketInputStream.java:116)
+	at java.net.SocketInputStream.read(SocketInputStream.java:171)
+	at java.net.SocketInputStream.read(SocketInputStream.java:141)
+	at sun.security.ssl.InputRecord.readFully(InputRecord.java:465)
+	at sun.security.ssl.InputRecord.read(InputRecord.java:503)
+	at sun.security.ssl.SSLSocketImpl.readRecord(SSLSocketImpl.java:973)
+	at sun.security.ssl.SSLSocketImpl.readDataRecord(SSLSocketImpl.java:930)
+	at sun.security.ssl.AppInputStream.read(AppInputStream.java:105)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:246)
+	at java.io.BufferedInputStream.read1(BufferedInputStream.java:286)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:345)
+	at sun.net.www.http.HttpClient.parseHTTPHeader(HttpClient.java:704)
+	at sun.net.www.http.HttpClient.parseHTTP(HttpClient.java:647)
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1569)
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1474)
+	at java.net.HttpURLConnection.getResponseCode(HttpURLConnection.java:480)
+	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(HttpsURLConnectionImpl.java:338)
+	at org.glassfish.jersey.client.internal.HttpUrlConnector._apply(HttpUrlConnector.java:367)
+	at org.glassfish.jersey.client.internal.HttpUrlConnector.apply(HttpUrlConnector.java:259)
+	... 17 more
 
-[GetMessage SOAP] bradley.huel, mid=1838242164590656684, pwd=e4afjfbwrow1z -> -1 getMessage: Requested message does not exists. URI:https://172.18.0.7:8080/soap/messages/?wsdl
-sd1920.trab1.api.soap.MessagesException: getMessage: Requested message does not exists.
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createUserDefinedException(SOAPFaultBuilder.java:302)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createException(SOAPFaultBuilder.java:111)
-	at com.sun.xml.ws.client.sei.StubHandler.readResponse(StubHandler.java:223)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:176)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:263)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:89)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:62)
-	at com.sun.xml.ws.client.sei.SEIStub.invoke(SEIStub.java:131)
-	at com.sun.proxy.$Proxy73.getMessage(Unknown Source)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:150)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:137)
-	at sd1920.trab1.ServerState.lambda$execGetMessage$9(ServerState.java:302)
-	at sd1920.trab1.ServerState.runOp(ServerState.java:434)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:302)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:299)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:317)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:310)
-	at tests.workloads.MultiDomainDeleteMessage.lambda$execute$3(MultiDomainDeleteMessage.java:81)
-	at java.lang.Iterable.forEach(Iterable.java:75)
-	at tests.workloads.MultiDomainDeleteMessage.execute(MultiDomainDeleteMessage.java:81)
+[PostMessage https://172.18.0.4:8080/rest] kq2g5v64pqqrdh9, Msg{-1,perry.hessel@msgserver-1,Itaque.,[corrie.bailey@msgserver-1],1590172350304} -> -1 java.net.SocketTimeoutException: Read timed out URI:https://172.18.0.4:8080/rest
+javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: Read timed out
+	at org.glassfish.jersey.client.internal.HttpUrlConnector.apply(HttpUrlConnector.java:261)
+	at org.glassfish.jersey.client.ClientRuntime.invoke(ClientRuntime.java:296)
+	at org.glassfish.jersey.client.JerseyInvocation.lambda$invoke$0(JerseyInvocation.java:609)
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:292)
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:274)
+	at org.glassfish.jersey.internal.Errors.process(Errors.java:205)
+	at org.glassfish.jersey.process.internal.RequestScope.runInScope(RequestScope.java:390)
+	at org.glassfish.jersey.client.JerseyInvocation.invoke(JerseyInvocation.java:608)
+	at org.glassfish.jersey.client.JerseyInvocation$Builder.method(JerseyInvocation.java:421)
+	at org.glassfish.jersey.client.JerseyInvocation$Builder.post(JerseyInvocation.java:327)
+	at sd1920.trab1.clt.rest.RESTMessagesServiceClt.postMessage(RESTMessagesServiceClt.java:72)
+	at sd1920.trab1.ServerState.lambda$execPostMessage$8(ServerState.java:281)
+	at sd1920.trab1.ServerState.runOp(ServerState.java:441)
+	at sd1920.trab1.ServerState.execPostMessage(ServerState.java:281)
+	at tests.MessagesTest.execPostMessage(MessagesTest.java:305)
+	at tests.workloads.MessagesMixWorkloadNetStopRestart.execute(MessagesMixWorkloadNetStopRestart.java:136)
 	at tests.BaseTest.test(BaseTest.java:167)
-	at tests.Tester.main(Tester.java:371)
+	at tests.Tester.main(Tester.java:383)
+Caused by: java.net.SocketTimeoutException: Read timed out
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.socketRead(SocketInputStream.java:116)
+	at java.net.SocketInputStream.read(SocketInputStream.java:171)
+	at java.net.SocketInputStream.read(SocketInputStream.java:141)
+	at sun.security.ssl.InputRecord.readFully(InputRecord.java:465)
+	at sun.security.ssl.InputRecord.read(InputRecord.java:503)
+	at sun.security.ssl.SSLSocketImpl.readRecord(SSLSocketImpl.java:973)
+	at sun.security.ssl.SSLSocketImpl.readDataRecord(SSLSocketImpl.java:930)
+	at sun.security.ssl.AppInputStream.read(AppInputStream.java:105)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:246)
+	at java.io.BufferedInputStream.read1(BufferedInputStream.java:286)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:345)
+	at sun.net.www.http.HttpClient.parseHTTPHeader(HttpClient.java:704)
+	at sun.net.www.http.HttpClient.parseHTTP(HttpClient.java:647)
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1569)
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1474)
+	at java.net.HttpURLConnection.getResponseCode(HttpURLConnection.java:480)
+	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(HttpsURLConnectionImpl.java:338)
+	at org.glassfish.jersey.client.internal.HttpUrlConnector._apply(HttpUrlConnector.java:367)
+	at org.glassfish.jersey.client.internal.HttpUrlConnector.apply(HttpUrlConnector.java:259)
+	... 17 more
 
-[GetMessage SOAP] duane.bradtke, mid=1838242164590656684, pwd=p7a5w3kzbzgb4p -> -1 getMessage: Requested message does not exists. URI:https://172.18.0.7:8080/soap/messages/?wsdl
-sd1920.trab1.api.soap.MessagesException: getMessage: Requested message does not exists.
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createUserDefinedException(SOAPFaultBuilder.java:302)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createException(SOAPFaultBuilder.java:111)
-	at com.sun.xml.ws.client.sei.StubHandler.readResponse(StubHandler.java:223)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:176)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:263)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:89)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:62)
-	at com.sun.xml.ws.client.sei.SEIStub.invoke(SEIStub.java:131)
-	at com.sun.proxy.$Proxy73.getMessage(Unknown Source)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:150)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:137)
-	at sd1920.trab1.ServerState.lambda$execGetMessage$9(ServerState.java:302)
-	at sd1920.trab1.ServerState.runOp(ServerState.java:434)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:302)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:299)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:317)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:310)
-	at tests.workloads.MultiDomainDeleteMessage.lambda$execute$3(MultiDomainDeleteMessage.java:81)
-	at java.lang.Iterable.forEach(Iterable.java:75)
-	at tests.workloads.MultiDomainDeleteMessage.execute(MultiDomainDeleteMessage.java:81)
+TestFailedException: PostMsg = Msg{-1,Herb Hansen <perry.hessel@msgserver-1>,Itaque.,[corrie.bailey@msgserver-1],1590172350304} ; pwd = kq2g5v64pqqrdh9
+Expected : 200; received : -1
+	at sd1920.trab1.ServerState.execPostMessage(ServerState.java:290)
+	at tests.MessagesTest.execPostMessage(MessagesTest.java:305)
+	at tests.workloads.MessagesMixWorkloadNetStopRestart.execute(MessagesMixWorkloadNetStopRestart.java:136)
 	at tests.BaseTest.test(BaseTest.java:167)
-	at tests.Tester.main(Tester.java:371)
-
-[GetMessage SOAP] bradley.huel, mid=6940189609377328599, pwd=e4afjfbwrow1z -> -1 getMessage: Requested message does not exists. URI:https://172.18.0.7:8080/soap/messages/?wsdl
-sd1920.trab1.api.soap.MessagesException: getMessage: Requested message does not exists.
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createUserDefinedException(SOAPFaultBuilder.java:302)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createException(SOAPFaultBuilder.java:111)
-	at com.sun.xml.ws.client.sei.StubHandler.readResponse(StubHandler.java:223)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:176)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:263)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:89)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:62)
-	at com.sun.xml.ws.client.sei.SEIStub.invoke(SEIStub.java:131)
-	at com.sun.proxy.$Proxy73.getMessage(Unknown Source)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:150)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:137)
-	at sd1920.trab1.ServerState.lambda$execGetMessage$9(ServerState.java:302)
-	at sd1920.trab1.ServerState.runOp(ServerState.java:434)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:302)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:299)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:317)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:310)
-	at tests.workloads.MultiDomainDeleteMessage.lambda$execute$3(MultiDomainDeleteMessage.java:81)
-	at java.lang.Iterable.forEach(Iterable.java:75)
-	at tests.workloads.MultiDomainDeleteMessage.execute(MultiDomainDeleteMessage.java:81)
-	at tests.BaseTest.test(BaseTest.java:167)
-	at tests.Tester.main(Tester.java:371)
-
-[GetMessage SOAP] duane.bradtke, mid=6940189609377328599, pwd=p7a5w3kzbzgb4p -> -1 getMessage: Requested message does not exists. URI:https://172.18.0.7:8080/soap/messages/?wsdl
-sd1920.trab1.api.soap.MessagesException: getMessage: Requested message does not exists.
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createUserDefinedException(SOAPFaultBuilder.java:302)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createException(SOAPFaultBuilder.java:111)
-	at com.sun.xml.ws.client.sei.StubHandler.readResponse(StubHandler.java:223)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:176)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:263)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:89)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:62)
-	at com.sun.xml.ws.client.sei.SEIStub.invoke(SEIStub.java:131)
-	at com.sun.proxy.$Proxy73.getMessage(Unknown Source)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:150)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:137)
-	at sd1920.trab1.ServerState.lambda$execGetMessage$9(ServerState.java:302)
-	at sd1920.trab1.ServerState.runOp(ServerState.java:434)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:302)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:299)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:317)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:310)
-	at tests.workloads.MultiDomainDeleteMessage.lambda$execute$3(MultiDomainDeleteMessage.java:81)
-	at java.lang.Iterable.forEach(Iterable.java:75)
-	at tests.workloads.MultiDomainDeleteMessage.execute(MultiDomainDeleteMessage.java:81)
-	at tests.BaseTest.test(BaseTest.java:167)
-	at tests.Tester.main(Tester.java:371)
-
-[GetMessage SOAP] adelia.connelly, mid=6940189609377328599, pwd=38brfogec6p -> -1 getMessage: Requested message does not exists. URI:https://172.18.0.7:8080/soap/messages/?wsdl
-sd1920.trab1.api.soap.MessagesException: getMessage: Requested message does not exists.
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createUserDefinedException(SOAPFaultBuilder.java:302)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createException(SOAPFaultBuilder.java:111)
-	at com.sun.xml.ws.client.sei.StubHandler.readResponse(StubHandler.java:223)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:176)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:263)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:89)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:62)
-	at com.sun.xml.ws.client.sei.SEIStub.invoke(SEIStub.java:131)
-	at com.sun.proxy.$Proxy73.getMessage(Unknown Source)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:150)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:137)
-	at sd1920.trab1.ServerState.lambda$execGetMessage$9(ServerState.java:302)
-	at sd1920.trab1.ServerState.runOp(ServerState.java:434)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:302)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:299)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:317)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:310)
-	at tests.workloads.MultiDomainDeleteMessage.lambda$execute$3(MultiDomainDeleteMessage.java:81)
-	at java.lang.Iterable.forEach(Iterable.java:75)
-	at tests.workloads.MultiDomainDeleteMessage.execute(MultiDomainDeleteMessage.java:81)
-	at tests.BaseTest.test(BaseTest.java:167)
-	at tests.Tester.main(Tester.java:371)
-
-[GetMessage SOAP] tanja.will, mid=1610145734600368710, pwd=f84e0jhb1 -> -1 getMessage: Requested message does not exists. URI:https://172.18.0.7:8080/soap/messages/?wsdl
-sd1920.trab1.api.soap.MessagesException: getMessage: Requested message does not exists.
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createUserDefinedException(SOAPFaultBuilder.java:302)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createException(SOAPFaultBuilder.java:111)
-	at com.sun.xml.ws.client.sei.StubHandler.readResponse(StubHandler.java:223)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:176)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:263)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:89)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:62)
-	at com.sun.xml.ws.client.sei.SEIStub.invoke(SEIStub.java:131)
-	at com.sun.proxy.$Proxy73.getMessage(Unknown Source)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:150)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:137)
-	at sd1920.trab1.ServerState.lambda$execGetMessage$9(ServerState.java:302)
-	at sd1920.trab1.ServerState.runOp(ServerState.java:434)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:302)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:299)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:317)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:310)
-	at tests.workloads.MultiDomainDeleteMessage.lambda$execute$3(MultiDomainDeleteMessage.java:81)
-	at java.lang.Iterable.forEach(Iterable.java:75)
-	at tests.workloads.MultiDomainDeleteMessage.execute(MultiDomainDeleteMessage.java:81)
-	at tests.BaseTest.test(BaseTest.java:167)
-	at tests.Tester.main(Tester.java:371)
-
-[GetMessage SOAP] bradley.huel, mid=1610145734600368710, pwd=e4afjfbwrow1z -> -1 getMessage: Requested message does not exists. URI:https://172.18.0.7:8080/soap/messages/?wsdl
-sd1920.trab1.api.soap.MessagesException: getMessage: Requested message does not exists.
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createUserDefinedException(SOAPFaultBuilder.java:302)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createException(SOAPFaultBuilder.java:111)
-	at com.sun.xml.ws.client.sei.StubHandler.readResponse(StubHandler.java:223)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:176)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:263)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:89)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:62)
-	at com.sun.xml.ws.client.sei.SEIStub.invoke(SEIStub.java:131)
-	at com.sun.proxy.$Proxy73.getMessage(Unknown Source)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:150)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:137)
-	at sd1920.trab1.ServerState.lambda$execGetMessage$9(ServerState.java:302)
-	at sd1920.trab1.ServerState.runOp(ServerState.java:434)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:302)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:299)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:317)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:310)
-	at tests.workloads.MultiDomainDeleteMessage.lambda$execute$3(MultiDomainDeleteMessage.java:81)
-	at java.lang.Iterable.forEach(Iterable.java:75)
-	at tests.workloads.MultiDomainDeleteMessage.execute(MultiDomainDeleteMessage.java:81)
-	at tests.BaseTest.test(BaseTest.java:167)
-	at tests.Tester.main(Tester.java:371)
-
-[GetMessage SOAP] duane.bradtke, mid=1610145734600368710, pwd=p7a5w3kzbzgb4p -> -1 getMessage: Requested message does not exists. URI:https://172.18.0.7:8080/soap/messages/?wsdl
-sd1920.trab1.api.soap.MessagesException: getMessage: Requested message does not exists.
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createUserDefinedException(SOAPFaultBuilder.java:302)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createException(SOAPFaultBuilder.java:111)
-	at com.sun.xml.ws.client.sei.StubHandler.readResponse(StubHandler.java:223)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:176)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:263)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:89)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:62)
-	at com.sun.xml.ws.client.sei.SEIStub.invoke(SEIStub.java:131)
-	at com.sun.proxy.$Proxy73.getMessage(Unknown Source)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:150)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:137)
-	at sd1920.trab1.ServerState.lambda$execGetMessage$9(ServerState.java:302)
-	at sd1920.trab1.ServerState.runOp(ServerState.java:434)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:302)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:299)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:317)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:310)
-	at tests.workloads.MultiDomainDeleteMessage.lambda$execute$3(MultiDomainDeleteMessage.java:81)
-	at java.lang.Iterable.forEach(Iterable.java:75)
-	at tests.workloads.MultiDomainDeleteMessage.execute(MultiDomainDeleteMessage.java:81)
-	at tests.BaseTest.test(BaseTest.java:167)
-	at tests.Tester.main(Tester.java:371)
-
-[GetMessage SOAP] adelia.connelly, mid=1610145734600368710, pwd=38brfogec6p -> -1 getMessage: Requested message does not exists. URI:https://172.18.0.7:8080/soap/messages/?wsdl
-sd1920.trab1.api.soap.MessagesException: getMessage: Requested message does not exists.
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createUserDefinedException(SOAPFaultBuilder.java:302)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createException(SOAPFaultBuilder.java:111)
-	at com.sun.xml.ws.client.sei.StubHandler.readResponse(StubHandler.java:223)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:176)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:263)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:89)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:62)
-	at com.sun.xml.ws.client.sei.SEIStub.invoke(SEIStub.java:131)
-	at com.sun.proxy.$Proxy73.getMessage(Unknown Source)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:150)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.getMessage(SOAPMessagesServiceClt.java:137)
-	at sd1920.trab1.ServerState.lambda$execGetMessage$9(ServerState.java:302)
-	at sd1920.trab1.ServerState.runOp(ServerState.java:434)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:302)
-	at sd1920.trab1.ServerState.execGetMessage(ServerState.java:299)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:317)
-	at tests.MessagesTest.execGetMessage(MessagesTest.java:310)
-	at tests.workloads.MultiDomainDeleteMessage.lambda$execute$3(MultiDomainDeleteMessage.java:81)
-	at java.lang.Iterable.forEach(Iterable.java:75)
-	at tests.workloads.MultiDomainDeleteMessage.execute(MultiDomainDeleteMessage.java:81)
-	at tests.BaseTest.test(BaseTest.java:167)
-	at tests.Tester.main(Tester.java:371)
-
----------- Deleting messages incorrectly
-[DeleteMessage SOAP] bradley.huel, mid= 4483057590563753396, pwd= e4afjfbwrow1z -> OK:null
-[DeleteMessage SOAP] adelia.connelly, mid= 6755844502369967470, pwd= 38brfogec6p -> OK:null
-[DeleteMessage https://172.18.0.4:8080/rest] corrie.baileyb, mid= 1589932552527499614, pwd= scerl0yfs52 -> 403:null
-[DeleteMessage https://172.18.0.4:8080/rest] corrie.bailey, mid= 1589932552527499614, pwd= scerl0yfs52b -> 403:null
-[DeleteMessage https://172.18.0.4:8080/rest] corrie.bailey, mid= 1589932552527499614, pwd= null -> 403:null
-[DeleteMessage SOAP] corrie.bailey, mid= 1589932552527499614, pwd= scerl0yfs52 -> -1 Delete message: User not found or wrong password URI:https://172.18.0.7:8080/soap/messages/?wsdl
-sd1920.trab1.api.soap.MessagesException: Delete message: User not found or wrong password
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
-	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createUserDefinedException(SOAPFaultBuilder.java:302)
-	at com.sun.xml.ws.fault.SOAPFaultBuilder.createException(SOAPFaultBuilder.java:111)
-	at com.sun.xml.ws.client.sei.StubHandler.readResponse(StubHandler.java:223)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:176)
-	at com.sun.xml.ws.db.DatabindingImpl.deserializeResponse(DatabindingImpl.java:263)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:89)
-	at com.sun.xml.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:62)
-	at com.sun.xml.ws.client.sei.SEIStub.invoke(SEIStub.java:131)
-	at com.sun.proxy.$Proxy73.deleteMessage(Unknown Source)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.deleteMessage(SOAPMessagesServiceClt.java:300)
-	at sd1920.trab1.clt.soap.SOAPMessagesServiceClt.deleteMessage(SOAPMessagesServiceClt.java:287)
-	at sd1920.trab1.ServerState.lambda$execDeleteMessage$14(ServerState.java:422)
-	at sd1920.trab1.ServerState.runOp(ServerState.java:434)
-	at sd1920.trab1.ServerState.execDeleteMessage(ServerState.java:422)
-	at tests.MessagesTest.execDeleteMessage(MessagesTest.java:376)
-	at tests.workloads.MultiDomainDeleteMessage.execute(MultiDomainDeleteMessage.java:99)
-	at tests.BaseTest.test(BaseTest.java:167)
-	at tests.Tester.main(Tester.java:371)
-
-sleeping: 14 s                                                                                
-sleeping: 13 s                                                                                
-sleeping: 12 s                                                                                
-sleeping: 11 s                                                                                
-sleeping: 10 s                                                                                
-sleeping: 9 s                                                                                
-sleeping: 8 s                                                                                
-sleeping: 7 s                                                                                
-sleeping: 6 s                                                                                
-sleeping: 5 s                                                                                
-sleeping: 4 s                                                                                
-sleeping: 3 s                                                                                
-sleeping: 2 s                                                                                
-sleeping: 1 s                                                                                
-sleeping: 0 s                                                                                
-                                                                                
----------- Checking inboxes (to check if no deletes were made)
-[GetMessageS https://172.18.0.6:8080/rest] chantel.rath, pwd=cfr3k96epfu5 -> 200:[6755844502369967470, 6496262837651353254, 5588588729063801110, 4483057590563753396, 1589932552527499614]
-TestFailedException: GetMsgs user = chantel.rath ; pwd = cfr3k96epfu5
-Expected : [6496262837651353254, 5588588729063801110, 4483057590563753396, 1589932552527499614]; received : [6755844502369967470, 6496262837651353254, 5588588729063801110, 4483057590563753396, 1589932552527499614]
-	at sd1920.trab1.ServerState.execGetMessages(ServerState.java:331)
-	at sd1920.trab1.ServerState.execGetMessages(ServerState.java:318)
-	at tests.MessagesTest.execGetMessages(MessagesTest.java:329)
-	at tests.MessagesTest.execGetMessages(MessagesTest.java:322)
-	at tests.workloads.MultiDomainDeleteMessage.lambda$null$4(MultiDomainDeleteMessage.java:104)
-	at java.util.ArrayList.forEach(ArrayList.java:1249)
-	at tests.workloads.MultiDomainDeleteMessage.lambda$execute$5(MultiDomainDeleteMessage.java:104)
-	at java.util.ArrayList.forEach(ArrayList.java:1249)
-	at tests.workloads.MultiDomainDeleteMessage.execute(MultiDomainDeleteMessage.java:104)
-	at tests.BaseTest.test(BaseTest.java:167)
-	at tests.Tester.main(Tester.java:371)
-FAILED: GetMsgs user = chantel.rath ; pwd = cfr3k96epfu5
-Expected : [6496262837651353254, 5588588729063801110, 4483057590563753396, 1589932552527499614]; received : [6755844502369967470, 6496262837651353254, 5588588729063801110, 4483057590563753396, 1589932552527499614]
+	at tests.Tester.main(Tester.java:383)
+FAILED: PostMsg = Msg{-1,Herb Hansen <perry.hessel@msgserver-1>,Itaque.,[corrie.bailey@msgserver-1],1590172350304} ; pwd = kq2g5v64pqqrdh9
+Expected : 200; received : -1
 
 
 Removing: kafka
 Removing: msgserver-1-1
 Removing: msgserver-1-2
-Removing: msgserver-1-3
 -----------------------------------------------------------------------------------
 kafka
 -----------------------------------------------------------------------------------
-2020-05-22 14:43:48,769 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
-2020-05-22 14:43:48,769 INFO Included extra file "/etc/supervisor/conf.d/kafka.conf" during parsing
-2020-05-22 14:43:48,769 INFO Included extra file "/etc/supervisor/conf.d/zookeeper.conf" during parsing
-2020-05-22 14:43:48,782 INFO RPC interface 'supervisor' initialized
-2020-05-22 14:43:48,782 CRIT Server 'unix_http_server' running without any HTTP authentication checking
-2020-05-22 14:43:48,782 INFO supervisord started with pid 8
-2020-05-22 14:43:49,784 INFO spawned: 'zookeeper' with pid 11
-2020-05-22 14:43:49,785 INFO spawned: 'kafka' with pid 12
-2020-05-22 14:43:50,787 INFO success: zookeeper entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
-2020-05-22 14:43:50,787 INFO success: kafka entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2020-05-22 18:31:28,436 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2020-05-22 18:31:28,436 INFO Included extra file "/etc/supervisor/conf.d/kafka.conf" during parsing
+2020-05-22 18:31:28,436 INFO Included extra file "/etc/supervisor/conf.d/zookeeper.conf" during parsing
+2020-05-22 18:31:28,443 INFO RPC interface 'supervisor' initialized
+2020-05-22 18:31:28,443 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2020-05-22 18:31:28,443 INFO supervisord started with pid 8
+2020-05-22 18:31:29,445 INFO spawned: 'zookeeper' with pid 11
+2020-05-22 18:31:29,447 INFO spawned: 'kafka' with pid 12
+2020-05-22 18:31:30,585 INFO success: zookeeper entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2020-05-22 18:31:30,585 INFO success: kafka entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
 
 -----------------------------------------------------------------------------------
 msgserver-1-1
@@ -702,139 +545,183 @@ execPostUser
 createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 Adding operation POST_USER
-Wake up!
 postUser: Created new user with name: chantel.rath
 execPostUser
 createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 Adding operation POST_USER
-Wake up!
 postUser: Created new user with name: aubrey.blick
 execPostUser
 createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 Adding operation POST_USER
-Wake up!
 postUser: Created new user with name: perry.hessel
 execPostUser
 createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 Adding operation POST_USER
-Wake up!
 postUser: Created new user with name: corrie.bailey
 execPostUser
 createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 Adding operation POST_USER
-Wake up!
 postUser: Created new user with name: catherin.gutmann
-postMessage: Received request to register a new message (Sender: chantel.rath@msgserver-1; Subject: Quas ut.)
-postMessage: Created new message with id: 4950625071954023496
-forwardMessage: Trying to forward message 4950625071954023496 to msgserver-2
+execPostUser
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+Adding operation POST_USER
+postUser: Created new user with name: duane.bradtke
+execPostUser
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+Adding operation POST_USER
+postUser: Created new user with name: bradley.huel
+execPostUser
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+Adding operation POST_USER
+postUser: Created new user with name: adelia.connelly
+execPostUser
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+Adding operation POST_USER
+postUser: Created new user with name: tanja.will
+execPostUser
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+Adding operation POST_USER
+postUser: Created new user with name: marhta.baumbach
+execPostUser
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+Adding operation POST_USER
+postUser: Created new user with name: lauri.lakin
+execPostUser
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+Adding operation POST_USER
+postUser: Created new user with name: klara.cartwright
+postMessage: Received request to register a new message (Sender: chantel.rath; Subject: Deserunt optio est nostrum.)
+execPostMessage: Created new message with id: 647468260852511751
+saveMessage: Sucessfuly saved message 647468260852511751
 Adding operation POST_MESSAGE
-Wake up!
-postMessage: Received request to register a new message (Sender: aubrey.blick@msgserver-1; Subject: Est nostrum quam voluptas sit nobis.)
-postMessage: Created new message with id: 1838242164590656684
-forwardMessage: Trying to forward message 1838242164590656684 to msgserver-2
+postMessage: Received request to register a new message (Sender: aubrey.blick@msgserver-1; Subject: Aut quis ut.)
+execPostMessage: Created new message with id: 8463564521291199087
+saveMessage: Sucessfuly saved message 8463564521291199087
 Adding operation POST_MESSAGE
-Wake up!
-postMessage: Received request to register a new message (Sender: perry.hessel@msgserver-1; Subject: Omnis illo iure consequatur unde cupiditate.)
-postMessage: Created new message with id: 6940189609377328599
-forwardMessage: Trying to forward message 6940189609377328599 to msgserver-2
+postMessage: Received request to register a new message (Sender: perry.hessel; Subject: Itaque.)
+execPostMessage: Created new message with id: 8271930856228688013
+saveMessage: Sucessfuly saved message 8271930856228688013
 Adding operation POST_MESSAGE
-Wake up!
-postMessage: Received request to register a new message (Sender: corrie.bailey@msgserver-1; Subject: Quia rerum commodi doloribus delectus.)
-postMessage: Created new message with id: 1610145734600368710
-forwardMessage: Trying to forward message 1610145734600368710 to msgserver-2
+postMessage: Received request to register a new message (Sender: corrie.bailey@msgserver-1; Subject: Quia molestiae quia et.)
+execPostMessage: Created new message with id: 3653113493359218485
+saveMessage: Sucessfuly saved message 3653113493359218485
+saveMessage: Sucessfuly saved message 3653113493359218485
 Adding operation POST_MESSAGE
-Wake up!
-postMessage: Received request to register a new message (Sender: catherin.gutmann@msgserver-1; Subject: Quaerat.)
-postMessage: Created new message with id: 7924171389654796375
-forwardMessage: Trying to forward message 7924171389654796375 to msgserver-2
+postMessage: Received request to register a new message (Sender: catherin.gutmann; Subject: Ipsa.)
+execPostMessage: Created new message with id: 8936970847068519146
+saveMessage: Sucessfuly saved message 8936970847068519146
+saveMessage: Sucessfuly saved message 8936970847068519146
 Adding operation POST_MESSAGE
-Wake up!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-deleteMessage: Received request to delete a message with the id: 4950625071954023496
-execDeleteMessage: 4950625071954023496
-forwardDelete: Sending delete request to domain: msgserver-2
-Adding operation DELETE_MESSAGE
-Wake up!
-deleteMessage: Received request to delete a message with the id: 1838242164590656684
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-execDeleteMessage: 1838242164590656684
-forwardDelete: Sending delete request to domain: msgserver-2
-Adding operation DELETE_MESSAGE
-Wake up!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-deleteMessage: Received request to delete a message with the id: 6940189609377328599
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-execDeleteMessage: 6940189609377328599
-forwardDelete: Sending delete request to domain: msgserver-2
-Adding operation DELETE_MESSAGE
-Wake up!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-deleteMessage: Received request to delete a message with the id: 1610145734600368710
-execDeleteMessage: 1610145734600368710
-forwardDelete: Sending delete request to domain: msgserver-2
-Adding operation DELETE_MESSAGE
-Wake up!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-postForwardedMessage: Received request to save the message 6496262837651353254
-execPostForwardedMessage: Received message 6496262837651353254
-saveMessage: Sucessfuly saved message 6496262837651353254
-Adding operation POST_FORWARDED
-Wake up!
-postForwardedMessage: Couldn't deliver the message to 0 people
-postForwardedMessage: Received request to save the message 1589932552527499614
-execPostForwardedMessage: Received message 1589932552527499614
-saveMessage: Sucessfuly saved message 1589932552527499614
-saveMessage: Sucessfuly saved message 1589932552527499614
-Adding operation POST_FORWARDED
-Wake up!
-postForwardedMessage: Couldn't deliver the message to 0 people
-postForwardedMessage: Received request to save the message 6755844502369967470
-execPostForwardedMessage: Received message 6755844502369967470
-saveMessage: Sucessfuly saved message 6755844502369967470
-saveMessage: Sucessfuly saved message 6755844502369967470
-saveMessage: Sucessfuly saved message 6755844502369967470
-Adding operation POST_FORWARDED
-Wake up!
-postForwardedMessage: Couldn't deliver the message to 0 people
-postForwardedMessage: Received request to save the message 4483057590563753396
-execPostForwardedMessage: Received message 4483057590563753396
-saveMessage: Sucessfuly saved message 4483057590563753396
-saveMessage: Sucessfuly saved message 4483057590563753396
-saveMessage: Sucessfuly saved message 4483057590563753396
-saveMessage: Sucessfuly saved message 4483057590563753396
-Adding operation POST_FORWARDED
-Wake up!
-postForwardedMessage: Couldn't deliver the message to 0 people
-postForwardedMessage: Received request to save the message 5588588729063801110
-execPostForwardedMessage: Received message 5588588729063801110
-saveMRemoving: msgserver-2-1
-essage: Sucessfuly saved message 5588588729063801110
-saveMessage: Sucessfuly saved message 5588588729063801110
-saveMessage: Sucessfuly saved message 5588588729063801110
-saveMessage: Sucessfuly saved message 5588588729063801110
-saveMessage: Sucessfuly saved message 5588588729063801110
-Adding operation POST_FORWARDED
-Wake up!
-postForwardedMessage: Couldn't deliver the message to 0 people
-deleteMessage: Received request to delete a message with the id: 1589932552527499614
+postMessage: Received request to register a new message (Sender: duane.bradtke@msgserver-1; Subject: Voluptas.)
+execPostMessage: Created new message with id: 3836157401491636382
+saveMessage: Sucessfuly saved message 3836157401491636382
+saveMessage: Sucessfuly saved message 3836157401491636382
+Adding operation POST_MESSAGE
+postMessage: Received request to register a new message (Sender: bradley.huel; Subject: In quia sed eveniet.)
+execPostMessage: Created new message with id: 2726043475342838453
+saveMessage: Sucessfuly saved message 2726043475342838453
+saveMessage: Sucessfuly saved message 2726043475342838453
+saveMessage: Sucessfuly saved message 2726043475342838453
+Adding operation POST_MESSAGE
+postMessage: Received request to register a new message (Sender: adelia.connelly@msgserver-1; Subject: Dignissimos sint veniam harum vel.)
+execPostMessage: Created new message with id: 1236956626663413223
+saveMessage: Sucessfuly saved message 1236956626663413223
+saveMessage: Sucessfuly saved message 1236956626663413223
+saveMessage: Sucessfuly saved message 1236956626663413223
+Adding operation POST_MESSAGE
+postMessage: Received request to register a new message (Sender: tanja.will; Subject: Et dolorum quia.)
+execPostMessage: Created new message with id: 2653600777797076292
+saveMessage: Sucessfuly saved message 2653600777797076292
+saveMessage: Sucessfuly saved message 2653600777797076292
+saveMessage: Sucessfuly saved message 2653600777797076292
+Adding operation POST_MESSAGE
+postMessage: Received request to register a new message (Sender: marhta.baumbach@msgserver-1; Subject: Ut et fuga maxime recusandae.)
+execPostMessage: Created new message with id: 1331097871040514115
+saveMessage: Sucessfuly saved message 1331097871040514115
+saveMessage: Sucessfuly saved message 1331097871040514115
+saveMessage: Sucessfuly saved message 1331097871040514115
+saveMessage: Sucessfuly saved message 1331097871040514115
+Adding operation POST_MESSAGE
+postMessage: Received request to register a new message (Sender: lauri.lakin; Subject: Vel.)
+execPostMessage: Created new message with id: 2412263482311801570
+saveMessage: Sucessfuly saved message 2412263482311801570
+saveMessage: Sucessfuly saved message 2412263482311801570
+saveMessage: Sucessfuly saved message 2412263482311801570
+saveMessage: Sucessfuly saved message 2412263482311801570
+Adding operation POST_MESSAGE
+postMessage: Received request to register a new message (Sender: klara.cartwright@msgserver-1; Subject: Magnam dolores placeat incidunt natus.)
+execPostMessage: Created new message with id: 8928325482620631161
+saveMessage: Sucessfuly saved message 8928325482620631161
+saveMessage: Sucessfuly saved message 8928325482620631161
+saveMessage: Sucessfuly saved message 8928325482620631161
+saveMessage: Sucessfuly saved message 8928325482620631161
+Adding operation POST_MESSAGE
+getUser: User fetch was rejected due to an invalid password
+getUserRest: User either doesn't exist or the password is incorrect
+getMessages: User with name chantel.rath does not exist in the domain.
 getUser: User fetch was rejected due to missing user
 getUserRest: User either doesn't exist or the password is incorrect
-delete message: User not found or wrong password
-deleteMessage: Received request to delete a message with the id: 1589932552527499614
-getUser: User fetch was rejected due to an invalid password
+getMessages: User with name sylvie.johns does not exist in the domain.
+getUser: User fetch was rejected due to missing user
 getUserRest: User either doesn't exist or the password is incorrect
-delete message: User not found or wrong password
-deleteMessage: Received request to delete a message with the id: 1589932552527499614
-getUser: User fetch was rejected due to an invalid password
+getUser: User fetch was rejected due to missing user
 getUserRest: User either doesn't exist or the password is incorrect
-delete message: User not found or wrong password
+getUser: User fetch was rejected due to missing user
+getUserRest: User either doesn't exist or the password is incorrect
+postMessage: Received request to register a new message (Sender: aubrey.blickasd; Subject: Consequatur quam dolor.)
+getUser: User fetch was rejected due to missing user
+getUserRest: User either doesn't exist or the password is incorrect
+removeFromUserInbox: Received request to delete message 647468260852511751 from the inbox of aubrey.blick
+Adding operation REMOVE_FROM_INBOX
+removeFromUserInbox: Received request to delete message 8463564521291199087 from the inbox of perry.hessel
+Adding operation REMOVE_FROM_INBOX
+removeFromUserInbox: Received request to delete message 8271930856228688013 from the inbox of corrie.bailey
+Adding operation REMOVE_FROM_INBOX
+removeFromUserInbox: Received request to delete message 3653113493359218485 from the inbox of duane.bradtke
+Adding operation REMOVE_FROM_INBOX
+removeFromUserInbox: Received request to delete message 8936970847068519146 from the inbox of duane.bradtke
+Adding operation REMOVE_FROM_INBOX
+removeFromUserInbox: Received request to delete message 3836157401491636382 from the inbox of adelia.connelly
+Adding operation REMOVE_FROM_INBOX
+removeFromUserInbox: Received request to delete message 2726043475342838453 from the inbox of adelia.connelly
+Adding operation REMOVE_FROM_INBOX
+removeFromUserInbox: Received request to delete message 1236956626663413223 from the inbox of lauri.lakin
+Adding operation REMOVE_FROM_INBOX
+removeFromUserInbox: Received request to delete message 2653600777797076292 from the inbox of lauri.lakin
+Adding operation REMOVE_FROM_INBOX
+removeFromUserInbox: Received request to delete message 1331097871040514115 from the inbox of lauri.lakin
+Adding operation REMOVE_FROM_INBOX
+removeFromUserInbox: Received request to delete message 2412263482311801570 from the inbox of aubrey.blick
+Adding operation REMOVE_FROM_INBOX
+removeFromUserInbox: Received request to delete message 8928325482620631161 from the inbox of aubrey.blick
+Adding operation REMOVE_FROM_INBOX
+postMessage: Received request to register a new message (Sender: chantel.rath@msgserver-1; Subject: Deserunt optio est nostrum.)
+execPostMessage: Created new message with id: 5571102258644613835
+saveMessage: Sucessfuly saved message 5571102258644613835
+Adding operation POST_MESSAGE
+execPostMessage: failed post message
+500
+postMessage: Received request to register a new message (Sender: aubrey.blick@msgserver-1; Subject: Aut quis ut.)
+execPostMessage: Created new message with id: 5421371515294168518
+saveMessage: Sucessfuly saved message 5421371515294168518
+Adding operation POST_MESSAGE
+execPostMessage: failed post message
+500
+postMessage: Received request to register a new message (Sender: perry.hessel@msgserver-1; Subject: Itaque.)
+waitForVersion: Waiting for 38. Current is 37
+postMessage: Received request to register a new message (Sender: perry.hessel@msgserver-1; Subject: Itaque.)
+WatchedEvent state:Disconnected type:None path:null
 
 -----------------------------------------------------------------------------------
 msgserver-1-2
@@ -848,114 +735,211 @@ org.apache.zookeeper.KeeperException$NodeExistsException: KeeperErrorCode = Node
 	at org.apache.zookeeper.KeeperException.create(KeeperException.java:54)
 	at org.apache.zookeeper.ZooKeeper.create(ZooKeeper.java:786)
 	at sd1920.trab2.replication.ZookeeperProcessor.write(ZookeeperProcessor.java:25)
-	at sd1920.trab2.replication.VersionControl.<init>(VersionControl.java:72)
+	at sd1920.trab2.replication.VersionControl.<init>(VersionControl.java:75)
 	at sd1920.trab2.server.replica.ReplicaMailServerREST.main(ReplicaMailServerREST.java:48)
 Created child znode: /msgserver-1/server_0000000001
 execPostUser
 createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 Adding operation POST_USER
-Wake up!
 postUser: Created new user with name: chantel.rath
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/users FOR USER
 execPostUser
 createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 Adding operation POST_USER
-Wake up!
 postUser: Created new user with name: aubrey.blick
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/users FOR USER
 execPostUser
 createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 Adding operation POST_USER
-Wake up!
 postUser: Created new user with name: perry.hessel
 execPostUser
 createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 Adding operation POST_USER
-Wake up!
 postUser: Created new user with name: corrie.bailey
 execPostUser
 createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 Adding operation POST_USER
-Wake up!
 postUser: Created new user with name: catherin.gutmann
-postMessage: Created new message with id: 4950625071954023496
-forwardMessage: Trying to forward message 4950625071954023496 to msgserver-2
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/users FOR USER
+execPostUser
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+Adding operation POST_USER
+postUser: Created new user with name: duane.bradtke
+execPostUser
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+Adding operation POST_USER
+postUser: Created new user with name: bradley.huel
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/users FOR USER
+execPostUser
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+Adding operation POST_USER
+postUser: Created new user with name: adelia.connelly
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/users FOR USER
+execPostUser
+createUserIRemoving: msgserver-1-3
+nbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+Adding operation POST_USER
+postUser: Created new user with name: tanja.will
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/users FOR USER
+execPostUser
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+Adding operation POST_USER
+postUser: Created new user with name: marhta.baumbach
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/users FOR USER
+execPostUser
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+Adding operation POST_USER
+postUser: Created new user with name: lauri.lakin
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/users FOR USER
+execPostUser
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+Adding operation POST_USER
+postUser: Created new user with name: klara.cartwright
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages?pwd=cfr3k96epfu5 FOR MESSAGE -1
+execPostMessage: Created new message with id: 647468260852511751
+saveMessage: Sucessfuly saved message 647468260852511751
 Adding operation POST_MESSAGE
-Wake up!
-postMessage: Created new message with id: 1838242164590656684
-forwardMessage: Trying to forward message 1838242164590656684 to msgserver-2
+execPostMessage: Created new message with id: 8463564521291199087
+saveMessage: Sucessfuly saved message 8463564521291199087
 Adding operation POST_MESSAGE
-Wake up!
-postMessage: Created new message with id: 6940189609377328599
-forwardMessage: Trying to forward message 6940189609377328599 to msgserver-2
+execPostMessage: Created new message with id: 8271930856228688013
+saveMessage: Sucessfuly saved message 8271930856228688013
 Adding operation POST_MESSAGE
-Wake up!
-postMessage: Created new message with id: 1610145734600368710
-forwardMessage: Trying to forward message 1610145734600368710 to msgserver-2
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages?pwd=scerl0yfs52 FOR MESSAGE -1
+execPostMessage: Created new message with id: 3653113493359218485
+saveMessage: Sucessfuly saved message 3653113493359218485
+saveMessage: Sucessfuly saved message 3653113493359218485
 Adding operation POST_MESSAGE
-Wake up!
-postMessage: Created new message with id: 7924171389654796375
-forwardMessage: Trying to forward message 7924171389654796375 to msgserver-2
+execPostMessage: Created new message with id: 8936970847068519146
+saveMessage: Sucessfuly saved message 8936970847068519146
+saveMessage: Sucessfuly saved message 8936970847068519146
 Adding operation POST_MESSAGE
-Wake up!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-execDeleteMessage: 4950625071954023496
-forwardDelete: Sending delete request to domain: msgserver-2
-Adding operation DELETE_MESSAGE
-Wake up!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-execDeleteMessage: 1838242164590656684
-forwardDelete: Sending delete request to domain: msgserver-2
-Adding operation DELETE_MESSAGE
-Wake up!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-execDeleteMessage: 6940189609377328599
-forwardDelete: Sending delete request to domain: msgserver-2
-Adding operation DELETE_MESSAGE
-Wake up!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-execDeleteMessage: 1610145734600368710
-forwardDelete: Sending delete request to domain: msgserver-2
-Adding operation DELETE_MESSAGE
-Wake up!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-execPostForwardedMessage: Received message 6496262837651353254
-saveMessage: Sucessfuly saved message 6496262837651353254
-Adding operation POST_FORWARDED
-Wake up!
-execPostForwardedMessage: Received message 1589932552527499614
-saveMessage: Sucessfuly saved message 1589932552527499614
-saveMessage: Sucessfuly saved message 1589932552527499614
-Adding operation POST_FORWARDED
-Wake up!
-execPostForwardedMessage: Received message 6755844502369967470
-saveMessage: Sucessfuly saved message 6755844502369967470
-saveMessage: Sucessfuly saved message 6755844502369967470
-saveMessage: Sucessfuly saved message 6755844502369967470
-Adding operation POST_FORWARDED
-Wake up!
-execPostForwardedMessage: Received message 4483057590563753396
-saveMessage: Sucessfuly saved message 4483057590563753396
-saveMessage: Sucessfuly saved message 4483057590563753396
-saveMessage: Sucessfuly saved message 4483057590563753396
-saveMessage: Sucessfuly saved message 4483057590563753396
-Adding operation POST_FORWARDED
-Wake up!
-execPostForwardedMessage: Received message 5588588729063801110
-saveMessage: Sucessfuly saved message 5588588729063801110
-saveMessage: Sucessfuly saved message 5588588729063801110
-saveMessage: Sucessfuly saved message 5588588729063801110
-saveMessage: Sucessfuly saved message 5588588729063801110
-saveMessage: Sucessfuly saved message 5588588729063801110
-Adding operation POST_FORWARDED
-Wake up!
+execPostMessage: Created new message with id: 3836157401491636382
+saveMessage: Sucessfuly saved message 3836157401491636382
+saveMessage: Sucessfuly saved message 3836157401491636382
+Adding operation POST_MESSAGE
+execPostMessage: Created new message with id: 2726043475342838453
+saveMessage: Sucessfuly saved message 2726043475342838453
+saveMessage: Sucessfuly saved message 2726043475342838453
+saveMessage: Sucessfuly saved message 2726043475342838453
+Adding operation POST_MESSAGE
+execPostMessage: Created new message with id: 1236956626663413223
+saveMessage: Sucessfuly saved message 1236956626663413223
+saveMessage: Sucessfuly saved message 1236956626663413223
+saveMessage: Sucessfuly saved message 1236956626663413223
+Adding operation POST_MESSAGE
+execPostMessage: Created new message with id: 2653600777797076292
+saveMessage: Sucessfuly saved message 2653600777797076292
+saveMessage: Sucessfuly saved message 2653600777797076292
+saveMessage: Sucessfuly saved message 2653600777797076292
+Adding operation POST_MESSAGE
+execPostMessage: Created new message with id: 1331097871040514115
+saveMessage: Sucessfuly saved message 1331097871040514115
+saveMessage: Sucessfuly saved message 1331097871040514115
+saveMessage: Sucessfuly saved message 1331097871040514115
+saveMessage: Sucessfuly saved message 1331097871040514115
+Adding operation POST_MESSAGE
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages?pwd=8scsyjod FOR MESSAGE -1
+execPostMessage: Created new message with id: 2412263482311801570
+saveMessage: Sucessfuly saved message 2412263482311801570
+saveMessage: Sucessfuly saved message 2412263482311801570
+saveMessage: Sucessfuly saved message 2412263482311801570
+saveMessage: Sucessfuly saved message 2412263482311801570
+Adding operation POST_MESSAGE
+execPostMessage: Created new message with id: 8928325482620631161
+saveMessage: Sucessfuly saved message 8928325482620631161
+saveMessage: Sucessfuly saved message 8928325482620631161
+saveMessage: Sucessfuly saved message 8928325482620631161
+saveMessage: Sucessfuly saved message 8928325482620631161
+Adding operation POST_MESSAGE
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/chantel.rath?pwd=cfr3k96epfu5
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/aubrey.blick?pwd=33floc73
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/perry.hessel?pwd=kq2g5v64pqqrdh9
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/corrie.bailey?pwd=scerl0yfs52
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/catherin.gutmann?pwd=zdqm4u574
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/duane.bradtke?pwd=p7a5w3kzbzgb4p
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/bradley.huel?pwd=e4afjfbwrow1z
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/adelia.connelly?pwd=38brfogec6p
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/tanja.will?pwd=f84e0jhb1
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/marhta.baumbach?pwd=zuuby5zxz0ikgw
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/lauri.lakin?pwd=8scsyjod
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/klara.cartwright?pwd=a8p8o6wy
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/aubrey.blick/647468260852511751?pwd=33floc73 FOR MESSAGE 647468260852511751
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/perry.hessel/8463564521291199087?pwd=kq2g5v64pqqrdh9 FOR MESSAGE 8463564521291199087
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/corrie.bailey/8271930856228688013?pwd=scerl0yfs52 FOR MESSAGE 8271930856228688013
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/duane.bradtke/3653113493359218485?pwd=p7a5w3kzbzgb4p FOR MESSAGE 3653113493359218485
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/catherin.gutmann/3653113493359218485?pwd=zdqm4u574 FOR MESSAGE 3653113493359218485
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/duane.bradtke/8936970847068519146?pwd=p7a5w3kzbzgb4p FOR MESSAGE 8936970847068519146
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/bradley.huel/8936970847068519146?pwd=e4afjfbwrow1z FOR MESSAGE 8936970847068519146
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/adelia.connelly/3836157401491636382?pwd=38brfogec6p FOR MESSAGE 3836157401491636382
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/bradley.huel/3836157401491636382?pwd=e4afjfbwrow1z FOR MESSAGE 3836157401491636382
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/adelia.connelly/2726043475342838453?pwd=38brfogec6p FOR MESSAGE 2726043475342838453
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/marhta.baumbach/2726043475342838453?pwd=zuuby5zxz0ikgw FOR MESSAGE 2726043475342838453
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/tanja.will/2726043475342838453?pwd=f84e0jhb1 FOR MESSAGE 2726043475342838453
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/lauri.lakin/1236956626663413223?pwd=8scsyjod FOR MESSAGE 1236956626663413223
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/marhta.baumbach/1236956626663413223?pwd=zuuby5zxz0ikgw FOR MESSAGE 1236956626663413223
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/tanja.will/1236956626663413223?pwd=f84e0jhb1 FOR MESSAGE 1236956626663413223
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/lauri.lakin/2653600777797076292?pwd=8scsyjod FOR MESSAGE 2653600777797076292
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/marhta.baumbach/2653600777797076292?pwd=zuuby5zxz0ikgw FOR MESSAGE 2653600777797076292
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/klara.cartwright/2653600777797076292?pwd=a8p8o6wy FOR MESSAGE 2653600777797076292
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/lauri.lakin/1331097871040514115?pwd=8scsyjod FOR MESSAGE 1331097871040514115
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/aubrey.blick/1331097871040514115?pwd=33floc73 FOR MESSAGE 1331097871040514115
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/chantel.rath/1331097871040514115?pwd=cfr3k96epfu5 FOR MESSAGE 1331097871040514115
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/klara.cartwright/1331097871040514115?pwd=a8p8o6wy FOR MESSAGE 1331097871040514115
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/aubrey.blick/2412263482311801570?pwd=33floc73 FOR MESSAGE 2412263482311801570
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/perry.hessel/2412263482311801570?pwd=kq2g5v64pqqrdh9 FOR MESSAGE 2412263482311801570
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/chantel.rath/2412263482311801570?pwd=cfr3k96epfu5 FOR MESSAGE 2412263482311801570
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/klara.cartwright/2412263482311801570?pwd=a8p8o6wy FOR MESSAGE 2412263482311801570
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/aubrey.blick/8928325482620631161?pwd=33floc73 FOR MESSAGE 8928325482620631161
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/corrie.bailey/8928325482620631161?pwd=scerl0yfs52 FOR MESSAGE 8928325482620631161
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/perry.hessel/8928325482620631161?pwd=kq2g5v64pqqrdh9 FOR MESSAGE 8928325482620631161
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/chantel.rath/8928325482620631161?pwd=cfr3k96epfu5 FOR MESSAGE 8928325482620631161
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/aubrey.blickasd/647468260852511751?pwd=33floc73 FOR MESSAGE 647468260852511751
+Adding operation REMOVE_FROM_INBOX
+removeFromUserInbox: Received request to delete message 8463564521291199087 from the inbox of perry.hessel
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/perry.hessel/8463564521291199087?pwd=kq2g5v64pqqrdh9 FOR MESSAGE 8463564521291199087
+Adding operation REMOVE_FROM_INBOX
+Adding operation REMOVE_FROM_INBOX
+Adding operation REMOVE_FROM_INBOX
+Adding operation REMOVE_FROM_INBOX
+removeFromUserInbox: Received request to delete message 3836157401491636382 from the inbox of adelia.connelly
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/adelia.connelly/3836157401491636382?pwd=38brfogec6p FOR MESSAGE 3836157401491636382
+Adding operation REMOVE_FROM_INBOX
+removeFromUserInbox: Received request to delete message 2726043475342838453 from the inbox of adelia.connelly
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/adelia.connelly/2726043475342838453?pwd=38brfogec6p FOR MESSAGE 2726043475342838453
+Adding operation REMOVE_FROM_INBOX
+Adding operation REMOVE_FROM_INBOX
+removeFromUserInbox: Received request to delete message 2653600777797076292 from the inbox of lauri.lakin
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/lauri.lakin/2653600777797076292?pwd=8scsyjod FOR MESSAGE 2653600777797076292
+Adding operation REMOVE_FROM_INBOX
+Adding operation REMOVE_FROM_INBOX
+Adding operation REMOVE_FROM_INBOX
+Adding operation REMOVE_FROM_INBOX
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/chantel.rath?pwd=cfr3k96epfu5
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/aubrey.blick?pwd=33floc73
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/perry.hessel?pwd=kq2g5v64pqqrdh9
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/corrie.bailey?pwd=scerl0yfs52
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/catherin.gutmann?pwd=zdqm4u574
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/duane.bradtke?pwd=p7a5w3kzbzgb4p
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/bradley.huel?pwd=e4afjfbwrow1z
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/adelia.connelly?pwd=38brfogec6p
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/tanja.will?pwd=f84e0jhb1
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/marhta.baumbach?pwd=zuuby5zxz0ikgw
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/lauri.lakin?pwd=8scsyjod
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/klara.cartwright?pwd=a8p8o6wy
+WatchedEvent state:Disconnected type:None path:null
 
 -----------------------------------------------------------------------------------
 msgserver-1-3
@@ -969,320 +953,213 @@ org.apache.zookeeper.KeeperException$NodeExistsException: KeeperErrorCode = Node
 	at org.apache.zookeeper.KeeperException.create(KeeperException.java:54)
 	at org.apache.zookeeper.ZooKeeper.create(ZooKeeper.java:786)
 	at sd1920.trab2.replication.ZookeeperProcessor.write(ZookeeperProcessor.java:25)
-	at sd1920.trab2.replication.VersionControl.<init>(VersionControl.java:72)
+	at sd1920.trab2.replication.VersionControl.<init>(VersionControl.java:75)
 	at sd1920.trab2.server.replica.ReplicaMailServerREST.main(ReplicaMailServerREST.java:48)
 Created child znode: /msgserver-1/server_0000000002
 execPostUser
 createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 Adding operation POST_USER
-Wake up!
 postUser: Created new user with name: chantel.rath
 execPostUser
 createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 Adding operation POST_USER
-Wake up!
 postUser: Created new user with name: aubrey.blick
 execPostUser
 createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 Adding operation POST_USER
-Wake up!
 postUser: Created new user with name: perry.hessel
 execPostUser
 createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 Adding operation POST_USER
-Wake up!
 postUser: Created new user with name: corrie.bailey
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/users FOR USER
 execPostUser
 createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
 Adding operation POST_USER
-Wake up!
 postUser: Created new user with name: catherin.gutmann
-postMessage: Created new message with id: 4950625071954023496
-forwardMessage: Trying to forward message 4950625071954023496 to msgserver-2
-Adding operation POST_MESSAGE
-Wake up!
-postMessage: Created new message with id: 1838242164590656684
-forwardMessage: Trying to forward message 1838242164590656684 to msgserver-2
-Adding operation POST_MESSAGE
-Wake up!
-postMessage: Created new message with id: 6940189609377328599
-forwardMessage: Trying to forward message 6940189609377328599 to msgserver-2
-Adding operation POST_MESSAGE
-Wake up!
-postMessage: Created new message with id: 1610145734600368710
-forwardMessage: Trying to forward message 1610145734600368710 to msgserver-2
-Adding operation POST_MESSAGE
-Wake up!
-postMessage: Created new message with id: 7924171389654796375
-forwardMessage: Trying to forward message 7924171389654796375 to msgserver-2
-Adding operation POST_MESSAGE
-Wake up!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-execDeleteMessage: 4950625071954023496
-forwardDelete: Sending delete request to domain: msgserver-2
-Adding operation DELETE_MESSAGE
-Wake up!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-execDeleteMessage: 1838242164590656684
-forwardDelete: Sending delete request to domain: msgserver-2
-Adding operation DELETE_MESSAGE
-Wake up!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-execDeleteMessage: 6940189609377328599
-forwardDelete: Sending delete request to domain: msgserver-2
-Adding operation DELETE_MESSAGE
-Wake up!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-execDeleteMessage: 1610145734600368710
-forwardDelete: Sending delete request to domain: msgserver-2
-Adding operation DELETE_MESSAGE
-Wake up!
-RequestHandler: Successfully completed request to domain msgserver-2. More successful than i'll ever be!
-postForwardedMessage: Received request to save the message 6496262837651353254
-FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox?secret=lemonke FOR MESSAGE 6496262837651353254
-execPostForwardedMessage: Received message 6496262837651353254
-saveMessage: Sucessfuly saved message 6496262837651353254
-Adding operation POST_FORWARDED
-Wake up!
-postForwardedMessage: Received request to save the message 1589932552527499614
-FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox?secret=lemonke FOR MESSAGE 1589932552527499614
-execPostForwardedMessage: Received message 1589932552527499614
-saveMessage: Sucessfuly saved message 1589932552527499614
-saveMessage: Sucessfuly saved message 1589932552527499614
-Adding operation POST_FORWARDED
-Wake up!
-postForwardedMessage: Received request to save the message 6755844502369967470
-FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox?secret=lemonke FOR MESSAGE 6755844502369967470
-execPostForwardedMessage: Received message 6755844502369967470
-saveMessage: Sucessfuly saved message 6755844502369967470
-saveMessage: Sucessfuly saved message 6755844502369967470
-saveMessage: Sucessfuly saved message 6755844502369967470
-Adding operation POST_FORWARDED
-Wake up!
-postForwardedMessage: Received request to save the message 4483057590563753396
-FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox?secret=lemonke FOR MESSAGE 4483057590563753396
-execPostForwardedMessage: Received message 4483057590563753396
-saveMessage: Sucessfuly saved message 4483057590563753396
-saveMessage: Sucessfuly saved message 4483057590563753396
-saveMessage: Sucessfuly saved message 4483057590563753396
-saveMessage: Sucessfuly saved message 4483057590563753396
-Adding operation POST_FORWARDED
-Wake up!
-postForwardedMessage: Received request to save the message 5588588729063801110
-FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox?secret=lemonke FOR MESSAGE 5588588729063801110
-execPostForwardedMessage: Received message 5588588729063801110
-saveMessage: Sucessfuly saved message 5588588729063801110
-saveMessage: Sucessfuly saved message 5588588729063801110
-saveMessage: Sucessfuly saved message 5588588729063801110
-saveMessage: Sucessfuly saved message 5588588729063801110
-saveMessage: Sucessfuly saved message 5588588729063801110
-Adding operation POST_FORWARDED
-Wake up!
-deleteForwardedMessage: Received request to delete message 6755844502369967470
-
------------------------------------------------------------------------------------
-msgserver-2-1
------------------------------------------------------------------------------------
-
-MessageService Server ready @ https://172.18.0.7:8080/soap
-
-INFO: Metro monitoring rootname successfully set to: com.sun.metro:pp=/,type=WSEndpoint,name=messages-MessageResourceSoapPort
-INFO: Metro monitoring rootname successfully set to: com.sun.metro:pp=/,type=WSEndpoint,name=users-UserResourceSoapPort
-
-MessageService Server ready @ https://172.18.0.7:8080/soap
-
-Sending request to create a new inbox in MessageResource.
+execPostUser
+createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-Created new user with name: duane.bradtke
-Sending request to create a new inbox in MessageResource.
+Adding operation POST_USER
+postUser: Created new user with name: duane.bradtke
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/users FOR USER
+execPostUser
+createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-Created new user with name: bradley.huel
-Sending request to create a new inbox in MessageResource.
+Adding operation POST_USER
+postUser: Created new user with name: bradley.huel
+execPostUser
+createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-Created new user with name: adelia.connelly
-Sending request to create a new inbox in MessageResource.
+Adding operation POST_USER
+postUser: Created new user with name: adelia.connelly
+execPostUser
+createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-Created new user with name: tanja.will
-Sending request to create a new inbox in MessageResource.
+Adding operation POST_USER
+postUser: Created new user with name: tanja.will
+execPostUser
+createUserInbox: Sending request to create a new inbox in MessageResource.
 createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
-Created new user with name: marhta.baumbach
-postMessage: Received request to register a new message (Sender: duane.bradtke@msgserver-2; Subject: Enim ipsam in velit quae.)
-postMessage: Created new message with id: 6496262837651353254
-forwardMessage: Trying to forward message 6496262837651353254 to msgserver-1
-postMessage: Recorded message with identifier: 6496262837651353254
-postMessage: Received request to register a new message (Sender: bradley.huel@msgserver-2; Subject: Libero omnis neque similique.)
-postMessage: Created new message with id: 1589932552527499614
-forwardMessage: Trying to forward message 1589932552527499614 to msgserver-1
-postMessage: Recorded message with identifier: 1589932552527499614
-postMessage: Received request to register a new message (Sender: adelia.connelly@msgserver-2; Subject: Et consequatur.)
-postMessage: Created new message with id: 6755844502369967470
-forwardMessage: Trying to forward message 6755844502369967470 to msgserver-1
-postMessage: Recorded message with identifier: 6755844502369967470
-postMessage: Received request to register a new message (Sender: tanja.will@msgserver-2; Subject: Et debitis.)
-postMessage: Created new message with id: 4483057590563753396
-forwardMessage: Trying to forward message 4483057590563753396 to msgserver-1
-postMessage: Recorded message with identifier: 4483057590563753396
-postMessage: Received request to register a new message (Sender: marhta.baumbach@msgserver-2; Subject: Sint et dolorum quia et possimus.)
-postForwardedMessage: Received forwarded message from Miss Lavina Waelchi <chantel.rath@msgserver-1>. ID: 4950625071954023496
-saveMessage: Sucessfuly saved message 4950625071954023496
-postForwardedMessage: Received forwarded message from Miss Lavina Waelchi <chantel.rath@msgserver-1>. ID: 4950625071954023496
-saveMessage: Sucessfuly saved message 4950625071954023496
-postMessage: Created new message with id: 5588588729063801110
-forwardMessage: Trying to forward message 5588588729063801110 to msgserver-1
-postMessage: Recorded message with identifier: 5588588729063801110
-postForwardedMessage: Received forwarded message from Miss Lavina Waelchi <chantel.rath@msgserver-1>. ID: 4950625071954023496
-saveMessage: Sucessfuly saved message 4950625071954023496
-postForwardedMessage: Received forwarded message from Dr. Temple Green <aubrey.blick@msgserver-1>. ID: 1838242164590656684
-saveMessage: Sucessfuly saved message 1838242164590656684
-saveMessage: Sucessfuly saved message 1838242164590656684
-postForwardedMessage: Received forwarded message from Dr. Temple Green <aubrey.blick@msgserver-1>. ID: 1838242164590656684
-saveMessage: Sucessfuly saved message 1838242164590656684
-saveMessage: Sucessfuly saved message 1838242164590656684
-postForwardedMessage: Received forwarded message from Dr. Temple Green <aubrey.blick@msgserver-1>. ID: 1838242164590656684
-postForwardedMessage: Received forwarded message from Herb Hansen <perry.hessel@msgserver-1>. ID: 6940189609377328599
-saveMessage: Sucessfuly saved message 6940189609377328599
-saveMessage: Sucessfuly saved message 6940189609377328599
-saveMessage: Sucessfuly saved message 6940189609377328599
-saveMessage: Sucessfuly saved message 1838242164590656684
-saveMessage: Sucessfuly saved message 1838242164590656684
-postForwardedMessage: Received forwarded message from Dannie Armstrong <corrie.bailey@msgserver-1>. ID: 1610145734600368710
-saveMessage: Sucessfuly saved message 1610145734600368710
-saveMessage: Sucessfuly saved message 1610145734600368710
-saveMessage: Sucessfuly saved message 1610145734600368710
-saveMessage: Sucessfuly saved message 1610145734600368710
-postForwardedMessage: Received forwarded message from Herb Hansen <perry.hessel@msgserver-1>. ID: 6940189609377328599
-saveMessage: Sucessfuly saved message 6940189609377328599
-saveMessage: Sucessfuly saved message 6940189609377328599
-saveMessage: Sucessfuly saved message 6940189609377328599
-postForwardedMessage: Received forwarded message from Herb Hansen <perry.hessel@msgserver-1>. ID: 6940189609377328599
-saveMessage: Sucessfuly saved message 6940189609377328599
-saveMessage: Sucessfuly saved message 6940189609377328599
-saveMessage: Sucessfuly saved message 6940189609377328599
-postForwardedMessage: Received forwarded message from Alton Koelpin DDS <catherin.gutmann@msgserver-1>. ID: 7924171389654796375
-saveMessage: Sucessfuly saved message 7924171389654796375
-saveMessage: Sucessfuly saved message 7924171389654796375
-saveMessage: Sucessfuly saved message 7924171389654796375
-saveMessage: Sucessfuly saved message 7924171389654796375
-saveMessage: Sucessfuly saved message 7924171389654796375
-postForwardedMessage: Received forwarded message from Dannie Armstrong <corrie.bailey@msgserver-1>. ID: 1610145734600368710
-saveMessage: Sucessfuly saved message 1610145734600368710
-saveMessage: Sucessfuly saved message 1610145734600368710
-saveMessage: Sucessfuly saved message 1610145734600368710
-saveMessage: Sucessfuly saved message 1610145734600368710
-postForwardedMessage: Received forwarded message from Dannie Armstrong <corrie.bailey@msgserver-1>. ID: 1610145734600368710
-saveMessage: Sucessfuly saved message 1610145734600368710
-saveMessage: Sucessfuly saved message 1610145734600368710
-saveMessage: Sucessfuly saved message 1610145734600368710
-saveMessage: Sucessfuly saved message 1610145734600368710
-deleteForwardedMessage: Received request to delete message 4950625071954023496
-postForwardedMessage: Received forwarded message from Alton Koelpin DDS <catherin.gutmann@msgserver-1>. ID: 7924171389654796375
-saveMessage: Sucessfuly saved message 7924171389654796375
-saveMessage: Sucessfuly saved message 7924171389654796375
-saveMessage: Sucessfuly saved message 7924171389654796375
-saveMessage: Sucessfuly saved message 7924171389654796375
-saveMessage: Sucessfuly saved message 7924171389654796375
-postForwardedMessage: Received forwarded message from Alton Koelpin DDS <catherin.gutmann@msgserver-1>. ID: 7924171389654796375
-saveMessage: Sucessfuly saved message 7924171389654796375
-saveMessage: Sucessfuly saved message 7924171389654796375
-saveMessage: Sucessfuly saved message 7924171389654796375
-saveMessage: Sucessfuly saved message 7924171389654796375
-saveMessage: Sucessfuly saved message 7924171389654796375
-deleteForwardedMessage: Received request to delete message 1838242164590656684
-deleteForwardedMessage: Received request to delete message 4950625071954023496
-deleteForwardedMessage: Message not found
-deleteForwardedMessage: Received request to delete message 6940189609377328599
-deleteForwardedMessage: Received request to delete message 1838242164590656684
-deleteForwardedMessage: Message not found
-deleteForwardedMessage: Received request to delete message 4950625071954023496
-deleteForwardedMessage: Message not found
-deleteForwardedMessage: Received request to delete message 6940189609377328599
-deleteForwardedMessage: Message not found
-deleteForwardedMessage: Received request to delete message 1838242164590656684
-deleteForwardedMessage: Message not found
-deleteForwardedMessage: Received request to delete message 1610145734600368710
-deleteForwardedMessage: Received request to delete message 1610145734600368710
-deleteForwardedMessage: Message not found
-deleteForwardedMessage: Received request to delete message 6940189609377328599
-deleteForwardedMessage: Message not found
-deleteForwardedMessage: Received request to delete message 1610145734600368710
-deleteForwardedMessage: Message not found
-processPostRequest: 200 6496262837651353254
-RequestHandler: Successfully completed request to domain msgserver-1. More successful than i'll ever be!
-processPostRequest: 200 1589932552527499614
-RequestHandler: Successfully completed request to domain msgserver-1. More successful than i'll ever be!
-processPostRequest: 200 6755844502369967470
-RequestHandler: Successfully completed request to domain msgserver-1. More successful than i'll ever be!
-processPostRequest: 200 4483057590563753396
-RequestHandler: Successfully completed request to domain msgserver-1. More successful than i'll ever be!
-processPostRequest: 200 5588588729063801110
-RequestHandler: Successfully completed request to domain msgserver-1. More successful than i'll ever be!
-getMessages: Received request for messages with optional user parameter set to: 'duane.bradtke'
-getMessages: Returning message list to user with 1 messages.
-getMessages: Received request for messages with optional user parameter set to: 'bradley.huel'
-getMessages: Returning message list to user with 1 messages.
-getMessages: Received request for messages with optional user parameter set to: 'adelia.connelly'
-getMessages: Returning message list to user with 1 messages.
-getMessages: Received request for messages with optional user parameter set to: 'tanja.will'
-getMessages: Returning message list to user with 1 messages.
-getMessages: Received request for messages with optional user parameter set to: 'marhta.baumbach'
-getMessages: Returning message list to user with 1 messages.
-getMessage: Received request for message with id: 4950625071954023496.
-false
-false
-getMessage: Requested message does not exists.
-getMessage: Received request for message with id: 1838242164590656684.
-false
-false
-getMessage: Requested message does not exists.
-getMessage: Received request for message with id: 1838242164590656684.
-false
-false
-getMessage: Requested message does not exists.
-getMessage: Received request for message with id: 6940189609377328599.
-false
-false
-getMessage: Requested message does not exists.
-getMessage: Received request for message with id: 6940189609377328599.
-false
-false
-getMessage: Requested message does not exists.
-getMessage: Received request for message with id: 6940189609377328599.
-false
-false
-getMessage: Requested message does not exists.
-getMessage: Received request for message with id: 1610145734600368710.
-false
-false
-getMessage: Requested message does not exists.
-getMessage: Received request for message with id: 1610145734600368710.
-false
-false
-getMessage: Requested message does not exists.
-getMessage: Received request for message with id: 1610145734600368710.
-false
-false
-getMessage: Requested message does not exists.
-getMessage: Received request for message with id: 1610145734600368710.
-false
-false
-getMessage: Requested message does not exists.
-deleteMesage: Received request to delete a message with the id: 4483057590563753396
-deleteMesage: Received request to delete a message with the id: 6755844502369967470
-forwardDelete: Sending delete request to domain: msgserver-1
-RequestHandler: Successfully completed request to domain msgserver-1. More successful than i'll ever be!
-deleteMesage: Received request to delete a message with the id: 1589932552527499614
-getUser: User fetch was rejected due to missing user: corrie.bailey.
-getUser: Error, could not send the message. Retrying...
-delete message: User not found or wrong password
+Adding operation POST_USER
+postUser: Created new user with name: marhta.baumbach
+execPostUser
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+Adding operation POST_USER
+postUser: Created new user with name: lauri.lakin
+execPostUser
+createUserInbox: Sending request to create a new inbox in MessageResource.
+createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!
+Adding operation POST_USER
+postUser: Created new user with name: klara.cartwright
+execPostMessage: Created new message with id: 647468260852511751
+saveMessage: Sucessfuly saved message 647468260852511751
+Adding operation POST_MESSAGE
+execPostMessage: Created new message with id: 8463564521291199087
+saveMessage: Sucessfuly saved message 8463564521291199087
+Adding operation POST_MESSAGE
+execPostMessage: Created new message with id: 8271930856228688013
+saveMessage: Sucessfuly saved message 8271930856228688013
+Adding operation POST_MESSAGE
+execPostMessage: Created new message with id: 3653113493359218485
+saveMessage: Sucessfuly saved message 3653113493359218485
+saveMessage: Sucessfuly saved message 3653113493359218485
+Adding operation POST_MESSAGE
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages?pwd=zdqm4u574 FOR MESSAGE -1
+execPostMessage: Created new message with id: 8936970847068519146
+saveMessage: Sucessfuly saved message 8936970847068519146
+saveMessage: Sucessfuly saved message 8936970847068519146
+Adding operation POST_MESSAGE
+execPostMessage: Created new message with id: 3836157401491636382
+saveMessage: Sucessfuly saved message 3836157401491636382
+saveMessage: Sucessfuly saved message 3836157401491636382
+Adding operation POST_MESSAGE
+execPostMessage: Created new message with id: 2726043475342838453
+saveMessage: Sucessfuly saved message 2726043475342838453
+saveMessage: Sucessfuly saved message 2726043475342838453
+saveMessage: Sucessfuly saved message 2726043475342838453
+Adding operation POST_MESSAGE
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages?pwd=38brfogec6p FOR MESSAGE -1
+execPostMessage: Created new message with id: 1236956626663413223
+saveMessage: Sucessfuly saved message 1236956626663413223
+saveMessage: Sucessfuly saved message 1236956626663413223
+saveMessage: Sucessfuly saved message 1236956626663413223
+Adding operation POST_MESSAGE
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages?pwd=f84e0jhb1 FOR MESSAGE -1
+execPostMessage: Created new message with id: 2653600777797076292
+saveMessage: Sucessfuly saved message 2653600777797076292
+saveMessage: Sucessfuly saved message 2653600777797076292
+saveMessage: Sucessfuly saved message 2653600777797076292
+Adding operation POST_MESSAGE
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages?pwd=zuuby5zxz0ikgw FOR MESSAGE -1
+execPostMessage: Created new message with id: 1331097871040514115
+saveMessage: Sucessfuly saved message 1331097871040514115
+saveMessage: Sucessfuly saved message 1331097871040514115
+saveMessage: Sucessfuly saved message 1331097871040514115
+saveMessage: Sucessfuly saved message 1331097871040514115
+Adding operation POST_MESSAGE
+execPostMessage: Created new message with id: 2412263482311801570
+saveMessage: Sucessfuly saved message 2412263482311801570
+saveMessage: Sucessfuly saved message 2412263482311801570
+saveMessage: Sucessfuly saved message 2412263482311801570
+saveMessage: Sucessfuly saved message 2412263482311801570
+Adding operation POST_MESSAGE
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages?pwd=a8p8o6wy FOR MESSAGE -1
+execPostMessage: Created new message with id: 8928325482620631161
+saveMessage: Sucessfuly saved message 8928325482620631161
+saveMessage: Sucessfuly saved message 8928325482620631161
+saveMessage: Sucessfuly saved message 8928325482620631161
+saveMessage: Sucessfuly saved message 8928325482620631161
+Adding operation POST_MESSAGE
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/chantel.rath?pwd=cfr3k96epfu5
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/aubrey.blick?pwd=33floc73
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/perry.hessel?pwd=kq2g5v64pqqrdh9
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/corrie.bailey?pwd=scerl0yfs52
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/catherin.gutmann?pwd=zdqm4u574
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/duane.bradtke?pwd=p7a5w3kzbzgb4p
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/bradley.huel?pwd=e4afjfbwrow1z
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/adelia.connelly?pwd=38brfogec6p
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/tanja.will?pwd=f84e0jhb1
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/marhta.baumbach?pwd=zuuby5zxz0ikgw
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/lauri.lakin?pwd=8scsyjod
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/klara.cartwright?pwd=a8p8o6wy
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/aubrey.blick/647468260852511751?pwd=33floc73 FOR MESSAGE 647468260852511751
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/perry.hessel/8463564521291199087?pwd=kq2g5v64pqqrdh9 FOR MESSAGE 8463564521291199087
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/corrie.bailey/8271930856228688013?pwd=scerl0yfs52 FOR MESSAGE 8271930856228688013
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/duane.bradtke/3653113493359218485?pwd=p7a5w3kzbzgb4p FOR MESSAGE 3653113493359218485
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/catherin.gutmann/3653113493359218485?pwd=zdqm4u574 FOR MESSAGE 3653113493359218485
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/duane.bradtke/8936970847068519146?pwd=p7a5w3kzbzgb4p FOR MESSAGE 8936970847068519146
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/bradley.huel/8936970847068519146?pwd=e4afjfbwrow1z FOR MESSAGE 8936970847068519146
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/adelia.connelly/3836157401491636382?pwd=38brfogec6p FOR MESSAGE 3836157401491636382
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/bradley.huel/3836157401491636382?pwd=e4afjfbwrow1z FOR MESSAGE 3836157401491636382
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/adelia.connelly/2726043475342838453?pwd=38brfogec6p FOR MESSAGE 2726043475342838453
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/marhta.baumbach/2726043475342838453?pwd=zuuby5zxz0ikgw FOR MESSAGE 2726043475342838453
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/tanja.will/2726043475342838453?pwd=f84e0jhb1 FOR MESSAGE 2726043475342838453
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/lauri.lakin/1236956626663413223?pwd=8scsyjod FOR MESSAGE 1236956626663413223
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/marhta.baumbach/1236956626663413223?pwd=zuuby5zxz0ikgw FOR MESSAGE 1236956626663413223
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/tanja.will/1236956626663413223?pwd=f84e0jhb1 FOR MESSAGE 1236956626663413223
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/lauri.lakin/2653600777797076292?pwd=8scsyjod FOR MESSAGE 2653600777797076292
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/marhta.baumbach/2653600777797076292?pwd=zuuby5zxz0ikgw FOR MESSAGE 2653600777797076292
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/klara.cartwright/2653600777797076292?pwd=a8p8o6wy FOR MESSAGE 2653600777797076292
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/lauri.lakin/1331097871040514115?pwd=8scsyjod FOR MESSAGE 1331097871040514115
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/aubrey.blick/1331097871040514115?pwd=33floc73 FOR MESSAGE 1331097871040514115
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/chantel.rath/1331097871040514115?pwd=cfr3k96epfu5 FOR MESSAGE 1331097871040514115
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/klara.cartwright/1331097871040514115?pwd=a8p8o6wy FOR MESSAGE 1331097871040514115
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/aubrey.blick/2412263482311801570?pwd=33floc73 FOR MESSAGE 2412263482311801570
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/perry.hessel/2412263482311801570?pwd=kq2g5v64pqqrdh9 FOR MESSAGE 2412263482311801570
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/chantel.rath/2412263482311801570?pwd=cfr3k96epfu5 FOR MESSAGE 2412263482311801570
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/klara.cartwright/2412263482311801570?pwd=a8p8o6wy FOR MESSAGE 2412263482311801570
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/aubrey.blick/8928325482620631161?pwd=33floc73 FOR MESSAGE 8928325482620631161
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/corrie.bailey/8928325482620631161?pwd=scerl0yfs52 FOR MESSAGE 8928325482620631161
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/perry.hessel/8928325482620631161?pwd=kq2g5v64pqqrdh9 FOR MESSAGE 8928325482620631161
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/chantel.rath/8928325482620631161?pwd=cfr3k96epfu5 FOR MESSAGE 8928325482620631161
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/aubrey.blickasd/647468260852511751?pwd=33floc73 FOR MESSAGE 647468260852511751
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages?pwd=33floc73 FOR MESSAGE -1
+removeFromUserInbox: Received request to delete message 647468260852511751 from the inbox of aubrey.blick
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/aubrey.blick/647468260852511751?pwd=33floc73 FOR MESSAGE 647468260852511751
+Adding operation REMOVE_FROM_INBOX
+Adding operation REMOVE_FROM_INBOX
+removeFromUserInbox: Received request to delete message 8271930856228688013 from the inbox of corrie.bailey
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/corrie.bailey/8271930856228688013?pwd=scerl0yfs52 FOR MESSAGE 8271930856228688013
+Adding operation REMOVE_FROM_INBOX
+Adding operation REMOVE_FROM_INBOX
+removeFromUserInbox: Received request to delete message 8936970847068519146 from the inbox of duane.bradtke
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/duane.bradtke/8936970847068519146?pwd=p7a5w3kzbzgb4p FOR MESSAGE 8936970847068519146
+Adding operation REMOVE_FROM_INBOX
+Adding operation REMOVE_FROM_INBOX
+Adding operation REMOVE_FROM_INBOX
+Adding operation REMOVE_FROM_INBOX
+Adding operation REMOVE_FROM_INBOX
+removeFromUserInbox: Received request to delete message 1331097871040514115 from the inbox of lauri.lakin
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/lauri.lakin/1331097871040514115?pwd=8scsyjod FOR MESSAGE 1331097871040514115
+Adding operation REMOVE_FROM_INBOX
+Adding operation REMOVE_FROM_INBOX
+Adding operation REMOVE_FROM_INBOX
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/chantel.rath?pwd=cfr3k96epfu5
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/aubrey.blick?pwd=33floc73
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/perry.hessel?pwd=kq2g5v64pqqrdh9
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/corrie.bailey?pwd=scerl0yfs52
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/catherin.gutmann?pwd=zdqm4u574
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/duane.bradtke?pwd=p7a5w3kzbzgb4p
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/bradley.huel?pwd=e4afjfbwrow1z
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/adelia.connelly?pwd=38brfogec6p
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/tanja.will?pwd=f84e0jhb1
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/marhta.baumbach?pwd=zuuby5zxz0ikgw
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/lauri.lakin?pwd=8scsyjod
+FORWARDING TO PRIMARY: https://172.18.0.4:8080/rest/messages/mbox/klara.cartwright?pwd=a8p8o6wy
+execPostMessage: Created new message with id: 5571102258644613835
+saveMessage: Sucessfuly saved message 5571102258644613835
+Adding operation POST_MESSAGE
+execPostMessage: Created new message with id: 5421371515294168518
+saveMessage: Sucessfuly saved message 5421371515294168518
+Adding operation POST_MESSAGE
+WatchedEvent state:Disconnected type:None path:null
 
 
 

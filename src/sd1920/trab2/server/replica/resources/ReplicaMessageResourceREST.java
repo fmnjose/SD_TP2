@@ -66,7 +66,7 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 		
 		
-		System.out.println("postMessage: Created new message with id: " + msg.getId());
+		System.out.println("execPostMessage: Created new message with id: " + msg.getId());
 		
 		for (String recipient : msg.getDestination()) {
 			String[] tokens = recipient.split("@");
@@ -129,6 +129,12 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 	@Override
 	public Message getMessage(String user, long mid, String pwd) {
+		if (!vc.isPrimary()){
+			String redirectPath = String.format(GET_MESSAGE_FORMAT, vc.getPrimaryUri(), user, mid);
+			redirectPath = UriBuilder.fromPath(redirectPath).queryParam("pwd", pwd).toString();
+			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR MESSAGE " + mid);
+			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
+		}
 
 		User u = this.getUserRest(user, pwd);
 
@@ -150,6 +156,13 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 	@Override
 	public List<Long> getMessages(String user, String pwd) {
+		if (!vc.isPrimary()){
+			String redirectPath = String.format(GET_MESSAGES_FORMAT, vc.getPrimaryUri(), user);
+			redirectPath = UriBuilder.fromPath(redirectPath).queryParam("pwd", pwd).toString();
+			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath));
+			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
+		}
+		
 		User u = this.getUserRest(user, pwd);
 
 		if (u == null) {
@@ -394,14 +407,11 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 	public void deleteForwardedMessage(long mid, String secret) {
 		System.out.println("deleteForwardedMessage: Received request to delete message " + mid);
 
-		System.out.println("Secret = " + secret);
-
 		if (!secret.equals(ReplicaMailServerREST.secret)) {
 			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
-		System.out.println("Gunga ginga");
 		if (!vc.isPrimary()){
 			String redirectPath = String.format(DELETE_FORWARDED_FORMAT, vc.getPrimaryUri(), mid);
 			redirectPath = UriBuilder.fromPath(redirectPath).queryParam("secret", secret).toString();

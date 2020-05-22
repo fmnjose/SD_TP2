@@ -63,7 +63,6 @@ public class SyncPoint
 			result.put(n, res);
 		version = n;
 		notifyAll();
-		System.out.println("Wake up!");
 	}
 
 	/**

@@ -65,13 +65,16 @@ public abstract class ServerUtils {
     public static final String POST_USER_FORMAT = "%s/users";
     public static final String UPDATE_USER_FORMAT = "%s/users/%s";
     public static final String DELETE_USER_FORMAT = "%s/users/%s";
-
+    public static final String GET_USER_FORMAT = "%s/users/%s";
+    
     
     public static final String POST_MESSAGE_FORMAT = "%s/messages";
-    public static final String DELETE_MESSAGE_FORMAT = "%s/messages/msg/%s/%ld";
-    public static final String REMOVE_FROM_INBOX_FORMAT = "%s/messages/mbox/%s/%ld";
+    public static final String DELETE_MESSAGE_FORMAT = "%s/messages/msg/%s/%d";
+    public static final String REMOVE_FROM_INBOX_FORMAT = "%s/messages/mbox/%s/%d";
     public static final String POST_FORWARDED_FORMAT = "%s/messages/mbox";
-    public static final String DELETE_FORWARDED_FORMAT = "%s/messages/msg/%ld";
+    public static final String DELETE_FORWARDED_FORMAT = "%s/messages/msg/%d";
+    public static final String GET_MESSAGE_FORMAT = "%s/messages/mbox/%s/%d";
+    public static final String GET_MESSAGES_FORMAT = "%s/messages/mbox/%s";
     
     
     public static final int TIMEOUT = 10000;
