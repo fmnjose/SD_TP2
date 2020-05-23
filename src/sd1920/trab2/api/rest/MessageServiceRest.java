@@ -6,6 +6,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,6 +15,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import sd1920.trab2.api.Message;
+import sd1920.trab2.api.replicaRest.ReplicaMessageServiceRest;
 
 @Path(MessageServiceRest.PATH)
 public interface MessageServiceRest{
@@ -51,8 +53,10 @@ public interface MessageServiceRest{
 	@GET
 	@Path("/mbox/{user}/{mid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	Message getMessage(@PathParam("user") String user, @PathParam("mid") long mid,
-			@QueryParam("pwd") String pwd);
+	Message getMessage(	@HeaderParam(ReplicaMessageServiceRest.HEADER_VERSION) long version,
+						@PathParam("user") String user, 
+						@PathParam("mid") long mid,
+						@QueryParam("pwd") String pwd);
 
 	/**
 	 * Returns a list of all ids of messages stored in the server for a given user
@@ -64,7 +68,9 @@ public interface MessageServiceRest{
 	@GET
 	@Path("/mbox/{user}")
 	@Produces(MediaType.APPLICATION_JSON)
-	List<Long> getMessages(@PathParam("user") String user, @QueryParam("pwd") String pwd);
+	List<Long> getMessages(	@HeaderParam(ReplicaMessageServiceRest.HEADER_VERSION) long version,
+							@PathParam("user") String user, 
+							@QueryParam("pwd") String pwd);
 
 	/**
 	 * Removes a message identified by mid from the inbox of user identified by user.
@@ -77,8 +83,9 @@ public interface MessageServiceRest{
 	 */
 	@DELETE
 	@Path("/mbox/{user}/{mid}")
-	void removeFromUserInbox(@PathParam("user") String user, @PathParam("mid") long mid, 
-			@QueryParam("pwd") String pwd);
+	void removeFromUserInbox(@PathParam("user") String user, 
+							@PathParam("mid") long mid, 
+							@QueryParam("pwd") String pwd);
 
 	/**
 	 * Removes the message identified by mid from the inboxes of any server that holds the message.
@@ -94,8 +101,9 @@ public interface MessageServiceRest{
 	@DELETE
 	@Path("/msg/{user}/{mid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	void deleteMessage(@PathParam("user") String user, @PathParam("mid") long mid, 
-			@QueryParam("pwd") String pwd);
+	void deleteMessage(	@PathParam("user") String user, 
+						@PathParam("mid") long mid, 
+						@QueryParam("pwd") String pwd);
 	
 
 	/**
@@ -116,7 +124,8 @@ public interface MessageServiceRest{
 	@Path("/mbox")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	List<String> postForwardedMessage(Message msg, @QueryParam("secret") String secret);
+	List<String> postForwardedMessage(	Message msg, 
+										@QueryParam("secret") String secret);
 
 
 
@@ -126,5 +135,6 @@ public interface MessageServiceRest{
 	 */
 	@DELETE
 	@Path("/msg/{mid}")
-	void deleteForwardedMessage(@PathParam("mid") long mid, @QueryParam("secret") String secret);
+	void deleteForwardedMessage(@PathParam("mid") long mid, 
+								@QueryParam("secret") String secret);
 }

@@ -23,12 +23,13 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 
 import sd1920.trab2.api.User;
-import sd1920.trab2.api.rest.ReplicaUserServiceRest;
-import sd1920.trab2.replication.Operation;
-import sd1920.trab2.replication.VersionControl;
+import sd1920.trab2.api.replicaRest.ReplicaMessageServiceRest;
+import sd1920.trab2.api.replicaRest.ReplicaUserServiceRest;
+
 import sd1920.trab2.server.serverUtils.LocalServerUtils;
 import sd1920.trab2.server.serverUtils.ServerUtils;
 import sd1920.trab2.server.replica.ReplicaMailServerREST;
+import sd1920.trab2.server.replica.utils.Operation;
 
 @Singleton
 public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
@@ -41,7 +42,7 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
 
     private String serverRestUri;
 
-    private VersionControl vc;
+    private sd1920.trab2.server.replica.utils.VersionControl vc;
 
     private static Logger Log = Logger.getLogger(ReplicaUserResourceREST.class.getName());
 
@@ -154,7 +155,9 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
 
         vc.postuser(user);
         
-        return String.format("%s@%s", name, user.getDomain());
+        throw new WebApplicationException(Response.status(200).
+            header(ReplicaMessageServiceRest.HEADER_VERSION, vc.getVersion()).
+            entity(String.format("%s@%s", name, user.getDomain())).build());
     }
 
     @Override
@@ -245,7 +248,9 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
 
         vc.updateUser(name, user);
 
-        return existingUser;
+        throw new WebApplicationException(Response.status(200).
+            header(ReplicaMessageServiceRest.HEADER_VERSION, vc.getVersion()).
+            entity(existingUser).build());
     }
     
     @Override
@@ -296,7 +301,9 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
 
         vc.deleteUser(name);
 
-        return user;
+        throw new WebApplicationException(Response.status(200).
+            header(ReplicaMessageServiceRest.HEADER_VERSION, vc.getVersion()).
+            entity(user).build());
     }
 
 

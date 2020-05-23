@@ -1,10 +1,10 @@
 package sd1920.trab2.server.serverUtils;
 
 import sd1920.trab2.api.Message;
-import sd1920.trab2.server.dropbox.ProxyMailServer;
-import sd1920.trab2.server.dropbox.arguments.CopyArgs;
-import sd1920.trab2.server.dropbox.resources.MessageResourceProxy;
-import sd1920.trab2.server.dropbox.resources.UserResourceProxy;
+import sd1920.trab2.server.proxy.ProxyMailServer;
+import sd1920.trab2.server.proxy.arguments.CopyArgs;
+import sd1920.trab2.server.proxy.resources.MessageResourceProxy;
+import sd1920.trab2.server.proxy.resources.UserResourceProxy;
 
 public class CopyRequest extends Request{
     private String senderName, recipientName;

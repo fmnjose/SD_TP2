@@ -19,13 +19,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.Response.Status;
 
-import sd1920.trab2.api.rest.ReplicaMessageServiceRest;
-import sd1920.trab2.replication.Operation;
-import sd1920.trab2.replication.VersionControl;
 import sd1920.trab2.server.serverUtils.LocalServerUtils;
 import sd1920.trab2.server.replica.ReplicaMailServerREST;
+import sd1920.trab2.server.replica.utils.Operation;
+import sd1920.trab2.server.replica.utils.VersionControl;
 import sd1920.trab2.api.Message;
 import sd1920.trab2.api.User;
+import sd1920.trab2.api.replicaRest.ReplicaMessageServiceRest;
 
 @Singleton
 public class ReplicaMessageResourceREST extends LocalServerUtils implements ReplicaMessageServiceRest {
@@ -122,19 +122,26 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 		vc.waitForVersion();
 
-		vc.postMessage(msg);
+		if(!vc.postMessage(msg))
+			throw new WebApplicationException(Status.SERVICE_UNAVAILABLE);
 
-		return newID;
+		throw new WebApplicationException(Response.status(200).
+			header(ReplicaMessageServiceRest.HEADER_VERSION, vc.getVersion()).
+			entity(newID).build());
 	}
 
 	@Override
-	public Message getMessage(String user, long mid, String pwd) {
+	public Message getMessage(long version, String user, long mid, String pwd) {
+		/*
 		if (!vc.isPrimary()){
 			String redirectPath = String.format(GET_MESSAGE_FORMAT, vc.getPrimaryUri(), user, mid);
 			redirectPath = UriBuilder.fromPath(redirectPath).queryParam("pwd", pwd).toString();
 			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR MESSAGE " + mid);
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
+		*/
+
+		vc.syncVersion(version);
 
 		User u = this.getUserRest(user, pwd);
 
@@ -150,18 +157,21 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 			}
 		}
 
-		return allMessages.get(mid);
-
+		throw new WebApplicationException(Response.status(200).
+			header(ReplicaMessageServiceRest.HEADER_VERSION, vc.getVersion()).entity(this.allMessages.get(mid)).build());
 	}
 
 	@Override
-	public List<Long> getMessages(String user, String pwd) {
-		if (!vc.isPrimary()){
+	public List<Long> getMessages(long version, String user, String pwd) {
+		
+		/*if (!vc.isPrimary()){
 			String redirectPath = String.format(GET_MESSAGES_FORMAT, vc.getPrimaryUri(), user);
 			redirectPath = UriBuilder.fromPath(redirectPath).queryParam("pwd", pwd).toString();
 			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath));
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
-		}
+		}*/
+
+		vc.syncVersion(version);
 		
 		User u = this.getUserRest(user, pwd);
 
@@ -176,7 +186,9 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 			mids = userInboxs.getOrDefault(user, Collections.emptySet());
 		}
 
-		return new ArrayList<>(mids);
+		throw new WebApplicationException(Response.status(200).
+			header(ReplicaMessageServiceRest.HEADER_VERSION, vc.getVersion()).
+			entity(new ArrayList<>(mids)).build());
 	}
 
 	@Override
@@ -235,6 +247,7 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR MESSAGE " + mid);
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
+
 		User sender = null;
 
 		Message msg;
@@ -257,7 +270,11 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 		vc.waitForVersion();
 
-		vc.deleteMessage(user, mid);
+		if(!vc.deleteMessage(user, mid))
+			throw new WebApplicationException(Status.SERVICE_UNAVAILABLE);
+
+		throw new WebApplicationException(Response.status(204).
+			header(ReplicaMessageServiceRest.HEADER_VERSION, vc.getVersion()).build());
 	}
 
 	@Override
@@ -311,7 +328,11 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 		vc.waitForVersion();
 
-		vc.removeFromUserInbox(user, mid);
+		if(!vc.removeFromUserInbox(user, mid))
+			throw new WebApplicationException(Status.SERVICE_UNAVAILABLE);
+
+		throw new WebApplicationException(Response.status(204).
+			header(ReplicaMessageServiceRest.HEADER_VERSION, vc.getVersion()).build());
 	}
 
 	@Override
@@ -359,7 +380,6 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
-		System.out.println("BEANS1");
 		
 		if (!vc.isPrimary()){
 			String redirectPath = String.format(POST_FORWARDED_FORMAT, vc.getPrimaryUri());
@@ -368,20 +388,19 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
 
-		System.out.println("BEANS2");
-
 		vc.waitForVersion();
-
-		System.out.println("BEANS3");
-
 		
 		List<String> failedDeliveries = vc.postForwardedMessage(msg);
 
-		System.out.println("BEANS4");
+		if(failedDeliveries == null)
+			throw new WebApplicationException(Status.SERVICE_UNAVAILABLE);
 
 		System.out.println(
 				"postForwardedMessage: Couldn't deliver the message to " + failedDeliveries.size() + " people");
-		return failedDeliveries;
+		
+		throw new WebApplicationException(Response.status(200).
+			header(ReplicaMessageServiceRest.HEADER_VERSION, vc.getVersion()).
+			entity(failedDeliveries).build());
 	}
 
 	@Override
@@ -435,7 +454,11 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 		
 		vc.waitForVersion();
 			
-		vc.deleteForwardedMessage(mid);
+		if(!vc.deleteForwardedMessage(mid))
+			throw new WebApplicationException(Status.SERVICE_UNAVAILABLE);
+
+		throw new WebApplicationException(Response.status(200).
+			header(ReplicaMessageServiceRest.HEADER_VERSION, vc.getVersion()).build());
 	}
 
 	@Override

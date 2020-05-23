@@ -27,7 +27,7 @@ import sd1920.trab2.api.User;
 import sd1920.trab2.api.Discovery.DomainInfo;
 import sd1920.trab2.api.rest.UserServiceRest;
 import sd1920.trab2.api.soap.UserServiceSoap;
-import sd1920.trab2.server.dropbox.ProxyMailServer;
+import sd1920.trab2.server.proxy.ProxyMailServer;
 import sd1920.trab2.server.replica.ReplicaMailServerREST;
 import sd1920.trab2.server.rest.RESTMailServer;
 

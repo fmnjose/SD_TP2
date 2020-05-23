@@ -86,7 +86,7 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 	}
 
 	@Override
-	public Message getMessage(String user, long mid, String pwd) {
+	public Message getMessage(long version, String user, long mid, String pwd) {
 		
 		User u = this.getUserRest(user, pwd);
 		
@@ -109,7 +109,7 @@ public class MessageResourceRest extends LocalServerUtils implements MessageServ
 	}
 
 	@Override
-	public List<Long> getMessages(String user, String pwd) {
+	public List<Long> getMessages(long version, String user, String pwd) {
 		System.out.println("getMessages: Received request for messages to '" + user + "'");
 
 		User u = this.getUserRest(user, pwd);
