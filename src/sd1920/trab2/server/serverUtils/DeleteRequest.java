@@ -1,6 +1,6 @@
 package sd1920.trab2.server.serverUtils;
 
-import sd1920.trab2.api.Discovery.DomainInfo;
+import sd1920.trab2.server.serverUtils.ServerUtils.ServerTypes;
 
 
 /**
@@ -10,8 +10,8 @@ public class DeleteRequest extends Request {
 
     private long mid;
     
-    public DeleteRequest(DomainInfo uri, String domain, long mid, String secret){
-        super(uri,domain, secret);
+    public DeleteRequest(ServerTypes type, String domain, long mid, String secret){
+        super(type,domain, secret);
         this.mid = mid;
     }
 

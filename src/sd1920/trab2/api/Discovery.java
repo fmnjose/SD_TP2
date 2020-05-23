@@ -38,8 +38,8 @@ public class Discovery {
 	// The pre-aggreed multicast endpoint assigned to perform discovery.
 	static final InetSocketAddress DISCOVERY_ADDR = new InetSocketAddress("226.226.226.226", 2266);
 	static final int DISCOVERY_PERIOD = 1000;
-	static final int DISCOVERY_TIMEOUT = 5000;
-	static final int DEAD_PERIOD = 10000;
+	static final int CLEANUP_INTERVAL = 5000;
+	static final int DEAD_PERIOD = 3000;
 
 	// Used separate the two fields that make up a service announcement.
 	private static final String DELIMITER = "\t";
@@ -76,10 +76,6 @@ public class Discovery {
 
 		private long getTime() {
 			return this.time;
-		}
-
-		private void setTime() {
-			this.time = System.currentTimeMillis();
 		}
 
 		public String getUri() {
@@ -138,10 +134,7 @@ public class Discovery {
 							uri = msgElems[1];
 							info = record.get(domainName);
 
-							if (info == null) 
-								record.put(domainName, new DomainInfo(uri));
-							 else 
-								info.setTime();
+							record.put(domainName, new DomainInfo(uri));
 							
 						}
 					} catch (IOException e) {
@@ -160,7 +153,7 @@ public class Discovery {
 					}
 
 					try {
-						Thread.sleep(DISCOVERY_TIMEOUT);
+						Thread.sleep(CLEANUP_INTERVAL);
 					} catch (InterruptedException e) {
 						
 					}

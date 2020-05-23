@@ -1,22 +1,23 @@
 package sd1920.trab2.server.serverUtils;
 
 import sd1920.trab2.api.Discovery.DomainInfo;
+import sd1920.trab2.server.serverUtils.ServerUtils.ServerTypes;
 
 /**
  * Represents a Request. Used for the RequestHandler
  */
 public abstract class Request {
-    private DomainInfo uri;
+    private ServerTypes type;
     private String domain, secret;
     
-    public Request(DomainInfo uri, String domain, String secret){
-        this.uri = uri;
+    public Request(ServerTypes type, String domain, String secret){
+        this.type = type;
         this.domain = domain;
         this.secret = secret;
     }
 
-    public DomainInfo getUri(){
-        return this.uri;
+    public ServerTypes getType(){
+        return this.type;
     }    
 
     public String getDomain(){

@@ -329,6 +329,7 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 	@Override
 	public List<String> execPostForwardedMessage(long version, Message msg, String secret) {
 		System.out.println("execPostForwardedMessage: Received message " + msg.getId());
+		
 		if (!secret.equals(ReplicaMailServerREST.secret)) {
 			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
@@ -358,6 +359,7 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
+		System.out.println("BEANS1");
 		
 		if (!vc.isPrimary()){
 			String redirectPath = String.format(POST_FORWARDED_FORMAT, vc.getPrimaryUri());
@@ -366,9 +368,16 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
 
+		System.out.println("BEANS2");
+
 		vc.waitForVersion();
 
+		System.out.println("BEANS3");
+
+		
 		List<String> failedDeliveries = vc.postForwardedMessage(msg);
+
+		System.out.println("BEANS4");
 
 		System.out.println(
 				"postForwardedMessage: Couldn't deliver the message to " + failedDeliveries.size() + " people");
@@ -471,10 +480,19 @@ public class ReplicaMessageResourceREST extends LocalServerUtils implements Repl
 
 	@Override
 	public void updateUserInboxes(Map<String, Set<Long>> usersInboxes, String secret) {
+		System.out.println("updateUserInboxes: OLA BEANS");
+		
 		if (!secret.equals(ReplicaMailServerREST.secret)) {
 			System.out.println("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
+
+		for (String user : usersInboxes.keySet()) {
+            System.out.println("User: " + user + "Messages: ");
+            for (Long l : usersInboxes.get(user)) {
+                System.out.println(l);
+            }
+        }
 
 		this.userInboxs = usersInboxes;
 	}

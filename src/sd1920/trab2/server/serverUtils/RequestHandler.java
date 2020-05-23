@@ -28,8 +28,12 @@ import sd1920.trab2.api.Discovery.DomainInfo;
 import sd1920.trab2.api.rest.MessageServiceRest;
 import sd1920.trab2.api.soap.MessageServiceSoap;
 import sd1920.trab2.api.soap.MessagesException;
+import sd1920.trab2.server.dropbox.ProxyMailServer;
 import sd1920.trab2.server.dropbox.requests.Copy;
+import sd1920.trab2.server.replica.ReplicaMailServerREST;
+import sd1920.trab2.server.rest.RESTMailServer;
 import sd1920.trab2.server.rest.resources.MessageResourceRest;
+import sd1920.trab2.server.soap.SOAPMailServer;
 
 /**
  * Used for asynchronously launching requests to other servers
@@ -58,6 +62,21 @@ public class RequestHandler implements Runnable {
         }
     }
 
+    private static DomainInfo getRequestTarget(Request request){
+        switch (request.getType()) {
+            case REST:
+                return RESTMailServer.serverRecord.knownUrisOf(request.getDomain());
+            case REST_REPLICA:
+                return ReplicaMailServerREST.serverRecord.knownUrisOf(request.getDomain());
+            case SOAP:
+                return SOAPMailServer.serverRecord.knownUrisOf(request.getDomain());
+            case PROXY:
+                return ProxyMailServer.serverRecord.knownUrisOf(request.getDomain());
+            default:
+                return null;
+        }
+    }
+
     /**
      * Given a postRequest, forwards it to the target domain
      * No logs here because it would be total chaos given that each domain has a thread 
@@ -67,8 +86,11 @@ public class RequestHandler implements Runnable {
                                                                              MessagesException{
         Response r = null;
         List<String> failedDeliveries = null;
-        DomainInfo uri = request.getUri();
-        Message msg = request.getMessage();
+        DomainInfo uri = getRequestTarget(request);
+                                                            
+        Message msg = request.getMessage();                                                               
+        
+        System.out.println("processPostRequest: Trying to forward post to uri: " + uri.getUri());
 
         if (uri.isRest()) {            
             WebTarget target = client.target(uri.getUri());
@@ -139,7 +161,7 @@ public class RequestHandler implements Runnable {
     public static void processDeleteRequest(DeleteRequest request) throws ProcessingException, 
                         MessagesException, WebServiceException, MalformedURLException {
     
-        DomainInfo uri = request.getUri();
+        DomainInfo uri = getRequestTarget(request);
         long mid = request.getMid();
 
         if (uri.isRest()) {

@@ -77,9 +77,9 @@ public abstract class ServerUtils {
     public static final String GET_MESSAGES_FORMAT = "%s/messages/mbox/%s";
     
     
-    public static final int TIMEOUT = 10000;
+    public static final int TIMEOUT = 3000;
 	public static final int SLEEP_TIME = 1000;
-    public static final int N_TRIES = 5;
+    public static final int N_TRIES = 3;
 
     public enum ServerTypes{
         REST, REST_REPLICA, SOAP, PROXY;
@@ -247,7 +247,7 @@ public abstract class ServerUtils {
                     new Thread(rh).start();
                 }
                 
-                rh.addRequest(new PostRequest(uri, msg, domain, this.secret));
+                rh.addRequest(new PostRequest(type, msg, domain, this.secret));
             }
         }
 	}
@@ -304,7 +304,7 @@ public abstract class ServerUtils {
                     new Thread(rh).start();
                 }
 
-                rh.addRequest(new DeleteRequest(uri, domain, mid, this.secret));
+                rh.addRequest(new DeleteRequest(type, domain, mid, this.secret));
             }           
         }	
     }

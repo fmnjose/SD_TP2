@@ -86,17 +86,14 @@ public class VersionControl {
     
     public void addOperation(Operation op){
         System.out.println("Adding operation " + op.getType().toString());
-
+            
         if(!this.ops.isEmpty())
             purgeList();
-        
-        System.out.println("List purged");
+            
         ops.add(op);
 
-        synchronized(this.version){
-            this.version++;
-            sync.setResult(this.getVersion(), null);
-        }
+        this.version++;
+        sync.setResult(this.getVersion(), null);
     }
 
     private String getReplicaUri(String node){
@@ -179,7 +176,7 @@ public class VersionControl {
         Map<Long, Message> allMessages = r.readEntity(new GenericType<Map<Long,Message>>() {});
         System.out.println("All Messages size: " + allMessages.size());
         //SET
-        target = client.target(this.primaryUri);
+        target = client.target(this.uri);
             target = target.path(MessageServiceRest.PATH).path("update");
             target = target.queryParam("secret", ReplicaMailServerREST.secret);
         
@@ -196,11 +193,14 @@ public class VersionControl {
             .accept(MediaType.APPLICATION_JSON)
             .get();
 
+        GenericType<Set<Long>> setType = (new GenericType<Set<Long>>() {});
+
         Map<String, Set<Long>> userInboxes = r.readEntity(new GenericType<Map<String,Set<Long>>>() {});
+        
         System.out.println("All userInboxes size: " + userInboxes.size());
         
         //SET
-        target = client.target(this.primaryUri);
+        target = client.target(this.uri);
             target = target.path(MessageServiceRest.PATH).path("update").path("mbox");
             target = target.queryParam("secret", ReplicaMailServerREST.secret);
         
@@ -220,7 +220,7 @@ public class VersionControl {
         Map<String, User> users = r.readEntity(new GenericType<Map<String,User>>() {});
         System.out.println("All users size: " + users.size());
         //SET
-        target = client.target(this.primaryUri);
+        target = client.target(this.uri);
             target = target.path(MessageServiceRest.PATH).path("update");
             target = target.queryParam("secret", ReplicaMailServerREST.secret);
         
@@ -259,13 +259,17 @@ public class VersionControl {
 
     public void purgeList(){
         Long currentTime = System.currentTimeMillis();
-        while(currentTime - ops.get(0).getCreationTime() >= TTL)
+        while(ops.size() > 1 && currentTime - ops.get(0).getCreationTime() >= TTL)
             ops.remove(0);
     }  
 
-    public synchronized void waitForVersion(){
-        this.awaitingVersion++;
-        sync.waitForVersion(this.awaitingVersion);
+    public void waitForVersion(){
+        System.out.println("AWAITING");
+        synchronized(this.awaitingVersion){
+            this.awaitingVersion++;
+            sync.waitForVersion(this.awaitingVersion);
+        }
+        System.out.println("DONE AWAITING");
     }
 
     public boolean isPrimary(){
@@ -281,7 +285,7 @@ public class VersionControl {
     }
 
     public long getHeadVersion(){
-        return this.version - this.ops.size();
+        return this.version - (this.ops.size() > 1 ? this.ops.size() : 0);
     }  
 
 
