@@ -28,10 +28,13 @@ import sd1920.trab2.api.User;
 import sd1920.trab2.api.replicaRest.ReplicaMessageServiceRest;
 import sd1920.trab2.api.rest.MessageServiceRest;
 import sd1920.trab2.api.rest.UserServiceRest;
-import sd1920.trab2.server.proxy.ProxyMailServer;
 import sd1920.trab2.server.replica.ReplicaMailServerREST;
 import sd1920.trab2.server.serverUtils.ServerUtils;
 
+/**
+ * Utilized by the replica servers
+ * Manages all of the replication mechanisms
+ */
 public class VersionControl {
 
     private static Logger Log = Logger.getLogger(ReplicaMailServerREST.class.getName());
@@ -60,7 +63,7 @@ public class VersionControl {
         this.domain = "/" + domain;
         this.uri = uri;
         this.version = 0L;
-        this.awaitingVersion = new Long(-1);
+        this.awaitingVersion = -1L;
         this.isPrimary = false;
         this.childrenList = new LinkedList<>();
         this.zk = new ZookeeperProcessor("kafka:2181");
@@ -83,27 +86,16 @@ public class VersionControl {
 
         ops = new LinkedList<>();
     }
-    
-    public void addOperation(Operation op){
-        Log.info("Adding operation " + op.getType().toString());
-            
-        if(!this.ops.isEmpty())
-            purgeList();
-            
-        ops.add(op);
 
-        this.version++;
-        sync.setResult(this.getVersion(), null);
-    }
-
+    //PRIVATE METHODS
     private String getReplicaUri(String node){
        return new String(zk.getData(String.format(NODE_FORMAT, this.domain, node)));
     }
 
     private void startListening(){
         zk.getChildren( this.domain, new Watcher() {
-			@Override
-			public void process(WatchedEvent event) {
+            @Override
+            public void process(WatchedEvent event) {
                 childrenList = zk.getChildren( domain, this);
                 Collections.sort(childrenList);
 
@@ -114,12 +106,8 @@ public class VersionControl {
                 primaryUri = puri;
 
                 maxReplicaFailures = (int) (childrenList.size() * REPLICA_FAILURE_TOLERANCE_RATIO) + 1;
-			}
-		});
-    }
-
-    public List<Operation> getOperations(long version){
-        return ops.subList((int)(version - this.getHeadVersion()), ops.size() - 1);
+            }
+        });
     }
 
     private void processOperation(Operation op){
@@ -172,7 +160,6 @@ public class VersionControl {
             .get();
 
         Map<Long, Message> allMessages = r.readEntity(new GenericType<Map<Long,Message>>() {});
-        Log.info("All Messages size: " + allMessages.size());
         //SET
         target = client.target(this.uri);
             target = target.path(MessageServiceRest.PATH).path("update");
@@ -250,20 +237,45 @@ public class VersionControl {
             }
 		}
     }
+    
+    //OPERATIONS
+    public void addOperation(Operation op){            
+        if(!this.ops.isEmpty())
+            purgeList();
+            
+        ops.add(op);
+
+        this.version++;
+        sync.setResult(this.getVersion(), null);
+    }
+
+
+    public List<Operation> getOperations(long version){
+        return ops.subList((int)(version - this.getHeadVersion()), ops.size() - 1);
+    }
+
+    
 
     public void purgeList(){
         Long currentTime = System.currentTimeMillis();
         while(ops.size() > 1 && currentTime - ops.get(0).getCreationTime() >= TTL)
             ops.remove(0);
-    }  
+    }
+    
+    //VERSIONS
+    public long getVersion(){
+        return this.version;
+    }
 
+    public long getHeadVersion(){
+        return this.version - (this.ops.size() > 1 ? this.ops.size() : 0);
+    }  
+    
     public void waitForVersion(){
-        Log.info("AWAITING");
         synchronized(this.awaitingVersion){
             this.awaitingVersion++;
             sync.waitForVersion(this.awaitingVersion);
         }
-        Log.info("DONE AWAITING");
     }
 
     public boolean isPrimary(){
@@ -274,13 +286,6 @@ public class VersionControl {
         return this.primaryUri;
     }
 
-    public long getVersion(){
-        return this.version;
-    }
-
-    public long getHeadVersion(){
-        return this.version - (this.ops.size() > 1 ? this.ops.size() : 0);
-    }  
 
 
     //METHODS CALLED BY THE RESOURCES UPON RECEIVING A REQUEST
@@ -296,7 +301,7 @@ public class VersionControl {
             .post(Entity.entity(user, MediaType.APPLICATION_JSON));
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                Log.info("execPostUser: Failed exec");
+                Log.info("execPostUser: failed");
                 Log.info(String.valueOf(r.getStatus()));
             }
         }
@@ -327,7 +332,7 @@ public class VersionControl {
             .put(Entity.entity(user, MediaType.APPLICATION_JSON));
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                Log.info("execUpdateUser: Failed execUpdate");
+                Log.info("execUpdateUser: failed");
                 Log.info(String.valueOf(r.getStatus()));
             }
         }
@@ -358,7 +363,7 @@ public class VersionControl {
             .delete();
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                Log.info("execDeleteUser: Failed delete user");
+                Log.info("execDeleteUser: failed");
                 Log.info(String.valueOf(r.getStatus()));
             }
         }
@@ -379,6 +384,7 @@ public class VersionControl {
             return failedReplications <= this.maxReplicaFailures;
         }
 
+        //MESSAGE_RESOURCE
         private void execPostMessage(String uri, Message msg) throws ProcessingException{
             WebTarget target = client.target(uri);
             target = target.path(MessageServiceRest.PATH).path("replica");
@@ -389,12 +395,11 @@ public class VersionControl {
             .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                Log.info("execPostMessage: failed post message");
+                Log.info("execPostMessage: failed");
                 Log.info(String.valueOf(r.getStatus()));
             }
         }
 
-        //MESSAGE_RESOURCE
         public boolean postMessage(Message msg){     
             int failedReplications = 0;
             
@@ -407,8 +412,6 @@ public class VersionControl {
                     failedReplications++;
                }
             }
-
-            Log.info("postMessage VC: failed is " + failedReplications + "tolerated is" + this.maxReplicaFailures);
 
             return failedReplications <= this.maxReplicaFailures;
         }
@@ -423,7 +426,7 @@ public class VersionControl {
             .delete();
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                Log.info("execDeleteMessage: failed delete message");
+                Log.info("execDeleteMessage: failed");
                 Log.info(String.valueOf(r.getStatus()));
             }
         }
@@ -454,7 +457,7 @@ public class VersionControl {
             .delete();
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                Log.info("execRemoveFromUserInbox: Failed remove from user inbox");
+                Log.info("execRemoveFromUserInbox: failed");
                 Log.info(String.valueOf(r.getStatus()));
             }
         }
@@ -485,7 +488,7 @@ public class VersionControl {
             .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
             
             if(r.getStatus() != Status.OK.getStatusCode()){
-                Log.info("execPostForwardedMessage: failed post forwarded");
+                Log.info("execPostForwardedMessage: failed");
                 Log.info(String.valueOf(r.getStatus()));
             }
             
@@ -507,7 +510,7 @@ public class VersionControl {
                 }
             }
                  
-            if(failedReplications < this.maxReplicaFailures)
+            if(failedReplications <= this.maxReplicaFailures)
                 return failedDeliveries;
             else
                 return null;
@@ -523,7 +526,7 @@ public class VersionControl {
             .delete();
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                Log.info("execDeleteForwardedMessage: Failed forward delete message");
+                Log.info("execDeleteForwardedMessage: failed");
                 Log.info(String.valueOf(r.getStatus()));
             }
         }
@@ -543,6 +546,4 @@ public class VersionControl {
 
             return failedReplications <= this.maxReplicaFailures;
         }
-
-
 }

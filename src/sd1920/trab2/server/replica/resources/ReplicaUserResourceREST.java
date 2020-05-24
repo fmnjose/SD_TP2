@@ -91,7 +91,7 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
 
     @Override
     public void execPostUser(Long version, User user, String secret) {
-        Log.info("execPostUser");
+        Log.info("execPostUser: " + user.getName());
         String name = user.getName();
 
         if (!secret.equals(ReplicaMailServerREST.secret)) {
@@ -111,24 +111,23 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
         }
 
         vc.addOperation(new Operation(Operation.Type.POST_USER, user));
-
-        Log.info("postUser: Created new user with name: " + name);
     }
         
     @Override
     public String postUser(User user) {
         String serverDomain = null;
 
+        Log.info("postUser: " + user.getName());
+
         if (!vc.isPrimary()){
 			String redirectPath = String.format(ServerUtils.POST_USER_FORMAT, vc.getPrimaryUri());
-			Log.info("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR USER");
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
 
         try {
             serverDomain = InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {
-            Log.info("What the frog");
+            Log.info("God help us");
         }
         
         String name = user.getName();
@@ -165,7 +164,6 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
         if (!vc.isPrimary()){
 			String redirectPath = String.format(ServerUtils.GET_USER_FORMAT, vc.getPrimaryUri(), name);
 			redirectPath = UriBuilder.fromPath(redirectPath).queryParam("pwd", pwd).toString();
-			Log.info("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR USER " + name);
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
 
@@ -193,6 +191,8 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
     
     @Override
     public void execUpdateUser(Long version, String name, User user, String secret) {
+        Log.info("execUpdateUser: " + name);
+
         if (!secret.equals(ReplicaMailServerREST.secret)) {
 			Log.info("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
@@ -218,10 +218,10 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
 
     @Override
     public User updateUser(String name, String pwd, User user) {
+        Log.info("updateUser: "  + name);
 
         if (!vc.isPrimary()){
 			String redirectPath = String.format(ServerUtils.UPDATE_USER_FORMAT, vc.getPrimaryUri(), name);
-			Log.info("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR NAME");
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
 
@@ -255,6 +255,8 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
     
     @Override
     public void execDeleteUser(Long version, String name, String secret) {
+        Log.info("execDeleteUser: "  + name);
+
         if (!secret.equals(ReplicaMailServerREST.secret)) {
 			Log.info("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
@@ -271,10 +273,10 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
 
     @Override
     public User deleteUser(String name, String pwd) {
+        Log.info("deleteUser: " + name);
 
         if (!vc.isPrimary()){
 			String redirectPath = String.format(ServerUtils.DELETE_USER_FORMAT, vc.getPrimaryUri(), name);
-			Log.info("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR USER");
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
 

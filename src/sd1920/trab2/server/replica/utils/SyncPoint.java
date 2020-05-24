@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
-import sd1920.trab2.server.proxy.ProxyMailServer;
 import sd1920.trab2.server.replica.ReplicaMailServerREST;
 
 public class SyncPoint
@@ -33,13 +32,15 @@ public class SyncPoint
 	 */
 	public synchronized void waitForVersion( long n) {
 		while( version < n) {
-			Log.info("waitForVersion: Waiting for " + Long.toString(n) + ". Current is " + Long.toString(version));
+			Log.info("waitForVersion: Waiting: " + Long.toString(n) + "; Current: " + Long.toString(version));
 			try {
 				wait();
 			} catch (InterruptedException e) {
 				// do nothing
 			}
 		}
+
+		Log.info("waitForVersion: Free -> " + n);
 	}
 
 	/**

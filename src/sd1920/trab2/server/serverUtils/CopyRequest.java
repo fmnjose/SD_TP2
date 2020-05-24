@@ -6,6 +6,11 @@ import sd1920.trab2.server.proxy.arguments.CopyArgs;
 import sd1920.trab2.server.proxy.resources.MessageResourceProxy;
 import sd1920.trab2.server.proxy.resources.UserResourceProxy;
 
+/**
+ * Represents a Copy reques to dropbox
+ * Needed because we do these asynchronously, because, apparently, 
+ * Dropbox takes over 3 minutes to copy 1 file with CopyBatch
+ */
 public class CopyRequest extends Request{
     private String senderName, recipientName;
     private Message msg;
@@ -24,17 +29,10 @@ public class CopyRequest extends Request{
         this.copy = new CopyArgs(fromPath, toPath);
     } 
 
-    /**
-     * 
-     * @return canonical sender name
-     */
     public String getSender(){
         return this.senderName;
     }
 
-    /**
-     * @return canonical recipient name
-     */
     public String getRecipient(){
         return this.recipientName;
     }

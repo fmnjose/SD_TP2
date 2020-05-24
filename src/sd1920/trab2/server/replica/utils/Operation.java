@@ -3,6 +3,12 @@ package sd1920.trab2.server.replica.utils;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Represents an Operation  executed on the server
+ * Used by  the "chaching" on the replica versions
+ * 
+ * These are all pretty self explanatory
+ */
 public class Operation {
     
     public enum Type{

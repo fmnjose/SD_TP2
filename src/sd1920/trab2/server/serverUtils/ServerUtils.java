@@ -49,6 +49,7 @@ public abstract class ServerUtils {
     protected String domain;
     protected String serverUri;
     protected static Logger Log;
+
     protected final Map<Long, Message> allMessages = new HashMap<Long, Message>();
     protected final Map<String, Set<Long>> userInboxs = new HashMap<String, Set<Long>>();
     protected final Map<String, RequestHandler> requests = new HashMap<>();
@@ -62,12 +63,14 @@ public abstract class ServerUtils {
 	public static final String MESSAGES_WSDL = String.format("/%s/?wsdl", MessageServiceSoap.NAME);
     public static final String USERS_WSDL = String.format("/%s/?wsdl", UserServiceSoap.NAME);
 
+    //Endpoint paths
+    //Users
     public static final String POST_USER_FORMAT = "%s/users";
     public static final String UPDATE_USER_FORMAT = "%s/users/%s";
     public static final String DELETE_USER_FORMAT = "%s/users/%s";
     public static final String GET_USER_FORMAT = "%s/users/%s";
     
-    
+    //Messages
     public static final String POST_MESSAGE_FORMAT = "%s/messages";
     public static final String DELETE_MESSAGE_FORMAT = "%s/messages/msg/%s/%d";
     public static final String REMOVE_FROM_INBOX_FORMAT = "%s/messages/mbox/%s/%d";
@@ -101,7 +104,7 @@ public abstract class ServerUtils {
                 break;
             default:
                 this.secret = "";
-                Log.info("What?");
+                Log.info("We got a rogue ServerType on our hands.");
         }
         
         this.config = new ClientConfig();
@@ -234,10 +237,8 @@ public abstract class ServerUtils {
             if (uri == null){
 				Log.info("forwardMessage: " + domain + " does not exist or is offline.");
 				continue;
-			}
-
-			Log.info("forwardMessage: Trying to forward message " + msg.getId() + " to " + domain);            
-            
+            }
+                        
             synchronized(this.requests){
                 RequestHandler rh = this.requests.get(domain);
                 if(rh == null){
@@ -291,9 +292,6 @@ public abstract class ServerUtils {
 				Log.info("forwardDelete: " + domain + " does not exist or is offline.");
 				continue;
 			}
-
-
-			Log.info("forwardDelete: Sending delete request to domain: " + domain);
 
             synchronized(this.requests){
                 RequestHandler rh = this.requests.get(domain);

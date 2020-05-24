@@ -12,9 +12,6 @@ import org.apache.zookeeper.ZooKeeper;
 public class ZookeeperProcessor implements Watcher {	
 	private ZooKeeper zk;
 
-	/**
-	 * @param serviceName the name of the service to announce
-	 */
 	public ZookeeperProcessor(String hostPort) throws Exception {
 		zk = new ZooKeeper(hostPort, 3000, this);
 

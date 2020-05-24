@@ -90,8 +90,6 @@ public class RequestHandler implements Runnable {
                                                             
         Message msg = request.getMessage();                                                               
         
-        Log.info("processPostRequest: Trying to forward post to uri: " + uri.getUri());
-
         if (uri.isRest()) {            
             WebTarget target = client.target(uri.getUri());
             target = target.path(MessageServiceRest.PATH).path("mbox");
@@ -100,7 +98,6 @@ public class RequestHandler implements Runnable {
             r = target.request().accept(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
 
-            Log.info("processPostRequest: " + r.getStatus() + " " + msg.getId());
             failedDeliveries = r.readEntity(new GenericType<List<String>>() {});
         } else {
             MessageServiceSoap msgService = null;
@@ -212,13 +209,9 @@ public class RequestHandler implements Runnable {
     }
 
     private void processCopyRequest(CopyRequest request){
-            if(Copy.run(request.getCopy()))
-                Log.info("execCopyRequest: Sucessfully saved");
-            else{ 
-                Log.info("execCopyRequest: Couldn't copy");
-                if(!request.isForwarded())
-                    this.utils.saveErrorMessages(request.getSender(), request.getRecipient(), request.getMessage());
-            }
+        if(!Copy.run(request.getCopy()) && !request.isForwarded())
+            this.utils.saveErrorMessages(request.getSender(), request.getRecipient(),
+                                            request.getMessage());
     }
     
     private boolean execCopyRequest(CopyRequest r) {
@@ -252,11 +245,10 @@ public class RequestHandler implements Runnable {
 
             while (true) {
                 if(this.processRequest(r)){     
-                    Log.info("RequestHandler: Successfully completed request to domain " + r.getDomain()
-                            + ". More successful than i'll ever be!");
+                    Log.info("RequestHandler: Successfully completed a request! More successful than i'll ever be!");
                     break;
                 } else {
-                    Log.info("RequestHandler: Couldn't contact other domain " + r.getDomain() + ". I SLEEP...");
+                    Log.info("RequestHandler: Couldn't contact another domain. Sleeping for a bit...");
                     try {
                         Thread.sleep(SLEEP_TIME);
                     } catch (InterruptedException e) {
