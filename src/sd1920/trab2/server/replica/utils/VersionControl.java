@@ -34,7 +34,7 @@ import sd1920.trab2.server.serverUtils.ServerUtils;
 
 public class VersionControl {
 
-    private static Logger Log = Logger.getLogger(ProxyMailServer.class.getName());
+    private static Logger Log = Logger.getLogger(ReplicaMailServerREST.class.getName());
 
     private static final String NODE_FORMAT = "%s/%s";
     private static final long TTL = 8000;
@@ -77,7 +77,7 @@ public class VersionControl {
         this.startListening();
 		
 		newPath = zk.write(this.domain + "/server_", uri, CreateMode.EPHEMERAL_SEQUENTIAL);
-        System.out.println("Created child znode: " + newPath);
+        Log.info("Created child znode: " + newPath);
         
         sync = SyncPoint.getInstance();
 
@@ -85,7 +85,7 @@ public class VersionControl {
     }
     
     public void addOperation(Operation op){
-        System.out.println("Adding operation " + op.getType().toString());
+        Log.info("Adding operation " + op.getType().toString());
             
         if(!this.ops.isEmpty())
             purgeList();
@@ -172,7 +172,7 @@ public class VersionControl {
             .get();
 
         Map<Long, Message> allMessages = r.readEntity(new GenericType<Map<Long,Message>>() {});
-        System.out.println("All Messages size: " + allMessages.size());
+        Log.info("All Messages size: " + allMessages.size());
         //SET
         target = client.target(this.uri);
             target = target.path(MessageServiceRest.PATH).path("update");
@@ -224,7 +224,7 @@ public class VersionControl {
 
     public void syncVersion(long version){
         if (version > this.getVersion() + 1) {
-            System.out.println("Version Mismatch: Got " + Long.toString(version) + ". Local " + Long.toString(this.getVersion()));
+            Log.info("Version Mismatch: Got " + Long.toString(version) + ". Local " + Long.toString(this.getVersion()));
             WebTarget target = client.target(primaryUri);
             target = target.path(MessageServiceRest.PATH).path("replica");
             target = target.queryParam("secret", ReplicaMailServerREST.secret);
@@ -235,7 +235,7 @@ public class VersionControl {
             .get();
 
             if(r.getStatus() == Status.ACCEPTED.getStatusCode()){
-                System.out.println("Got updated ops");
+                Log.info("Got updated ops");
                 List<Operation> updatedOperations = r.readEntity(new GenericType<List<Operation>>() {});
                 
                 for (Operation operation : updatedOperations) {
@@ -244,7 +244,7 @@ public class VersionControl {
                 }
             }
             else if(r.getStatus() == Status.GONE.getStatusCode()){
-                System.out.println("Updating state");
+                Log.info("Updating state");
                 this.updateState();
                 this.version = version;
             }
@@ -258,12 +258,12 @@ public class VersionControl {
     }  
 
     public void waitForVersion(){
-        System.out.println("AWAITING");
+        Log.info("AWAITING");
         synchronized(this.awaitingVersion){
             this.awaitingVersion++;
             sync.waitForVersion(this.awaitingVersion);
         }
-        System.out.println("DONE AWAITING");
+        Log.info("DONE AWAITING");
     }
 
     public boolean isPrimary(){
@@ -296,8 +296,8 @@ public class VersionControl {
             .post(Entity.entity(user, MediaType.APPLICATION_JSON));
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                System.out.println("execPostUser: Failed exec");
-                System.out.println(String.valueOf(r.getStatus()));
+                Log.info("execPostUser: Failed exec");
+                Log.info(String.valueOf(r.getStatus()));
             }
         }
 
@@ -327,8 +327,8 @@ public class VersionControl {
             .put(Entity.entity(user, MediaType.APPLICATION_JSON));
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                System.out.println("execUpdateUser: Failed execUpdate");
-                System.out.println(String.valueOf(r.getStatus()));
+                Log.info("execUpdateUser: Failed execUpdate");
+                Log.info(String.valueOf(r.getStatus()));
             }
         }
 
@@ -358,8 +358,8 @@ public class VersionControl {
             .delete();
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                System.out.println("execDeleteUser: Failed delete user");
-                System.out.println(String.valueOf(r.getStatus()));
+                Log.info("execDeleteUser: Failed delete user");
+                Log.info(String.valueOf(r.getStatus()));
             }
         }
 
@@ -389,8 +389,8 @@ public class VersionControl {
             .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                System.out.println("execPostMessage: failed post message");
-                System.out.println(String.valueOf(r.getStatus()));
+                Log.info("execPostMessage: failed post message");
+                Log.info(String.valueOf(r.getStatus()));
             }
         }
 
@@ -408,7 +408,7 @@ public class VersionControl {
                }
             }
 
-            System.out.println("postMessage VC: failed is " + failedReplications + "tolerated is" + this.maxReplicaFailures);
+            Log.info("postMessage VC: failed is " + failedReplications + "tolerated is" + this.maxReplicaFailures);
 
             return failedReplications <= this.maxReplicaFailures;
         }
@@ -423,8 +423,8 @@ public class VersionControl {
             .delete();
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                System.out.println("execDeleteMessage: failed delete message");
-                System.out.println(String.valueOf(r.getStatus()));
+                Log.info("execDeleteMessage: failed delete message");
+                Log.info(String.valueOf(r.getStatus()));
             }
         }
 
@@ -454,8 +454,8 @@ public class VersionControl {
             .delete();
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                System.out.println("execRemoveFromUserInbox: Failed remove from user inbox");
-                System.out.println(String.valueOf(r.getStatus()));
+                Log.info("execRemoveFromUserInbox: Failed remove from user inbox");
+                Log.info(String.valueOf(r.getStatus()));
             }
         }
 
@@ -485,8 +485,8 @@ public class VersionControl {
             .post(Entity.entity(msg, MediaType.APPLICATION_JSON));
             
             if(r.getStatus() != Status.OK.getStatusCode()){
-                System.out.println("execPostForwardedMessage: failed post forwarded");
-                System.out.println(String.valueOf(r.getStatus()));
+                Log.info("execPostForwardedMessage: failed post forwarded");
+                Log.info(String.valueOf(r.getStatus()));
             }
             
             return r.readEntity(new GenericType<List<String>>(){});
@@ -523,8 +523,8 @@ public class VersionControl {
             .delete();
             
             if(r.getStatus() != Status.NO_CONTENT.getStatusCode()){
-                System.out.println("execDeleteForwardedMessage: Failed forward delete message");
-                System.out.println(String.valueOf(r.getStatus()));
+                Log.info("execDeleteForwardedMessage: Failed forward delete message");
+                Log.info(String.valueOf(r.getStatus()));
             }
         }
 

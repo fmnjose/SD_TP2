@@ -19,6 +19,9 @@ import sd1920.trab2.server.proxy.ProxyMailServer;
 import sd1920.trab2.server.proxy.arguments.DeleteArgs;
 import sd1920.trab2.server.proxy.arguments.DeleteBatchArgs;
 
+/**
+ * Calls dropbox's Delete endpoint
+ */
 public class Delete{
 
     private static Logger Log = Logger.getLogger(ProxyMailServer.class.getName());
@@ -62,7 +65,7 @@ public class Delete{
     }
 
     public static boolean run(List<String> paths){
-		System.out.println("Deleting " + paths.size() + " files");
+		Log.info("Deleting " + paths.size() + " files");
 		boolean success = false;
 
 		List<DeleteArgs> args = new LinkedList<>();
@@ -75,7 +78,7 @@ public class Delete{
 				break;
 				
 			try {
-				System.out.println("I sleep");
+				Log.info("I sleep");
 				Thread.sleep(ProxyRequest.SLEEP_TIME);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -83,10 +86,10 @@ public class Delete{
         }
 
 		if(success){
-			System.out.println("Deletion for " + paths.size() + " files successful");
+			Log.info("Deletion for " + paths.size() + " files successful");
 			return true;
 		}else{
-			System.out.println("Failed to delete " + paths.size() + " files");
+			Log.info("Failed to delete " + paths.size() + " files");
 			return false;
 		}
 	}

@@ -3,6 +3,9 @@ package sd1920.trab2.server.proxy.replies;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Return object given by Dropbox's ListFolder endpoint
+ */
 public class ListFolderReturn {
 
 	private String cursor;

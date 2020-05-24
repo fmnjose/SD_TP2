@@ -7,10 +7,11 @@ import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import sd1920.trab2.server.proxy.ProxyMailServer;
+import sd1920.trab2.server.replica.ReplicaMailServerREST;
 
 public class SyncPoint
 {		
-    private static Logger Log = Logger.getLogger(ProxyMailServer.class.getName());
+    private static Logger Log = Logger.getLogger(ReplicaMailServerREST.class.getName());
 
 	private static SyncPoint instance;
 	public static SyncPoint getInstance() {
@@ -32,7 +33,7 @@ public class SyncPoint
 	 */
 	public synchronized void waitForVersion( long n) {
 		while( version < n) {
-			System.out.println("waitForVersion: Waiting for " + Long.toString(n) + ". Current is " + Long.toString(version));
+			Log.info("waitForVersion: Waiting for " + Long.toString(n) + ". Current is " + Long.toString(version));
 			try {
 				wait();
 			} catch (InterruptedException e) {

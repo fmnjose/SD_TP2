@@ -19,6 +19,9 @@ import org.pac4j.scribe.builder.api.DropboxApi20;
 import sd1920.trab2.server.proxy.ProxyMailServer;
 import sd1920.trab2.server.proxy.arguments.GetMetaArgs;
 
+/**
+ * Calls dropbox's GetMeta endpoint
+ */
 public class GetMeta {
 
     private static Logger Log = Logger.getLogger(ProxyMailServer.class.getName());
@@ -43,8 +46,8 @@ public class GetMeta {
 		try {
 			Long curr = System.currentTimeMillis();
 			r = service.execute(getMeta);
-			System.out.println(r.getBody());
-			System.out.println("Time Elapsed GetMeta: " + (System.currentTimeMillis() - curr));
+			Log.info(r.getBody());
+			Log.info("Time Elapsed GetMeta: " + (System.currentTimeMillis() - curr));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -64,7 +67,7 @@ public class GetMeta {
     }
 
     public static boolean run(String path){
-		System.out.println("getMeta: " + path);
+		Log.info("getMeta: " + path);
 		boolean result = false;
         
         for(int i = 0; i < ProxyRequest.RETRIES; i++){
@@ -73,18 +76,18 @@ public class GetMeta {
 				break;
 				
 			}catch(IOException e){
-				System.out.println("getMeta: What the frog");
+				Log.info("getMeta: What the frog");
 			}catch(WebApplicationException e){
-				System.out.println("getMeta: What the frog");
+				Log.info("getMeta: What the frog");
 			}
         }		
 		
 		if(result){
-			System.out.println("File with name " + path + " was found.");
+			Log.info("File with name " + path + " was found.");
 			return true;
 		}
 			
-		System.out.println("Couldn't find file with name " + path + ".");
+		Log.info("Couldn't find file with name " + path + ".");
 		return false;
 		
     }

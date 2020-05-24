@@ -1,5 +1,8 @@
 package sd1920.trab2.server.proxy.arguments;
 
+/**
+ * Arguments used by the dropbox ListFolder endpoint
+ */
 public class ListFolderArgs {
 	final String path;
 	final boolean recursive, include_media_info, include_deleted, include_has_explicit_shared_members, include_mounted_folders;

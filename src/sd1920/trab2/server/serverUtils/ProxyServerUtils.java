@@ -29,7 +29,7 @@ public class ProxyServerUtils extends ServerUtils {
 
     @Override
     protected void saveErrorMessages(String senderName, String recipientName, Message msg) {
-        System.out.println("Saving error message: From " + senderName + " to " + recipientName);
+        Log.info("Saving error message: From " + senderName + " to " + recipientName);
         Long errorMessageId = Math.abs(randomNumberGenerator.nextLong());
 
         Message m = new Message(errorMessageId, msg.getSender(), msg.getDestination(),
@@ -46,7 +46,7 @@ public class ProxyServerUtils extends ServerUtils {
     }
 
     protected void saveMessage(Set<String> recipients, Message msg, boolean forwarded) {
-        System.out.println("Saving message " + msg.getId() + " from " + msg.getSender() + " to " + recipients.size() + " recipients");
+        Log.info("Saving message " + msg.getId() + " from " + msg.getSender() + " to " + recipients.size() + " recipients");
 
         String senderName = getSenderCanonicalName(msg.getSender());
 

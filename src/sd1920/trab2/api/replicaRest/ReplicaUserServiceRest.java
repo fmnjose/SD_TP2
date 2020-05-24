@@ -18,13 +18,17 @@ import sd1920.trab2.api.User;
 import sd1920.trab2.api.rest.UserServiceRest;
 
 @Path(UserServiceRest.PATH)
+
+/**
+ * Interface implemented by servers that utilize the replica mechanism
+ */
 public interface ReplicaUserServiceRest extends UserServiceRest {
 
 	/**
-	 * Used by the primary server to replicate a given postUser request
-	 * @param version current version of the primary server
-	 * @param msg user to be added
-	 * @param secret shhh
+	 * Executes a Post User operation
+	 * @param version primary server's version
+	 * @param user user to be added
+	 * @param secret shh
 	 */
 	@POST
 	@Path("/replica")
@@ -33,10 +37,11 @@ public interface ReplicaUserServiceRest extends UserServiceRest {
 				User user, @QueryParam("secret") String secret);
 
 	/**
-	 * Used by the primary server to replicate a given postUser request
-	 * @param version current version of the primary server
-	 * @param msg user to be added
-	 * @param secret shhh
+	 * Executes a Update User operation
+	 * @param version primary server's version
+	 * @param name name of the user to be updated
+	 * @param user new user info
+	 * @param secret shh
 	 */
 	@PUT
 	@Path("/{name}/replica")
@@ -47,10 +52,10 @@ public interface ReplicaUserServiceRest extends UserServiceRest {
 						@QueryParam("secret") String secret);
 
 	/**
-	 * Used by the primary server to replicate a given postUser request
-	 * @param version current version of the primary server
-	 * @param msg user to be added
-	 * @param secret shhh
+	 * Executes a Delete User operation
+	 * @param version primary server's version
+	 * @param name name of the user to be deleted
+	 * @param secret shh
 	 */
 	@DELETE
 	@Path("/{name}/replica")
@@ -58,11 +63,23 @@ public interface ReplicaUserServiceRest extends UserServiceRest {
 				@PathParam("name") String name, @QueryParam("secret") String secret);
 
 
+	/**
+	 *  Endpoint available when this server is a primary replica
+	 *  Called by one of the replicas whose version got way behind
+	 *  That replica will just copy this one's state
+	 *  @param secret shh
+	 *  @return a Map of this server's users structure
+	 */
     @GET
 	@Path("/update")
 	@Produces(MediaType.APPLICATION_JSON)
 	Map<String, User> getUsers(@QueryParam("secret") String secret);
 	
+	/**
+	 * Called by a replica, to itself, when this replica's version has been too outdated
+	 * @param users Primary server's users structure
+	 * @param secret shh
+	 */
 	@POST
 	@Path("/update")
 	@Consumes(MediaType.APPLICATION_JSON)

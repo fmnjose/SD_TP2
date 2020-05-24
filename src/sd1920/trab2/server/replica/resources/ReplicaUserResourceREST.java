@@ -44,7 +44,7 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
 
     private sd1920.trab2.server.replica.utils.VersionControl vc;
 
-    private static Logger Log = Logger.getLogger(ReplicaUserResourceREST.class.getName());
+    private static Logger Log = Logger.getLogger(ReplicaMailServerREST.class.getName());
 
     public ReplicaUserResourceREST() throws UnknownHostException {
         this.config = new ClientConfig();
@@ -62,7 +62,7 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
     protected boolean createUserInbox(String userName){
         boolean error = true;
 
-        System.out.println("createUserInbox: Sending request to create a new inbox in MessageResource.");
+        Log.info("createUserInbox: Sending request to create a new inbox in MessageResource.");
 
         int tries = 0;
 
@@ -76,26 +76,26 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
                 target.request().head();
             }
             catch(ProcessingException e){
-                System.out.println("createUserInbox: Failed to send request to MessageResource. Retrying...");
+                Log.info("createUserInbox: Failed to send request to MessageResource. Retrying...");
                 error = true;
             }
         }
 
         if(error)
-            System.out.println("createUserInbox: Failed to repeatedly send request to MessageResource. Giving up...");
+            Log.info("createUserInbox: Failed to repeatedly send request to MessageResource. Giving up...");
         else
-            System.out.println("createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!");		
+            Log.info("createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!");		
         
             return error;
         }
 
     @Override
     public void execPostUser(Long version, User user, String secret) {
-        System.out.println("execPostUser");
+        Log.info("execPostUser");
         String name = user.getName();
 
         if (!secret.equals(ReplicaMailServerREST.secret)) {
-			System.out.println("An intruder!");
+			Log.info("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
         }
         
@@ -106,13 +106,13 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
         }
         
         if(this.createUserInbox(name)){
-            System.out.println("postUser: User creation failed due to unresponsive MessageResource");
+            Log.info("postUser: User creation failed due to unresponsive MessageResource");
             throw new WebApplicationException(Status.CONFLICT);
         }
 
         vc.addOperation(new Operation(Operation.Type.POST_USER, user));
 
-        System.out.println("postUser: Created new user with name: " + name);
+        Log.info("postUser: Created new user with name: " + name);
     }
         
     @Override
@@ -121,14 +121,14 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
 
         if (!vc.isPrimary()){
 			String redirectPath = String.format(ServerUtils.POST_USER_FORMAT, vc.getPrimaryUri());
-			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR USER");
+			Log.info("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR USER");
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
 
         try {
             serverDomain = InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {
-            System.out.println("What the frog");
+            Log.info("What the frog");
         }
         
         String name = user.getName();
@@ -136,17 +136,17 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
         if(name == null || name.equals("") || 
         user.getPwd() == null || user.getPwd().equals("") || 
         user.getDomain() == null || user.getDomain().equals("")){
-            System.out.println("postUser: User creation was rejected due to lack of name, pwd or domain.");
+            Log.info("postUser: User creation was rejected due to lack of name, pwd or domain.");
             throw new WebApplicationException(Status.CONFLICT);
         }
         else if(!user.getDomain().equals(serverDomain)){
-            System.out.println("postUser: User creation was rejected due to mismatch between the provided domain and the server domain");
+            Log.info("postUser: User creation was rejected due to mismatch between the provided domain and the server domain");
             throw new WebApplicationException(Status.FORBIDDEN);
         }
         
         synchronized(this.users){
             if(this.users.containsKey(name)){
-                System.out.println("postUser: User creation was rejected due to the user already existing");
+                Log.info("postUser: User creation was rejected due to the user already existing");
                 throw new WebApplicationException(Status.CONFLICT);
             }
         }
@@ -165,14 +165,14 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
         if (!vc.isPrimary()){
 			String redirectPath = String.format(ServerUtils.GET_USER_FORMAT, vc.getPrimaryUri(), name);
 			redirectPath = UriBuilder.fromPath(redirectPath).queryParam("pwd", pwd).toString();
-			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR USER " + name);
+			Log.info("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR USER " + name);
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
 
         User user;
 
         if(name == null || name.equals("")){
-            System.out.println("getUser: User fetch was rejected due to invalid parameters");
+            Log.info("getUser: User fetch was rejected due to invalid parameters");
             throw new WebApplicationException(Status.CONFLICT);
         }
 
@@ -181,10 +181,10 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
         }
 
         if(user == null){
-            System.out.println("getUser: User fetch was rejected due to missing user");
+            Log.info("getUser: User fetch was rejected due to missing user");
             throw new WebApplicationException(Status.FORBIDDEN);
         }else if(pwd == null || !user.getPwd().equals(pwd)){
-            System.out.println("getUser: User fetch was rejected due to an invalid password");
+            Log.info("getUser: User fetch was rejected due to an invalid password");
             throw new WebApplicationException(Status.FORBIDDEN);
         }else{
             return user;
@@ -194,7 +194,7 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
     @Override
     public void execUpdateUser(Long version, String name, User user, String secret) {
         if (!secret.equals(ReplicaMailServerREST.secret)) {
-			System.out.println("An intruder!");
+			Log.info("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
         }
         
@@ -221,14 +221,14 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
 
         if (!vc.isPrimary()){
 			String redirectPath = String.format(ServerUtils.UPDATE_USER_FORMAT, vc.getPrimaryUri(), name);
-			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR NAME");
+			Log.info("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR NAME");
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
 
         User existingUser;
         
         if(name == null || name.equals("")){
-            System.out.println("updateUser: User update was rejected due to invalid parameters");
+            Log.info("updateUser: User update was rejected due to invalid parameters");
             throw new WebApplicationException(Status.CONFLICT);
         }
         
@@ -236,10 +236,10 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
             existingUser = this.users.get(name);
             
             if(existingUser == null){
-                System.out.println("updateUser: User update was rejected due to a missing user");
+                Log.info("updateUser: User update was rejected due to a missing user");
                 throw new WebApplicationException(Status.FORBIDDEN);
             }else if(!existingUser.getPwd().equals(pwd)){
-                System.out.println("updateUser: User update was rejected due to an invalid password");
+                Log.info("updateUser: User update was rejected due to an invalid password");
                 throw new WebApplicationException(Status.FORBIDDEN);
             }
         }
@@ -256,7 +256,7 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
     @Override
     public void execDeleteUser(Long version, String name, String secret) {
         if (!secret.equals(ReplicaMailServerREST.secret)) {
-			System.out.println("An intruder!");
+			Log.info("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
         }
         
@@ -274,14 +274,14 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
 
         if (!vc.isPrimary()){
 			String redirectPath = String.format(ServerUtils.DELETE_USER_FORMAT, vc.getPrimaryUri(), name);
-			System.out.println("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR USER");
+			Log.info("FORWARDING TO PRIMARY: " + URI.create(redirectPath) + " FOR USER");
 			throw new WebApplicationException(Response.temporaryRedirect(URI.create(redirectPath)).build());
 		}
 
         User user;
 
         if(name == null || name.equals("")){
-            System.out.println("deleteUser: User deletion was rejected due to invalid parameters");
+            Log.info("deleteUser: User deletion was rejected due to invalid parameters");
             throw new WebApplicationException(Status.CONFLICT);
         }
 
@@ -289,10 +289,10 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
             user = this.users.get(name);
             
             if(user == null){
-                System.out.println("deleteUser: User deletion was rejected due to a missing user");
+                Log.info("deleteUser: User deletion was rejected due to a missing user");
                 throw new WebApplicationException(Status.FORBIDDEN);
             }else if(pwd == null || !user.getPwd().equals(pwd)){
-                System.out.println("deleteUser: User update was rejected due to an invalid password");
+                Log.info("deleteUser: User update was rejected due to an invalid password");
                 throw new WebApplicationException(Status.FORBIDDEN);
             }
         }
@@ -310,7 +310,7 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
     @Override
     public Map<String, User> getUsers(String secret) {
         if (!secret.equals(ReplicaMailServerREST.secret)) {
-			System.out.println("An intruder!");
+			Log.info("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
         }
         
@@ -320,7 +320,7 @@ public class ReplicaUserResourceREST implements ReplicaUserServiceRest {
     @Override
     public void updateUsers(Map<String, User> users, String secret) {
         if (!secret.equals(ReplicaMailServerREST.secret)) {
-			System.out.println("An intruder!");
+			Log.info("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
         }
         

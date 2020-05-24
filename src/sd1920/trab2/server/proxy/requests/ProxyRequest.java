@@ -1,5 +1,8 @@
 package sd1920.trab2.server.proxy.requests;
 
+/**
+ * Container for constants used by the Dropbox requests
+ */
 public abstract class ProxyRequest {
 	static final String JSON_CONTENT_TYPE = "application/json; charset=utf-8";
     static final String OCTET_CONTENT_TYPE = "application/octet-stream";

@@ -1,5 +1,8 @@
 package sd1920.trab2.server.proxy.arguments;
 
+/**
+ * Arguments used by the dropbox Copy endpoint
+ */
 public class CopyArgs {
     final String from_path;
     final String to_path;

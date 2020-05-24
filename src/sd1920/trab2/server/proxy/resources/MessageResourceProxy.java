@@ -46,10 +46,14 @@ public class MessageResourceProxy extends ProxyServerUtils implements MessageSer
 				RESTMailServer.PORT);
 	}
 
+	/**
+	 * Given a list of dropbox paths, gets the message ID' in those paths
+	 * @param list list of paths to look at
+	 * @return list of message ids
+	 */
 	private List<Long> listPathsToIds(List<String> list) {
 		List<Long> mids = new LinkedList<>();
 
-		// Deus me perdoe pelo que estou prestes a fazer
 		for (String path : list)
 			mids.add(Long.valueOf(path.substring(path.lastIndexOf('/') + 1)));
 
@@ -63,17 +67,15 @@ public class MessageResourceProxy extends ProxyServerUtils implements MessageSer
 		Set<String> recipientDomains = new HashSet<>();
 		Set<String> recipients = new HashSet<>();
 
-		System.out.println("postMessage: Received request to register a new message (Sender: " + sender + "; Subject: "
+		Log.info("postMessage: Received request to register a new message (Sender: " + sender + "; Subject: "
 				+ msg.getSubject() + ")");
 
 		if (sender == null || msg.getDestination() == null || msg.getDestination().size() == 0) {
-			System.out.println("postMessage: Message was rejected due to lack of recepients.");
+			Log.info("postMessage: Message was rejected due to lack of recepients.");
 			throw new WebApplicationException(Status.CONFLICT);
 		}
 
 		String senderName = getSenderCanonicalName(sender);
-
-		long curr = System.currentTimeMillis();
 
 		// User treatment
 		user = this.getUserRest(senderName, pwd);
@@ -94,8 +96,6 @@ public class MessageResourceProxy extends ProxyServerUtils implements MessageSer
 
 		Create.run(path, msg);
 
-		System.out.println("postMessage: Created new message with id: " + newID);
-
 		for (String recipient : msg.getDestination()) {
 			String[] tokens = recipient.split("@");
 			if (tokens[1].equals(this.domain))
@@ -109,26 +109,24 @@ public class MessageResourceProxy extends ProxyServerUtils implements MessageSer
 
 		this.forwardMessage(recipientDomains, msg, ServerTypes.PROXY);
 
-		System.out.println("Time elapsed PostMessage: " + (System.currentTimeMillis() - curr));
-
 		return msg.getId();
 	}
 
 	@Override
 	public Message getMessage(long version, String user, long mid, String pwd) {
-		System.out.println("getMessage: Received request for message with id: " + mid + ".");
+		Log.info("getMessage: Received request for message with id: " + mid + ".");
 
 		String userName = getSenderCanonicalName(user);
 
 		User u = this.getUserRest(user, pwd);
 
 		if (u == null) {
-			System.out.println("getMessage: User does not exist");
+			Log.info("getMessage: User does not exist");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
 		if (!u.getPwd().equals(pwd)) {
-			System.out.println("getMessage: Invalid Password");
+			Log.info("getMessage: Invalid Password");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -137,7 +135,7 @@ public class MessageResourceProxy extends ProxyServerUtils implements MessageSer
 		List<Long> mids = this.listPathsToIds(ListDirectory.run(path));
 
 		if (!mids.contains(mid)) {
-			System.out.println("getMessage: Requested message does not exist.");
+			Log.info("getMessage: Requested message does not exist.");
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
 
@@ -152,14 +150,14 @@ public class MessageResourceProxy extends ProxyServerUtils implements MessageSer
 
 	@Override
 	public List<Long> getMessages(long version, String user, String pwd) {
-		System.out.println("getMessages: Received request for messages to '" + user + "'");
+		Log.info("getMessages: Received request for messages to '" + user + "'");
 
 		String userName = getSenderCanonicalName(user);
 
 		User u = this.getUserRest(userName, pwd);
 
 		if (u == null) {
-			System.out.println("getMessages: User does not exist");
+			Log.info("getMessages: User does not exist");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -167,20 +165,19 @@ public class MessageResourceProxy extends ProxyServerUtils implements MessageSer
 
 		List<String> mids = ListDirectory.run(path);
 
-		System.out.println("getMessages: Returning message list to user with " + mids.size() + " messages.");
 		return this.listPathsToIds(mids);
 	}
 
 	@Override
 	public void deleteMessage(String user, long mid, String pwd) {
-		System.out.println("deleteMessage: Received request to delete a message with the id: " + String.valueOf(mid));
+		Log.info("deleteMessage: Received request to delete a message with the id: " + String.valueOf(mid));
 
 		String senderName = getSenderCanonicalName(user);
 
 		User sender = this.getUserRest(senderName, pwd);
 
 		if (sender == null) {
-			System.out.println("deleteMessage: User does not exist");
+			Log.info("deleteMessage: User does not exist");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -189,14 +186,14 @@ public class MessageResourceProxy extends ProxyServerUtils implements MessageSer
 		String messageString = DownloadFile.run(path);
 
 		if (messageString == null) {
-			System.out.println("deleteMessage: Message does not exist");
+			Log.info("deleteMessage: Message does not exist");
 			return;
 		}
 
 		Message msg = json.fromJson(messageString, Message.class);
 
 		if (!getSenderCanonicalName(msg.getSender()).equals(senderName)) {
-			System.out.println("deleteMessage: Sender mismatch");
+			Log.info("deleteMessage: Sender mismatch");
 			return;
 		}
 
@@ -225,7 +222,7 @@ public class MessageResourceProxy extends ProxyServerUtils implements MessageSer
 
 	@Override
 	public void removeFromUserInbox(String user, long mid, String pwd) {
-		System.out.println("removeFromUserInbox: Received request to delete message " + String.valueOf(mid)
+		Log.info("removeFromUserInbox: Received request to delete message " + String.valueOf(mid)
 				+ " from the inbox of " + user);
 
 		String name = getSenderCanonicalName(user);
@@ -233,7 +230,7 @@ public class MessageResourceProxy extends ProxyServerUtils implements MessageSer
 		User u = this.getUserRest(name, pwd);
 
 		if (u == null || !u.getPwd().equals(pwd)) {
-			System.out.println("removeFromUserInbox: User does not exist or invalid Password");
+			Log.info("removeFromUserInbox: User does not exist or invalid Password");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -242,25 +239,24 @@ public class MessageResourceProxy extends ProxyServerUtils implements MessageSer
 		String inboxPath = String.format(UserResourceProxy.USER_MESSAGE_FORMAT, ProxyMailServer.hostname, name, mid);
 
 		if (!GetMeta.run(inboxPath) || !GetMeta.run(messagePath)) {
-			System.out.println("removeFromUserInbox: Message not found");
+			Log.info("removeFromUserInbox: Message not found");
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
 
 		Delete.run(inboxPath);
-		System.out.println("removeFromUserInbox: Successful");
 	}
 
 	@Override
 	public void createInbox(String user, String secret) {
-		// Deprecated
+		// Not used by proxy servers
 	}
 
 	@Override
 	public List<String> postForwardedMessage(Message msg, String secret) {
-		System.out.println("postForwardedMessage: Received request to save the message " + msg.getId());
+		Log.info("postForwardedMessage: Received request to save the message " + msg.getId());
 
 		if (!secret.equals(ProxyMailServer.secret)) {
-			System.out.println("An intruder!");
+			Log.info("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -268,8 +264,6 @@ public class MessageResourceProxy extends ProxyServerUtils implements MessageSer
 		String path = String.format(MESSAGE_FORMAT, ProxyMailServer.hostname, Long.toString(msg.getId()));
 
 		Create.run(path, msg);
-
-		System.out.println("posForwardedMessage: Saved message with ID: " + Long.toString(msg.getId()));
 
 		Set<String> recipients = new HashSet<>();
 
@@ -291,18 +285,15 @@ public class MessageResourceProxy extends ProxyServerUtils implements MessageSer
 
 		this.saveMessage(recipients, msg, false);
 
-		System.out.println(
-				"postForwardedMessage: Couldn't deliver the message to " + failedDeliveries.size() + " people");
-
 		return failedDeliveries;
 	}
 
 	@Override
 	public void deleteForwardedMessage(long mid, String secret) {
-		System.out.println("deleteForwardedMessage: Received request to delete message " + mid);
+		Log.info("deleteForwardedMessage: Received request to delete message " + mid);
 
 		if (!secret.equals(ProxyMailServer.secret)) {
-			System.out.println("An intruder!");
+			Log.info("An intruder!");
 			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 
@@ -312,7 +303,7 @@ public class MessageResourceProxy extends ProxyServerUtils implements MessageSer
 		String messageString = DownloadFile.run(path);
 
 		if (messageString == null) {
-			System.out.println("deleteForwardedMessage: Message does not exist");
+			Log.info("deleteForwardedMessage: Message does not exist");
 			return;
 		}
 
@@ -320,8 +311,6 @@ public class MessageResourceProxy extends ProxyServerUtils implements MessageSer
 
 		// DeletesMessage
 		Delete.run(path);
-
-		System.out.println("deleteForwardedMessage: Deleted message with ID: " + Long.toString(mid));
 
 		List<String> deletePaths = new LinkedList<>();
 
@@ -337,6 +326,5 @@ public class MessageResourceProxy extends ProxyServerUtils implements MessageSer
 		}
 
 		Delete.run(deletePaths);
-		System.out.println("deleteForwardedMessage: Deletion request sent");
 	}
 }

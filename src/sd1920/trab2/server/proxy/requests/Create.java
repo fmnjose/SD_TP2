@@ -16,6 +16,9 @@ import org.pac4j.scribe.builder.api.DropboxApi20;
 import sd1920.trab2.server.proxy.ProxyMailServer;
 import sd1920.trab2.server.proxy.arguments.CreateFileArgs;
 
+/**
+ * Calls dropbox's Create endpoint
+ */
 public class Create {
     private static final String CREATE_FILE_URL = "https://content.dropboxapi.com/2/files/upload";
 
@@ -42,7 +45,7 @@ public class Create {
 		try {
 			Long curr = System.currentTimeMillis();
 			r = service.execute(createFile);
-			System.out.println("Time Elapsed Upload: " + (System.currentTimeMillis() - curr));
+			Log.info("Time Elapsed Upload: " + (System.currentTimeMillis() - curr));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -62,7 +65,7 @@ public class Create {
     }
     
     public static boolean run(String directoryPath, Object object){
-		System.out.println("Creating file on " + directoryPath);
+		Log.info("Creating file on " + directoryPath);
         boolean success = false;
         
         for(int i = 0; i < ProxyRequest.RETRIES; i++){
@@ -77,10 +80,10 @@ public class Create {
         }
 
 		if(success){
-			System.out.println("Succesfully created file: " + directoryPath);
+			Log.info("Succesfully created file: " + directoryPath);
 			return true;
 		}else{
-			System.out.println("Couldn't create file: " + directoryPath);
+			Log.info("Couldn't create file: " + directoryPath);
 			return false;
 		}
     }

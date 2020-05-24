@@ -20,9 +20,19 @@ import sd1920.trab2.api.rest.MessageServiceRest;
 import sd1920.trab2.server.replica.utils.Operation;
 
 @Path(MessageServiceRest.PATH)
+
+/**
+ * Interface implemented by servers that utilize the replica mechanism
+ */
 public interface ReplicaMessageServiceRest extends MessageServiceRest {
 	public static final String HEADER_VERSION = "Msgserver-version";
 
+	/**
+	 * Endpoint used by replica servers to ask a primary to return the missing operations in their version
+	 * @param version version of the requesting server
+	 * @param secret shh
+	 * @return List of Operations whose version is greater than the version param
+	 */
     @GET
 	@Path("/replica")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -43,10 +53,12 @@ public interface ReplicaMessageServiceRest extends MessageServiceRest {
 						@QueryParam("secret") String secret);
 			
 	/**
-	 * Used by the primary server to replicate a given postUser request
-	 * @param version current version of the primary server
-	 * @param msg user to be added
-	 * @param secret shhh
+	 * Executes a removeFromInbox operation
+	 * Bypasses the verifications because they've already been done in the primary server
+	 * @param version version of the primary server
+	 * @param user accessing user
+	 * @param mid mid of the message to be deleted
+	 * @param secret shh
 	 */
 	@DELETE
 	@Path("/mbox/{user}/{mid}/replica")
@@ -55,6 +67,14 @@ public interface ReplicaMessageServiceRest extends MessageServiceRest {
 								@PathParam("mid") long mid,
 								@QueryParam("secret") String secret);
 
+	/**
+	 * Eecutes a Delete operation
+	 * Bypasses the verifications because they've already been done in the primary server
+	 * @param version version of the primary server
+	 * @param user accessing user
+	 * @param mid mid of the message to be deleted
+	 * @param secret shh
+	 */
 	@DELETE
 	@Path("/msg/{user}/{mid}/replica")
 	void execDeleteMessage(	@HeaderParam(HEADER_VERSION) long version, 
@@ -63,9 +83,11 @@ public interface ReplicaMessageServiceRest extends MessageServiceRest {
 							@QueryParam("secret") String secret);
 
 	/**
-	 * Saves a forwarded message
-	 * @param msg message to be saved
-	 * @return list of failed deliveries. Normally missing users
+	 * Executes a PostForwarded operation
+	 * @param version version of the primary server
+	 * @param msg forwarded message to be saved
+	 * @param secret shh
+	 * @return List of deliveries to users who don't exist
 	 */
 	@POST
 	@Path("/mbox/replica")
@@ -76,8 +98,10 @@ public interface ReplicaMessageServiceRest extends MessageServiceRest {
 											@QueryParam("secret") String secret);
 
 	/**
-	 * Deletes a message from this servers. Forwarded request
-	 * @param mid mid of message to be deleted
+	 * Executes a DeleteForwarded Operation
+	 * @param version version of the primary server
+	 * @param mid mid of the message to be deleted
+	 * @param secret shh
 	 */
 	@DELETE
 	@Path("/msg/{mid}/replica")
@@ -85,21 +109,45 @@ public interface ReplicaMessageServiceRest extends MessageServiceRest {
 									@PathParam("mid") long mid, 
 									@QueryParam("secret") String secret);
 
+	/**
+	 *  Endpoint available when this server is a primary replica
+	 *  Called by one of the replicas whose version got way behind
+	 *  That replica will just copy this one's state
+	 * @param secret shh
+	 * @return the Map of all our messages
+	 */
 	@GET
 	@Path("/update")
 	@Produces(MediaType.APPLICATION_JSON)
 	Map<Long, Message> getAllMessages(@QueryParam("secret") String secret);
 
+	/**
+	 *  Endpoint available when this server is a primary replica
+	 *  Called by one of the replicas whose version got way behind
+	 *  That replica will just copy this one's state
+	 * @param secret shh
+	 * @return the Map of our users' inboxes
+	 */
 	@GET
 	@Path("/update/mbox")
 	@Produces(MediaType.APPLICATION_JSON)
 	Map<String, Set<Long>> getUserInboxes(@QueryParam("secret") String secret);
 	
+	/**
+	 * Called by a replica, to itself, when this replica's version has been too outdated
+	 * @param allMessages Map of the primary server's messages
+	 * @param secret shh
+	 */
 	@POST
 	@Path("/update")
 	@Consumes(MediaType.APPLICATION_JSON)
 	void updateAllMessages(Map<Long,Message> allMessages, @QueryParam("secret") String secret);
 
+	/**
+	 * Called by a replica, to itself, when this replica's version has been too outdated
+	 * @param usersInboxes Map of the primary server's user inboxes'
+	 * @param secret shh
+	 */
 	@POST
 	@Path("/update/mbox")
 	@Consumes(MediaType.APPLICATION_JSON)

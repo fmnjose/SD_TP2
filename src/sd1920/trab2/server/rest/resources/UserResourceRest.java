@@ -20,6 +20,7 @@ import org.glassfish.jersey.client.ClientProperties;
 import sd1920.trab2.api.User;
 import sd1920.trab2.api.rest.UserServiceRest;
 import sd1920.trab2.server.serverUtils.LocalServerUtils;
+import sd1920.trab2.server.replica.ReplicaMailServerREST;
 import sd1920.trab2.server.rest.RESTMailServer;
 
 @Singleton
@@ -33,7 +34,7 @@ public class UserResourceRest implements UserServiceRest {
 
     private String serverRestUri;
 
-    private static Logger Log = Logger.getLogger(UserResourceRest.class.getName());
+    private static Logger Log = Logger.getLogger(ReplicaMailServerREST.class.getName());
 
     public UserResourceRest() throws UnknownHostException {
         this.config = new ClientConfig();
@@ -48,7 +49,7 @@ public class UserResourceRest implements UserServiceRest {
     protected boolean createUserInbox(String userName){
         boolean error = true;
 
-        System.out.println("createUserInbox: Sending request to create a new inbox in MessageResource.");
+        Log.info("createUserInbox: Sending request to create a new inbox in MessageResource.");
 
         int tries = 0;
 
@@ -62,15 +63,15 @@ public class UserResourceRest implements UserServiceRest {
                 target.request().head();
             }
             catch(ProcessingException e){
-                System.out.println("createUserInbox: Failed to send request to MessageResource. Retrying...");
+                Log.info("createUserInbox: Failed to send request to MessageResource. Retrying...");
                 error = true;
             }
         }
 
         if(error)
-            System.out.println("createUserInbox: Failed to repeatedly send request to MessageResource. Giving up...");
+            Log.info("createUserInbox: Failed to repeatedly send request to MessageResource. Giving up...");
         else
-            System.out.println("createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!");		
+            Log.info("createUserInbox: Successfully sent request to MessageResource. More successful than i'll ever be!");		
         
         return error;
     }
@@ -85,27 +86,27 @@ public class UserResourceRest implements UserServiceRest {
             if(name == null || name.equals("") || 
                 user.getPwd() == null || user.getPwd().equals("") || 
                     user.getDomain() == null || user.getDomain().equals("")){
-                System.out.println("postUser: User creation was rejected due to lack of name, pwd or domain.");
+                Log.info("postUser: User creation was rejected due to lack of name, pwd or domain.");
                 throw new WebApplicationException(Status.CONFLICT);
             }
             else if(!user.getDomain().equals(serverDomain)){
-                System.out.println("postUser: User creation was rejected due to mismatch between the provided domain and the server domain");
+                Log.info("postUser: User creation was rejected due to mismatch between the provided domain and the server domain");
                 throw new WebApplicationException(Status.FORBIDDEN);
             }
             synchronized(this.users){
                 if(this.users.containsKey(name)){
-                    System.out.println("postUser: User creation was rejected due to the user already existing");
+                    Log.info("postUser: User creation was rejected due to the user already existing");
                     throw new WebApplicationException(Status.CONFLICT);
                 }
                 this.users.put(name, user);
             }
             
             if(this.createUserInbox(name)){
-                System.out.println("postUser: User creation failed due to unresponsive MessageResource");
+                Log.info("postUser: User creation failed due to unresponsive MessageResource");
                 throw new WebApplicationException(Status.CONFLICT);
             }
 
-            System.out.println("postUser: Created new user with name: " + name);
+            Log.info("postUser: Created new user with name: " + name);
             
             return String.format("%s@%s", name, user.getDomain());
         }
@@ -116,11 +117,11 @@ public class UserResourceRest implements UserServiceRest {
 
     @Override
     public User getUser(String name, String pwd) {
-        System.out.println("getUser: " + name);
+        Log.info("getUser: " + name);
         User user;
 
         if(name == null || name.equals("")){
-            System.out.println("getUser: User fetch was rejected due to invalid parameters");
+            Log.info("getUser: User fetch was rejected due to invalid parameters");
             throw new WebApplicationException(Status.CONFLICT);
         }
 
@@ -129,10 +130,10 @@ public class UserResourceRest implements UserServiceRest {
         }
 
         if(user == null){
-            System.out.println("getUser: User fetch was rejected due to missing user");
+            Log.info("getUser: User fetch was rejected due to missing user");
             throw new WebApplicationException(Status.FORBIDDEN);
         }else if(pwd == null || !user.getPwd().equals(pwd)){
-            System.out.println("getUser: User fetch was rejected due to an invalid password");
+            Log.info("getUser: User fetch was rejected due to an invalid password");
             throw new WebApplicationException(Status.FORBIDDEN);
         }else{
             return user;
@@ -145,7 +146,7 @@ public class UserResourceRest implements UserServiceRest {
         User existingUser;
         
         if(name == null || name.equals("")){
-            System.out.println("updateUser: User update was rejected due to invalid parameters");
+            Log.info("updateUser: User update was rejected due to invalid parameters");
             throw new WebApplicationException(Status.CONFLICT);
         }
 
@@ -153,10 +154,10 @@ public class UserResourceRest implements UserServiceRest {
             existingUser = this.users.get(name);
 
             if(existingUser == null){
-                System.out.println("updateUser: User update was rejected due to a missing user");
+                Log.info("updateUser: User update was rejected due to a missing user");
                 throw new WebApplicationException(Status.FORBIDDEN);
             }else if(!existingUser.getPwd().equals(pwd)){
-                System.out.println("updateUser: User update was rejected due to an invalid password");
+                Log.info("updateUser: User update was rejected due to an invalid password");
                 throw new WebApplicationException(Status.FORBIDDEN);
             }
 
@@ -174,7 +175,7 @@ public class UserResourceRest implements UserServiceRest {
         User user;
 
         if(name == null || name.equals("")){
-            System.out.println("deleteUser: User deletion was rejected due to invalid parameters");
+            Log.info("deleteUser: User deletion was rejected due to invalid parameters");
             throw new WebApplicationException(Status.CONFLICT);
         }
 
@@ -182,10 +183,10 @@ public class UserResourceRest implements UserServiceRest {
             user = this.users.get(name);
             
             if(user == null){
-                System.out.println("deleteUser: User deletion was rejected due to a missing user");
+                Log.info("deleteUser: User deletion was rejected due to a missing user");
                 throw new WebApplicationException(Status.FORBIDDEN);
             }else if(pwd == null || !user.getPwd().equals(pwd)){
-                System.out.println("deleteUser: User update was rejected due to an invalid password");
+                Log.info("deleteUser: User update was rejected due to an invalid password");
                 throw new WebApplicationException(Status.FORBIDDEN);
             }
             this.users.remove(name);

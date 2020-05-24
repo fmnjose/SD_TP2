@@ -1,5 +1,8 @@
 package sd1920.trab2.server.proxy.arguments;
 
+/**
+ * Arguments used by the dropbox CreateFile endpoint
+ */
 public class CreateFileArgs {
 
     final String path;

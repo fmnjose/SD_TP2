@@ -20,6 +20,9 @@ import sd1920.trab2.server.proxy.arguments.ListFolderContinueArgs;
 import sd1920.trab2.server.proxy.replies.ListFolderReturn;
 import sd1920.trab2.server.proxy.replies.ListFolderReturn.FolderEntry;
 
+/**
+ * Calls dropbox's ListDirectory endpoint
+ */
 public class ListDirectory {
 	
     private static Logger Log = Logger.getLogger(ProxyMailServer.class.getName());
@@ -83,7 +86,7 @@ public class ListDirectory {
 	}
 	
 	public static List<String> run(String directoryPath) {
-		System.out.println("Listing " + directoryPath);
+		Log.info("Listing " + directoryPath);
 
 		List<String> result = null;
 
@@ -96,19 +99,19 @@ public class ListDirectory {
                     success = true;
                     break;
 				}
-				System.out.println("I SLEEP");
+				Log.info("I SLEEP");
 				Thread.sleep(ProxyRequest.SLEEP_TIME);
 			} catch(InterruptedException e){
-				System.out.println("SearchFile: What the frog");
+				Log.info("SearchFile: What the frog");
 			}
 
         }		
 		
 		if(success){
-			System.out.println("Folder: " + directoryPath + " was listed");
+			Log.info("Folder: " + directoryPath + " was listed");
 			return result;
 		}else{
-			System.out.println("Folder: " + directoryPath + " was NOT found");
+			Log.info("Folder: " + directoryPath + " was NOT found");
 			return null;
 		}
 	}
