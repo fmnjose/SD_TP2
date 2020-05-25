@@ -124,8 +124,6 @@ public class Copy {
 		for(CopyArgs copy : copies){
 			Log.info("From " + copy.getFromPath() + " ; To " + copy.getToPath());
 		}
-
-		Log.info("FEIJOADA");
         
         CopyBatchArgs args = new CopyBatchArgs(copies);
 
@@ -152,9 +150,7 @@ public class Copy {
     public static boolean run(CopyArgs copy){	
 		Log.info("Copying from " + copy.getFromPath() + " to " + copy.getToPath());
 		boolean success = false;
-		
-		Log.info("FEIJOADA");
-        
+		        
         while(true){
             if(success = execute(copy))
 				break;
